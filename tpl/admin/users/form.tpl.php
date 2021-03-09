@@ -8,6 +8,8 @@
 	 * @var \Zibings\UserProfile $profile
 	 * @var \Zibings\UserVisibilities $visibilities
 	 * @var \Zibings\UserSettings $userSettings
+	 * @var \Zibings\Roles $roles
+	 * @var \Zibings\Role[] $userRoles
 	 */
 
 	use Zibings\UserGenders;
@@ -97,6 +99,16 @@
 															<input type="checkbox" class="custom-control-input" name="set_playSounds" id="set_playSounds"<?php if ($userSettings->playSounds): ?> checked<?php endif; ?> />
 															<label class="custom-control-label" for="set_playSounds">Play sounds in browser</label>
 														</div>
+													</div>
+
+													<h5 class="pt-3">Roles</h5>
+
+													<div class="form-group">
+														<label for="userRoles">Active Roles</label>
+														<select name="userRoles[]" id="userRoles" class="form-control select2 select2-multiple" data-toggle="select2" multiple="multiple">
+<?php foreach (array_values($roles->getAll()) as $role): ?>															<option value="<?=$role->name?>"<?php if (array_key_exists($role->id, $userRoles) !== false): ?> selected<?php endif; ?>><?=$role->name?></option>
+<?php endforeach; ?>
+														</select>
 													</div>
 												</div>
 

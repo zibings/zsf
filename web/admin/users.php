@@ -7,6 +7,7 @@
 	use Stoic\Web\PageHelper;
 
 	use Zibings\LoginKeyProviders;
+	use Zibings\Roles;
 	use Zibings\RoleStrings;
 	use Zibings\User;
 	use Zibings\UserEvents;
@@ -35,15 +36,18 @@
 		$page->redirectTo('~/index.php');
 	}
 
-	$tplFile = 'index';
-	$users   = new Users($Db, $Log);
-	$get     = $Stoic->getRequest()->getGet();
-	$post    = $Stoic->getRequest()->getPost();
+	$tplFile   = 'index';
+	$users     = new Users($Db, $Log);
+	$userRoles = new UserRoles($Db, $Log);
+	$get       = $Stoic->getRequest()->getGet();
+	$post      = $Stoic->getRequest()->getPost();
 
 	$tplVars = [
 		'page'         => $page,
 		'message'      => "",
-		'messageState' => 'warn'
+		'messageState' => 'warn',
+		'roles'        => new Roles($Db, $Log),
+		'userRoles'    => []
 	];
 
 	$currentUser = ($get->has('id')) ? User::fromId($get->getInt('id'), $Db, $Log) : new User($Db, $Log);
@@ -64,6 +68,7 @@
 	}
 
 	$tplVars['currentUser']  = $currentUser;
+	$tplVars['userRoles']    = $userRoles->getAllUserRoles($currentUser->id);
 	$tplVars['profile']      = ($currentUser->id > 0) ? UserProfile::fromUser($currentUser->id, $Db, $Log) : new UserProfile($Db, $Log);
 	$tplVars['userSettings'] = ($currentUser->id > 0) ? UserSettings::fromUser($currentUser->id, $Db, $Log) : new UserSettings($Db, $Log);
 	$tplVars['visibilities'] = ($currentUser->id > 0) ? UserVisibilities::fromUser($currentUser->id, $Db, $Log) : new UserVisibilities($Db, $Log);
@@ -101,21 +106,31 @@
 				'playSounds'   => $post->has('set_playSounds')
 			],
 			'visibilities'   => [
-				'birthday'     => $post->getInt('vis_birthday'),
-				'description'  => $post->getInt('vis_description'),
-				'email'        => $post->getInt('vis_email'),
-				'gender'       => $post->getInt('vis_gender'),
-				'profile'      => $post->getInt('vis_profile'),
-				'realName'     => $post->getInt('vis_realName'),
-				'searches'     => $post->getInt('vis_searches')
+				'birthday'     => $post->getInt('vis_birthday',    $tplVars['visibilities']->birthday->getValue()),
+				'description'  => $post->getInt('vis_description', $tplVars['visibilities']->description->getValue()),
+				'email'        => $post->getInt('vis_email',       $tplVars['visibilities']->email->getValue()),
+				'gender'       => $post->getInt('vis_gender',      $tplVars['visibilities']->gender->getValue()),
+				'profile'      => $post->getInt('vis_profile',     $tplVars['visibilities']->profile->getValue()),
+				'realName'     => $post->getInt('vis_realName',    $tplVars['visibilities']->realName->getValue()),
+				'searches'     => $post->getInt('vis_searches',    $tplVars['visibilities']->searches->getValue())
 			]
 		];
 
 		$update = $events->$event(new ParameterHelper($postData));
 
 		if ($update->isGood()) {
-			$postData['id'] = $update->getResults()[0]['data']->id;
-			$events->doUpdate(new ParameterHelper($postData));
+			if ($event == 'doCreate') {
+				$postData['id'] = $update->getResults()[0]['data']->id;
+				$events->doUpdate(new ParameterHelper($postData));
+			}
+
+			$userRoles->removeUserFromAllRoles($postData['id']);
+
+			if ($post->has('userRoles')) {
+				foreach (array_values($post->get('userRoles')) as $role) {
+					$userRoles->addUserToRoleByName($postData['id'], $role);
+				}
+			}
 
 			$page->redirectTo("~/admin/users.php?id={$postData['id']}");
 		}
