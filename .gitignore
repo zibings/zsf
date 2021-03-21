@@ -169,6 +169,7 @@ bin
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+logs/
 
 # Config files
 composer.lock

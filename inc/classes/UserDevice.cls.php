@@ -5,6 +5,7 @@
 	use Stoic\Log\Logger;
 	use Stoic\Pdo\BaseDbQueryTypes;
 	use Stoic\Pdo\BaseDbTypes;
+	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbModel;
 
@@ -14,6 +15,9 @@
 	 * @package Zibings
 	 */
 	class UserDevice extends StoicDbModel {
+		const SQL_SELBYLINK = 'userdevice-selectbylinkphrase';
+
+
 		/**
 		 * Date and time the device was created in the system.
 		 *
@@ -59,6 +63,14 @@
 
 
 		/**
+		 * Whether or not the stored queries have been initialized.
+		 *
+		 * @var bool
+		 */
+		private static bool $dbInitialized = false;
+
+
+		/**
 		 * Static method to retrieve a device by ID.
 		 *
 		 * @param integer $id Integer identifier of device.
@@ -96,8 +108,8 @@
 			}
 
 			$ret->tryPdoExcept(function () use (&$ret, $phrase) {
-				$stmt = $ret->db->prepare($ret->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [LinkPhrase] = :linkPhrase");
-				$stmt->bindParam(':linkPhrase', $phrase, \PDO::PARAM_STR);
+				$stmt = $ret->db->prepareStored(self::SQL_SELBYLINK);
+				$stmt->bindParam(':linkPhrase', $phrase);
 
 				if ($stmt->execute()) {
 					$ret = UserDevice::fromArray($stmt->fetch(\PDO::FETCH_ASSOC), $ret->db, $ret->log);
@@ -168,7 +180,12 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			$this->setTableName('[UserDevice]');
+			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+				$this->setTableName('[UserDevice]');
+			} else {
+				$this->setTableName('UserDevice');
+			}
+
 			$this->setColumn('created', '[Created]', BaseDbTypes::DATETIME, false, true, false);
 			$this->setColumn('id', '[ID]', BaseDbTypes::INTEGER, true, false, false, false, true);
 			$this->setColumn('identifier', '[Identifier]', BaseDbTypes::STRING, false, true, false);
@@ -176,6 +193,13 @@
 			$this->setColumn('linked', '[Linked]', BaseDbTypes::DATETIME, false, false, true, true);
 			$this->setColumn('linkPhrase', '[LinkPhrase]', BaseDbTypes::STRING, false, true, false);
 			$this->setColumn('userId', '[UserID]', BaseDbTypes::INTEGER, false, true, true);
+
+			if (!static::$dbInitialized) {
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYLINK, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [LinkPhrase] = :linkPhrase");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYLINK, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `LinkPhrase` = :linkPhrase");
+
+				static::$dbInitialized = true;
+			}
 
 			$this->created    = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 			$this->id         = 0;

@@ -5,6 +5,7 @@
 	use Stoic\Log\Logger;
 	use Stoic\Pdo\BaseDbQueryTypes;
 	use Stoic\Pdo\BaseDbTypes;
+	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbModel;
 
@@ -14,6 +15,9 @@
 	 * @package Zibings
 	 */
 	class UserSession extends StoicDbModel {
+		const SQL_SELBYTOKEN = 'usersession-selectbytoken';
+
+
 		/**
 		 * Network address of user when this session was created.
 		 *
@@ -53,6 +57,14 @@
 
 
 		/**
+		 * Whether or not the stored queries have been initialized.
+		 *
+		 * @var bool
+		 */
+		private static bool $dbInitialized = false;
+
+
+		/**
 		 * Static method to retrieve a session by its integer identifier.
 		 *
 		 * @param integer $id Integer identifier of session.
@@ -87,8 +99,8 @@
 			}
 
 			$ret->tryPdoExcept(function () use (&$ret, $token) {
-				$stmt = $ret->db->prepare($ret->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Token] = :token");
-				$stmt->bindParam(':token', $token, \PDO::PARAM_STR);
+				$stmt = $ret->db->prepareStored(self::SQL_SELBYTOKEN);
+				$stmt->bindParam(':token', $token);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -194,13 +206,25 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			$this->setTableName('[dbo].[UserSession]');
+			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+				$this->setTableName('[dbo].[UserSession]');
+			} else {
+				$this->setTableName('UserSession');
+			}
+
 			$this->setColumn('address', 'Address', BaseDbTypes::STRING, false, true, false);
 			$this->setColumn('created', 'Created', BaseDbTypes::DATETIME, false, true, false);
 			$this->setColumn('hostname', 'Hostname', BaseDbTypes::STRING, false, true, false);
 			$this->setColumn('id', 'ID', BaseDbTypes::INTEGER, true, false, false, false, true);
 			$this->setColumn('token', 'Token', BaseDbTypes::STRING, false, true, false);
 			$this->setColumn('userId', 'UserID', BaseDbTypes::INTEGER, false, true, false);
+
+			if (!static::$dbInitialized) {
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYTOKEN, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Token] = :token");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYTOKEN, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `Token` = :token");
+
+				static::$dbInitialized = true;
+			}
 
 			$this->address  = '';
 			$this->created  = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));

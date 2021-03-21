@@ -4,6 +4,7 @@
 
 	use Stoic\Log\Logger;
 	use Stoic\Pdo\BaseDbTypes;
+	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbModel;
 	use Stoic\Utilities\EnumBase;
@@ -154,7 +155,12 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			$this->setTableName('[dbo].[UserVisibilities]');
+			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+				$this->setTableName('[dbo].[UserVisibilities]');
+			} else {
+				$this->setTableName('UserVisibilities');
+			}
+
 			$this->setColumn('birthday', 'Birthday', BaseDbTypes::INTEGER, false, true, true);
 			$this->setColumn('description', 'Description', BaseDbTypes::INTEGER, false, true, true);
 			$this->setColumn('email', 'Email', BaseDbTypes::INTEGER, false, true, true);

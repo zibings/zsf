@@ -3,6 +3,7 @@
 	namespace Zibings;
 
 	use Stoic\Pdo\BaseDbTypes;
+	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\StoicDbModel;
 	use Stoic\Utilities\EnumBase;
 
@@ -110,7 +111,12 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			$this->setTableName('[dbo].[UserRelationEvent]');
+			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+				$this->setTableName('[dbo].[UserRelationEvent]');
+			} else {
+				$this->setTableName('UserRelationEvent');
+			}
+
 			$this->setColumn('action', 'Action', BaseDbTypes::INTEGER, false, true, false);
 			$this->setColumn('notes', 'Notes', BaseDbTypes::STRING, false, true, false);
 			$this->setColumn('recorded', 'Recorded', BaseDbTypes::DATETIME, false, true, false);

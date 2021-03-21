@@ -2,6 +2,8 @@
 
 	namespace Zibings;
 
+	use Stoic\Pdo\PdoDrivers;
+	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbClass;
 
 	/**
@@ -10,6 +12,9 @@
 	 * @package Zibings
 	 */
 	class UserTokens extends StoicDbClass {
+		const SQL_DELFORUSER = 'usertokens-deleteforuser';
+
+
 		/**
 		 * Internal UserToken instance.
 		 *
@@ -19,12 +24,27 @@
 
 
 		/**
+		 * Whether or not the stored queries have been initialized.
+		 *
+		 * @var bool
+		 */
+		private static bool $dbInitialized = false;
+
+
+		/**
 		 * Initializes the internal UserToken instance.
 		 *
 		 * @return void
 		 */
 		protected function __initialize() : void {
 			$this->utObj = new UserToken($this->db, $this->log);
+
+			if (!static::$dbInitialized) {
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELFORUSER, "DELETE FROM {$this->utObj->getDbTableName()} WHERE [UserID] = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELFORUSER, "DELETE FROM {$this->utObj->getDbTableName()} WHERE `UserID` = :userId");
+
+				static::$dbInitialized = true;
+			}
 
 			return;
 		}
@@ -41,7 +61,7 @@
 			}
 
 			$this->tryPdoExcept(function () use ($userId) {
-				$stmt = $this->db->prepare("DELETE FROM {$this->utObj->getDbTableName()} WHERE [UserID] = :userId");
+				$stmt = $this->db->prepareStored(self::SQL_DELFORUSER);
 				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
 				$stmt->execute();
 			}, "Failed to delete user's contacts");

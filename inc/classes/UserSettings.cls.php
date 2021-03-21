@@ -4,6 +4,7 @@
 
 	use Stoic\Log\Logger;
 	use Stoic\Pdo\BaseDbTypes;
+	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbModel;
 
@@ -111,7 +112,12 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			$this->setTableName('[dbo].[UserSettings]');
+			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+				$this->setTableName('[dbo].[UserSettings]');
+			} else {
+				$this->setTableName('UserSettings');
+			}
+
 			$this->setColumn('htmlEmails', 'HtmlEmails', BaseDbTypes::BOOLEAN, false, true, true);
 			$this->setColumn('playSounds', 'PlaySounds', BaseDbTypes::BOOLEAN, false, true, true);
 			$this->setColumn('userId', 'UserID', BaseDbTypes::INTEGER, true, true, false);

@@ -3,6 +3,8 @@
 	namespace Zibings;
 
 	use Stoic\Pdo\BaseDbQueryTypes;
+	use Stoic\Pdo\PdoDrivers;
+	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbClass;
 
 	/**
@@ -11,6 +13,16 @@
 	 * @package Zibings
 	 */
 	class UserRoles extends StoicDbClass {
+		const SQL_DELUSRALLROLES      = 'userroles-deleteuserfromroles';
+		const SQL_DELUSRROLE          = 'userroles-deleteuserrole';
+		const SQL_DELUSRROLEBYID      = 'userroles-deleteuserrolebyid';
+		const SQL_DELUSRSINROLEBYNAME = 'userroles-deleteusersinrolebyname';
+		const SQL_GROLEFORUSR         = 'userroles-getroleforuser';
+		const SQL_GUSRSINROLEBYNAME   = 'userroles-getusersinrolebyname';
+		const SQL_INSUSRROLE          = 'userroles-insertuserrole';
+		const SQL_USRINROLEBYID       = 'userroles-userinrolebyid';
+
+
 		/**
 		 * Internal Role instance.
 		 *
@@ -20,12 +32,50 @@
 
 
 		/**
+		 * Whether or not the stored queries have been initialized.
+		 *
+		 * @var bool
+		 */
+		private static bool $dbInitialized = false;
+
+
+		/**
 		 * Initializes the internal Role instance.
 		 *
 		 * @return void
 		 */
 		protected function __initialize() : void {
 			$this->rlObj = new Role($this->db, $this->log);
+
+			if (!static::$dbInitialized) {
+				$usrObj = new User($this->db, $this->log);
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_INSUSRROLE, "INSERT INTO [dbo].[UserRole] ([UserID], [RoleID]) VALUES (:userId, :roleId)");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_INSUSRROLE, "INSERT INTO `UserRole` (`UserID`, `RoleID`) VALUES (:userId, :roleId)");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELUSRROLE, "DELETE FROM [dbo].[UserRole] WHERE [UserID] = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELUSRROLE, "DELETE FROM `UserRole` WHERE `UserID` = :userId");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GROLEFORUSR, $this->rlObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [ID] IN (SELECT [RoleID] FROM [dbo].[UserRole] WHERE [UserID] = :userId)");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GROLEFORUSR, $this->rlObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `ID` IN (SELECT `RoleID` FROM `UserRole` WHERE `UserID` = :userId)");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GUSRSINROLEBYNAME, $usrObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `ID` IN (SELECT `UserID` FROM `UserRole` WHERE `RoleID` = :roleId)");
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GUSRSINROLEBYNAME, $usrObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [ID] IN (SELECT [UserID] FROM [dbo].[UserRole] WHERE [RoleID] = :roleId)");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELUSRSINROLEBYNAME, "DELETE FROM [dbo].[UserRole] WHERE [RoleID] = (SELECT [ID] FROM [dbo].[Role] WHERE [Name] = :name)");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELUSRSINROLEBYNAME, "DELETE FROM `UserRole` WHERE `RoleID` = (SELECT `ID` FROM `Role` WHERE `Name` = :name)");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELUSRALLROLES, "DELETE FROM [dbo].[UserRole] WHERE [UserID] = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELUSRALLROLES, "DELETE FROM `UserRole` WHERE `UserID` = :userId");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELUSRROLEBYID, "DELETE FROM [dbo].[UserRole] WHERE [UserID] = :userId AND [RoleID] = :roleId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELUSRROLEBYID, "DELETE FROM `UserRole` WHERE `UserID` = :userId AND `RoleID` = :roleId");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_USRINROLEBYID, "SELECT * FROM [dbo].[UserRole] WHERE [UserID] = :userId AND [RoleID] = :roleId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_USRINROLEBYID, "SELECT * FROM `UserRole` WHERE `UserID` = :userId AND `RoleID` = :roleId");
+
+				static::$dbInitialized = true;
+			}
 
 			return;
 		}
@@ -46,7 +96,7 @@
 			}
 
 			$this->tryPdoExcept(function () use ($userId, $role) {
-				$stmt = $this->db->prepare("INSERT INTO [dbo].[UserRole] ([UserID], [RoleID]) VALUES (:userId, :roleId)");
+				$stmt = $this->db->prepareStored(self::SQL_INSUSRROLE);
 				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
 				$stmt->bindParam(':roleId', $role->id, \PDO::PARAM_INT);
 				$stmt->execute();
@@ -67,7 +117,7 @@
 			}
 
 			$this->tryPdoExcept(function () use ($userId) {
-				$stmt = $this->db->prepare("DELETE FROM {$this->rlObj->getDbTableName()} WHERE [UserID] = :userId");
+				$stmt = $this->db->prepareStored(self::SQL_DELUSRROLE);
 				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
 				$stmt->execute();
 			}, "Failed to delete user's contacts");
@@ -89,7 +139,7 @@
 			}
 
 			$this->tryPdoExcept(function () use (&$ret, $userId) {
-				$stmt = $this->db->prepare($this->rlObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [ID] IN (SELECT [RoleID] FROM [dbo].[UserRole] WHERE [UserID] = :userId)");
+				$stmt = $this->db->prepareStored(self::SQL_GROLEFORUSR);
 				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
 
 				if ($stmt->execute()) {
@@ -112,11 +162,10 @@
 		 */
 		public function getAllUsersInRoleByName(string $name) {
 			$ret    = [];
-			$usrObj = new User($this->db, $this->log);
 
-			$this->tryPdoExcept(function () use (&$ret, $usrObj, $name) {
+			$this->tryPdoExcept(function () use (&$ret, $name) {
 				$role = Role::fromName($name, $this->db, $this->log);
-				$stmt = $this->db->prepare($usrObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [ID] IN (SELECT [UserID] FROM [dbo].[UserRole] WHERE [RoleID] = :roleId)");
+				$stmt = $this->db->prepareStored(self::SQL_GUSRSINROLEBYNAME);
 				$stmt->bindParam(':roleId', $role->id, \PDO::PARAM_INT);
 
 				if ($stmt->execute()) {
@@ -137,8 +186,8 @@
 		 */
 		public function removeAllUsersFromRoleByName(string $name) : void {
 			$this->tryPdoExcept(function () use ($name) {
-				$stmt = $this->db->prepare("DELETE FROM [dbo].[UserRole] WHERE [RoleID] = (SELECT [ID] FROM [dbo].[Role] WHERE [Name] = :name");
-				$stmt->bindParam(':name', $name, \PDO::PARAM_STR);
+				$stmt = $this->db->prepareStored(self::SQL_DELUSRSINROLEBYNAME);
+				$stmt->bindParam(':name', $name);
 				$stmt->execute();
 			}, "Failed to remove users from role");
 
@@ -157,7 +206,7 @@
 			}
 
 			$this->tryPdoExcept(function () use ($userId) {
-				$stmt = $this->db->prepare("DELETE FROM [dbo].[UserRole] WHERE [UserID] = :userId");
+				$stmt = $this->db->prepareStored(self::SQL_DELUSRALLROLES);
 				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
 				$stmt->execute();
 			}, "Failed to remove user from all roles");
@@ -184,7 +233,7 @@
 			}
 
 			$this->tryPdoExcept(function () use ($userId, $role) {
-				$stmt = $this->db->prepare("DELETE FROM [dbo].[UserRole] WHERE [UserID] = :userId AND [RoleID] = :roleId");
+				$stmt = $this->db->prepareStored(self::SQL_DELUSRROLEBYID);
 				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
 				$stmt->bindParam(':roleId', $role->id, \PDO::PARAM_INT);
 				$stmt->execute();
@@ -214,7 +263,7 @@
 			$ret = false;
 
 			$this->tryPdoExcept(function () use (&$ret, $userId, $role) {
-				$stmt = $this->db->prepare("SELECT * FROM [dbo].[UserRole] WHERE [UserID] = :userId AND [RoleID] = :roleId");
+				$stmt = $this->db->prepareStored(self::SQL_USRINROLEBYID);
 				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
 				$stmt->bindParam(':roleId', $role->id, \PDO::PARAM_INT);
 

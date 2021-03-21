@@ -3,6 +3,8 @@
 	namespace Zibings;
 
 	use Stoic\Pdo\BaseDbQueryTypes;
+	use Stoic\Pdo\PdoDrivers;
+	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbClass;
 
 	/**
@@ -87,6 +89,12 @@
 	 * @package Zibings
 	 */
 	class Users extends StoicDbClass {
+		const SQL_GALLPROFILE = 'users-getallwithprofile';
+		const SQL_DAUCOUNT    = 'users-getdailyactiveuserscount';
+		const SQL_MAUCOUNT    = 'users-getdailyactiveuserscount';
+		const SQL_VUCOUNT     = 'users-getverifiedusercount';
+
+
 		/**
 		 * Internal User object.
 		 *
@@ -108,6 +116,14 @@
 
 
 		/**
+		 * Whether or not the stored queries have been initialized.
+		 *
+		 * @var bool
+		 */
+		private static bool $dbInitialized = false;
+
+
+		/**
 		 * Initializes the internal User object.
 		 *
 		 * @return void
@@ -116,6 +132,22 @@
 			$this->usrObj = new User($this->db, $this->log);
 			$this->proObj = new UserProfile($this->db, $this->log);
 			$this->visObj = new UserVisibilities($this->db, $this->log);
+
+			if (!static::$dbInitialized) {
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GALLPROFILE, "SELECT * FROM {$this->usrObj->getDbTableName()} INNER JOIN {$this->proObj->getDbTableName()} ON [UserID] = [ID]");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GALLPROFILE, "SELECT * FROM {$this->usrObj->getDbTableName()} INNER JOIN {$this->proObj->getDbTableName()} ON `UserID` = `ID`");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DAUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE [LastActive] IS NOT NULL AND [LastActive] > :pastDay");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DAUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE `LastActive` IS NOT NULL AND `LastActive` > :pastDay");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_MAUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE [LastActive] IS NOT NULL AND [LastActive] > :pastMonth");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_MAUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE `LastActive` IS NOT NULL AND `LastActive` > :pastMonth");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_VUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE [EmailConfirmed] = 1");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_VUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE `EmailConfirmed` = 1");
+
+				static::$dbInitialized = true;
+			}
 
 			return;
 		}
@@ -154,7 +186,7 @@
 			$ret = [];
 
 			$this->tryPdoExcept(function () use (&$ret) {
-				$query = $this->db->query("SELECT * FROM {$this->usrObj->getDbTableName()} INNER JOIN {$this->proObj->getDbTableName()} ON [UserID] = [ID]");
+				$query = $this->db->queryStored(self::SQL_GALLPROFILE);
 
 				while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
 					$ret[] = [
@@ -191,7 +223,7 @@
 
 			$this->tryPdoExcept(function () use (&$ret) {
 				$pastDay = (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->format('Y-m-d 00:00:00');
-				$stmt    = $this->db->prepare("SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE [LastActive] IS NOT NULL AND [LastActive] > :pastDay");
+				$stmt    = $this->db->prepareStored(self::SQL_DAUCOUNT);
 				$stmt->bindParam(':pastDay', $pastDay);
 				$stmt->execute();
 
@@ -213,7 +245,7 @@
 
 			$this->tryPdoExcept(function () use (&$ret) {
 				$pastMonth = (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->format('Y-m-1 00:00:00');
-				$stmt      = $this->db->prepare("SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE [LastActive] IS NOT NULL AND [LastActive] > :pastMonth");
+				$stmt      = $this->db->prepareStored(self::SQL_MAUCOUNT);
 				$stmt->bindParam(':pastMonth', $pastMonth);
 				$stmt->execute();
 
@@ -253,7 +285,7 @@
 			$total = 0;
 
 			$this->tryPdoExcept(function () use (&$total) {
-				$stmt = $this->db->prepare("SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE [EmailConfirmed] = 1");
+				$stmt = $this->db->prepareStored(self::SQL_VUCOUNT);
 
 				if ($stmt->execute()) {
 					$total = $stmt->fetch()[0];
@@ -266,27 +298,41 @@
 		/**
 		 * Attempts to search the database by identifiers.
 		 *
-		 * @param string $query Query value to compare against identifiers.
-		 * @param bool $respectVisibilities Optional parameter to disable respecting user visibilities, default will respect visibilities.
+		 * @param string $query               Query value to compare against identifiers.
+		 * @param bool   $respectVisibilities Optional parameter to disable respecting user visibilities, default will respect visibilities.
 		 * @return UserSearchData[]
 		 */
-		public function searchUsersByIdentifiers(string $query, bool $respectVisibilites = true) {
+		public function searchUsersByIdentifiers(string $query, bool $respectVisibilities = true) {
 			$ret  = [];
-
 			$sql  = "SELECT ";
-			$sql .= "[Email], [EmailConfirmed], [ID], [Joined], [LastLogin], ";
-			$sql .= "[p].[DisplayName], [p].[Birthday], [p].[RealName], [p].[Description], [p].[Gender], ";
-			$sql .= "[v].[Birthday] as [VisBirthday], [v].[Description] as [VisDescription], [v].[Email] as [VisEmail], [v].[Gender] as [VisGender], [v].[Profile] as [VisProfile], [v].[RealName] as [VisRealName] ";
-			$sql .= "FROM [dbo].[User] ";
-			$sql .= "INNER JOIN [dbo].[UserProfile] as [p] ON [p].[UserID] = [ID] ";
-			$sql .= "INNER JOIN [dbo].[UserVisibilities] as [v] ON [v].[UserID] = [ID] ";
-			$sql .= "WHERE ([Email] LIKE :query OR [p].[DisplayName] LIKE :query)";
 
-			if ($respectVisibilites) {
-				$sql .= " AND [v].[Searches] > 0";
+			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+				$sql .= "[Email], [EmailConfirmed], [ID], [Joined], [LastLogin], ";
+				$sql .= "[p].[DisplayName], [p].[Birthday], [p].[RealName], [p].[Description], [p].[Gender], ";
+				$sql .= "[v].[Birthday] as [VisBirthday], [v].[Description] as [VisDescription], [v].[Email] as [VisEmail], [v].[Gender] as [VisGender], [v].[Profile] as [VisProfile], [v].[RealName] as [VisRealName] ";
+				$sql .= "FROM [dbo].[User] ";
+				$sql .= "INNER JOIN [dbo].[UserProfile] as [p] ON [p].[UserID] = [ID] ";
+				$sql .= "INNER JOIN [dbo].[UserVisibilities] as [v] ON [v].[UserID] = [ID] ";
+				$sql .= "WHERE ([Email] LIKE :query OR [p].[DisplayName] LIKE :query)";
+
+				if ($respectVisibilities) {
+					$sql .= " AND [v].[Searches] > 0";
+				}
+			} else if ($this->db->getDriver()->is(PdoDrivers::PDO_MYSQL)) {
+				$sql .= "`Email`, `EmailConfirmed`, `ID`, `Joined`, `LastLogin`, ";
+				$sql .= "`p`.`DisplayName`, `p`.`Birthday`, `p`.`RealName`, `p`.`Description`, `p`.`Gender`, ";
+				$sql .= "`v`.`Birthday` as `VisBirthday`, `v`.`Description` as `VisDescription`, `v`.`Email` as `VisEmail`, `v`.`Gender` as `VisGender`, `v`.`Profile` as `VisProfile`, `v`.`RealName` as `VisRealName` ";
+				$sql .= "FROM `dbo`.`User` ";
+				$sql .= "INNER JOIN `dbo`.`UserProfile` as `p` ON `p`.`UserID` = `ID` ";
+				$sql .= "INNER JOIN `dbo`.`UserVisibilities` as `v` ON `v`.`UserID` = `ID` ";
+				$sql .= "WHERE (`Email` LIKE :query OR `p`.`DisplayName` LIKE :query)";
+
+				if ($respectVisibilities) {
+					$sql .= " AND `v`.`Searches` > 0";
+				}
 			}
 
-			$this->tryPdoExcept(function () use (&$ret, $sql, $query, $respectVisibilites) {
+			$this->tryPdoExcept(function () use (&$ret, $sql, $query, $respectVisibilities) {
 				$stmt = $this->db->prepare($sql);
 				$stmt->bindValue(':query', "%{$query}%", \PDO::PARAM_STR);
 

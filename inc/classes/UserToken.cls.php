@@ -5,6 +5,7 @@
 	use Stoic\Log\Logger;
 	use Stoic\Pdo\BaseDbQueryTypes;
 	use Stoic\Pdo\BaseDbTypes;
+	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbModel;
 
@@ -14,6 +15,9 @@
 	 * @package Zibings
 	 */
 	class UserToken extends StoicDbModel {
+		const SQL_SELBYTOKENUID = 'usertoken-selectbytokenanduserid';
+
+
 		/**
 		 * Date and time the token was created.
 		 *
@@ -44,6 +48,14 @@
 		 * @var integer
 		 */
 		public $userId;
+
+
+		/**
+		 * Whether or not the stored queries have been initialized.
+		 *
+		 * @var bool
+		 */
+		private static bool $dbInitialized = false;
 
 
 		/**
@@ -82,8 +94,8 @@
 			}
 
 			$ret->tryPdoExcept(function () use (&$ret, $token, $userId) {
-				$stmt = $ret->db->prepare($ret->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Token] = :token AND [UserID] = :userId");
-				$stmt->bindParam(':token', $token, \PDO::PARAM_STR);
+				$stmt = $ret->db->prepareStored(self::SQL_SELBYTOKENUID);
+				$stmt->bindParam(':token', $token);
 				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
 
 				if ($stmt->execute()) {
@@ -157,12 +169,24 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			$this->setTableName('[dbo].[UserToken]');
+			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+				$this->setTableName('[dbo].[UserToken]');
+			} else {
+				$this->setTableName('UserToken');
+			}
+
 			$this->setColumn('created', 'Created', BaseDbTypes::DATETIME, false, true, false);
 			$this->setColumn('context', 'Context', BaseDbTypes::STRING, false, true, true);
 			$this->setColumn('id', 'ID', BaseDbTypes::INTEGER, true, false, false, false, true);
 			$this->setColumn('token', 'Token', BaseDbTypes::STRING, false, true, false);
 			$this->setColumn('userId', 'UserID', BaseDbTypes::INTEGER, false, true, false);
+
+			if (!static::$dbInitialized) {
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYTOKENUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Token] = :token AND [UserID] = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYTOKENUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `Token` = :token AND `UserID` = :userId");
+
+				static::$dbInitialized = true;
+			}
 
 			$this->created = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 			$this->context = '';

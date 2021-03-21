@@ -29,6 +29,9 @@
 	 * @package Zibings
 	 */
 	class LoginKey extends StoicDbModel {
+		const SQL_GUPCOUNT = 'loginkey-gupcount';
+
+
 		/**
 		 * Key for provider access (can be password hash, oath token, etc).
 		 *
@@ -47,6 +50,14 @@
 		 * @var integer
 		 */
 		public $userId;
+
+
+		/**
+		 * Whether or not the stored queries have been initialized.
+		 *
+		 * @var int
+		 */
+		private static bool $dbInitialized = false;
 
 
 		/**
@@ -94,7 +105,7 @@
 			}
 
 			$this->tryPdoExcept(function () use (&$ret) {
-				$stmt = $this->db->prepare("SELECT COUNT(*) FROM {$this->dbTable} WHERE [UserID] = :userId AND [Provider] = :provider");
+				$stmt = $this->db->prepareStored(self::SQL_GUPCOUNT);
 				$stmt->bindParam(':userId', $this->userId, \PDO::PARAM_INT);
 				$stmt->bindValue(':provider', $this->provider->getValue(), \PDO::PARAM_INT);
 
@@ -153,10 +164,17 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			if ($this->dbDriver !== null && $this->dbDriver->isIn(PdoDrivers::PDO_MSSQL, PdoDrivers::PDO_SQLSRV)) {
+			if ($this->dbDriver !== null && $this->dbDriver->is(PdoDrivers::PDO_SQLSRV)) {
 				$this->setTableName('[dbo].[LoginKey]');
 			} else {
 				$this->setTableName('LoginKey');
+			}
+
+			if (!static::$dbInitialized) {
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GUPCOUNT, "SELECT COUNT(*) FROM {$this->dbTable} WHERE [UserID] = :userId AND [Provider] = :provider");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GUPCOUNT, "SELECT COUNT(*) FROM {$this->dbTable} WHERE `UserID` = :userId AND `Provider` = :provider");
+
+				static::$dbInitialized = true;
 			}
 
 			$this->setColumn('key', 'Key', BaseDbTypes::STRING, false, true, true);

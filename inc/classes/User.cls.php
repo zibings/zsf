@@ -5,6 +5,7 @@
 	use Stoic\Log\Logger;
 	use Stoic\Pdo\BaseDbTypes;
 	use Stoic\Pdo\BaseDbQueryTypes;
+	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbModel;
 	use Stoic\Utilities\ReturnHelper;
@@ -15,6 +16,11 @@
 	 * @package Zibings
 	 */
 	class User extends StoicDbModel {
+		const SQL_SELBYEMAIL       = 'user-selectbyemail';
+		const SQL_SELBYEMAILNOTID  = 'user-selectbyemailandnotid';
+		const SQL_UPDATELASTACTIVE = 'user-updatelastactivetime';
+
+
 		/**
 		 * The email address for the user.
 		 *
@@ -54,6 +60,14 @@
 
 
 		/**
+		 * Whether or not the stored queries have been initialized.
+		 *
+		 * @var int
+		 */
+		private static bool $dbInitialized = false;
+
+
+		/**
 		 * Static method to retrieve a user by their email address. Returns blank user if user not found.
 		 *
 		 * @param string $email Email address value to search for in database.
@@ -71,7 +85,7 @@
 			}
 
 			$ret->tryPdoExcept(function () use (&$ret, $email) {
-				$stmt = $ret->db->prepare($ret->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Email] = :email");
+				$stmt = $ret->db->prepareStored(self::SQL_SELBYEMAIL);
 				$stmt->bindParam(':email', $email, \PDO::PARAM_STR);
 
 				if ($stmt->execute()) {
@@ -127,11 +141,11 @@
 			}
 
 			$this->tryPdoExcept(function () use (&$ret) {
-				$stmt = $this->db->prepare("SELECT COUNT(*) FROM {$this->dbTable} WHERE [Email] = :email");
-				$stmt->bindValue(':email', $this->email, \PDO::PARAM_STR);
+				$stmt = $this->db->prepareStored(self::SQL_SELBYEMAIL);
+				$stmt->bindValue(':email', $this->email);
 				$stmt->execute();
 
-				if ($stmt->fetch()[0] > 0) {
+				if ($stmt->fetch() !== false) {
 					$ret->addMessage("Found duplicate User by email, unable to create (Email: {$this->email})");
 				} else {
 					$ret->makeGood();
@@ -183,8 +197,8 @@
 			}
 
 			$this->tryPdoExcept(function () use (&$ret) {
-				$stmt = $this->db->prepare("SELECT COUNT(*) FROM {$this->dbTable} WHERE [Email] = :email AND [ID] <> :id");
-				$stmt->bindValue(':email', $this->email, \PDO::PARAM_STR);
+				$stmt = $this->db->prepareStored(self::SQL_SELBYEMAILNOTID);
+				$stmt->bindValue(':email', $this->email);
 				$stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
 				$stmt->execute();
 
@@ -204,7 +218,12 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			$this->setTableName('[dbo].[User]');
+			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+				$this->setTableName('[dbo].[User]');
+			} else {
+				$this->setTableName('User');
+			}
+
 			$this->setColumn('email', 'Email', BaseDbTypes::STRING, false, true, true);
 			$this->setColumn('emailConfirmed', 'EmailConfirmed', BaseDbTypes::BOOLEAN, false, true, true);
 			$this->setColumn('id', 'ID', BaseDbTypes::INTEGER, true, false, false, false, true);
@@ -212,7 +231,21 @@
 			$this->setColumn('lastActive', 'LastActive', BaseDbTypes::DATETIME, false, true, true, true);
 			$this->setColumn('lastLogin', 'LastLogin', BaseDbTypes::DATETIME, false, true, true, true);
 
+			if (!static::$dbInitialized) {
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYEMAIL, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Email] = :email");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYEMAIL, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `Email` = :email");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYEMAILNOTID, "SELECT COUNT(*) FROM {$this->dbTable} WHERE [Email] = :email AND [ID] <> :id");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYEMAILNOTID, "SELECT COUNT(*) FROM {$this->dbTable} WHERE `Email` = :email AND `ID` <> :id");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_UPDATELASTACTIVE, "UPDATE {$this->dbTable} SET [LastActive] = :today WHERE [ID] = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_UPDATELASTACTIVE, "UPDATE {$this->dbTable} SET `LastActive` = :today WHERE `ID` = :userId");
+
+				static::$dbInitialized = true;
+			}
+
 			$this->id             = 0;
+			$this->lastActive     = null;
 			$this->lastLogin      = null;
 			$this->emailConfirmed = false;
 			$this->joined         = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
@@ -231,7 +264,7 @@
 			}
 
 			$this->tryPdoExcept(function () {
-				$stmt = $this->db->prepare("UPDATE {$this->getDbTableName()} SET [LastActive] = :today WHERE [ID] = :userId");
+				$stmt = $this->db->prepareStored(self::SQL_UPDATELASTACTIVE);
 				$stmt->bindValue(':today', (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'));
 				$stmt->bindValue(':userId', $this->id, \PDO::PARAM_INT);
 				$stmt->execute();

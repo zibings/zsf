@@ -4,6 +4,7 @@
 
 	use Stoic\Log\Logger;
 	use Stoic\Pdo\BaseDbTypes;
+	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbModel;
 	use Stoic\Utilities\EnumBase;
@@ -161,7 +162,12 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			$this->setTableName('[dbo].[UserAuthHistory]');
+			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+				$this->setTableName('[dbo].[UserAuthHistory]');
+			} else {
+				$this->setTableName('UserAuthHistory');
+			}
+
 			$this->setColumn('action', 'Action', BaseDbTypes::INTEGER, false, true, false);
 			$this->setColumn('address', 'Address', BaseDbTypes::STRING, false, true, false);
 			$this->setColumn('hostname', 'Hostname', BaseDbTypes::STRING, false, true, false);

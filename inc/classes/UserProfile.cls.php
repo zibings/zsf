@@ -5,6 +5,7 @@
 	use Stoic\Log\Logger;
 	use Stoic\Pdo\BaseDbQueryTypes;
 	use Stoic\Pdo\BaseDbTypes;
+	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbModel;
 	use Stoic\Utilities\EnumBase;
@@ -27,6 +28,10 @@
 	 * @package Zibings
 	 */
 	class UserProfile extends StoicDbModel {
+		const SQL_SELBYDISPLAYNAME = 'userprofile-selectbydisplayname';
+		const SQL_SELBYUID         = 'userprofile=selectybuserid';
+
+
 		/**
 		 * The user's birthday.
 		 *
@@ -66,6 +71,14 @@
 
 
 		/**
+		 * Whether or not the stored queries have been initialized.
+		 *
+		 * @var bool
+		 */
+		private static bool $dbInitialized = false;
+
+
+		/**
 		 * Static method to retrieve a user's profile via the display name.
 		 *
 		 * @param string $displayName Display name to use when searching database.
@@ -76,15 +89,15 @@
 		public static function fromDisplayName(string $displayName, PdoHelper $db, Logger $log = null) : UserProfile {
 			$ret = new UserProfile($db, $log);
 			$ret->tryPdoExcept(function () use ($displayName, $db, $log, &$ret) {
-				$stmt = $db->prepare($ret->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE DisplayName = :displayName");
-				$stmt->bindParam(':displayName', $displayName, \PDO::PARAM_STR);
+				$stmt = $db->prepareStored(self::SQL_SELBYDISPLAYNAME);
+				$stmt->bindParam(':displayName', $displayName);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 						$ret = UserProfile::fromArray($row, $db, $log);
 					}
 				}
-			}, "Failed to retreive profile by display name");
+			}, "Failed to retrieve profile by display name");
 
 			return $ret;
 		}
@@ -154,7 +167,7 @@
 			$ret = true;
 
 			$this->tryPdoExcept(function () use (&$ret) {
-				$stmt = $this->db->prepare($this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [UserID] = :userId");
+				$stmt = $this->db->prepareStored(self::SQL_SELBYUID);
 				$stmt->bindParam(':userId', $this->userId, \PDO::PARAM_INT);
 
 				if ($stmt->execute()) {
@@ -214,13 +227,28 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			$this->setTableName('[dbo].[UserProfile]');
+			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+				$this->setTableName('[dbo].[UserProfile]');
+			} else {
+				$this->setTableName('UserProfile');
+			}
+
 			$this->setColumn('userId', 'UserID', BaseDbTypes::INTEGER, true, true, false);
 			$this->setColumn('displayName', 'DisplayName', BaseDbTypes::STRING, false, true, true);
 			$this->setColumn('birthday', 'Birthday', BaseDbTypes::DATETIME, false, true, true);
 			$this->setColumn('realName', 'RealName', BaseDbTypes::STRING, false, true, true);
 			$this->setColumn('description', 'Description', BaseDbTypes::STRING, false, true, true);
 			$this->setColumn('gender', 'Gender', BaseDbTypes::INTEGER, false, true, true);
+
+			if (!static::$dbInitialized) {
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYDISPLAYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [DisplayName] = :displayName");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYDISPLAYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `DisplayName` = :displayName");
+
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [UserID] = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `UserID` = :userId");
+
+				static::$dbInitialized = true;
+			}
 
 			$this->userId      = 0;
 			$this->displayName = '';
