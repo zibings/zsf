@@ -25,10 +25,11 @@
 		 * @return Response
 		 */
 		public function addRole(Request $request, array $matches = null) : Response {
-			$ret = $this->newResponse();
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
 			
 			$role       = new Role($this->db, $this->log);
-			$role->name = $matches[1][0];
+			$role->name = $params->getString('name');
 			$create     = $role->create();
 
 			if ($create->isBad()) {
@@ -76,12 +77,12 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('POST', '/^Roles\/Add\/([a-z]{3,})\/?/i',          'addRole',         RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^Roles\/Add\/?/i',                       'addRole',         RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('GET',  '/^Roles\/GetRoles\/?/i',                  'getRoles',        RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('GET',  '/^Roles\/GetUserRoles\/([0-9]{1,})\/?/i', 'getUserRoles',    RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('POST', '/^Roles\/Remove\/([a-z]{3,})\/?/i',       'removeRole',      RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('POST', '/^Roles\/RemoveUserRole\/?/i',            'removeUserRole',  RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('POST', '/^Roles\/RemoveUserRoles\/?/i',           'removeUserRoles', RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^Roles\/RemoveUserRole\/?/i',            'removeUserRole',  RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^Roles\/Remove\/?/i',                    'removeRole',      RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('POST', '/^Roles\/SetUserRole\/?/i',               'setUserRole',     RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('POST', '/^Roles\/UserInRole\/?/i',                'userInRole',      RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('GET',  '/^Roles\/UsersInRole\/([a-z]{3,})\/?/i',  'usersInRole',     RoleStrings::ADMINISTRATOR);
@@ -97,9 +98,10 @@
 		 * @return Response
 		 */
 		public function removeRole(Request $request, array $matches = null) : Response {
-			$ret = $this->newResponse();
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
 
-			$role = Role::fromName($matches[1][0], $this->db, $this->log);
+			$role = Role::fromName($params->getString('name'), $this->db, $this->log);
 
 			if ($role->id < 1) {
 				$ret->setAsError("Invalid role supplied");
@@ -142,6 +144,8 @@
 			$role   = $params->getString('role');
 			(new UserRoles($this->db, $this->log))->removeUserFromRoleByName($userId, $role);
 
+			$ret->setData(true);
+
 			return $ret;
 		}
 
@@ -153,8 +157,13 @@
 		 * @return Response
 		 */
 		public function removeUserRoles(Request $request, array $matches = null) : Response {
+			$user   = $this->getUser();
 			$ret    = $this->newResponse();
-			(new UserRoles($this->db, $this->log))->removeUserFromAllRoles(intval($matches[1][0]));
+			$params = $request->getInput();
+
+			(new UserRoles($this->db, $this->log))->removeUserFromAllRoles(intval($params->getInt('userId', $user->id)));
+
+			$ret->setData(true);
 
 			return $ret;
 		}
@@ -178,7 +187,11 @@
 
 			if (!(new UserRoles($this->db, $this->log))->addUserToRoleByName($params->getInt('userId'), $params->getString('role'))) {
 				$ret->setAsError("Failed to assign user role");
+
+				return $ret;
 			}
+
+			$ret->setData(Role::fromName($params->getString('role'), $this->db, $this->log));
 
 			return $ret;
 		}
@@ -191,7 +204,11 @@
 		 * @return Response
 		 */
 		public function userInRole(Request $request, array $matches = null) : Response {
-			$ret = $this->newResponse();
+			$user   = $this->getUser();
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
+
+			$ret->setData((new UserRoles($this->db, $this->log))->userInRoleByName($params->getInt('userId', $user->id), $params->getString('role')));
 
 			return $ret;
 		}

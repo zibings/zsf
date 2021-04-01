@@ -66,6 +66,10 @@
 					return;
 				}
 
+				if (!is_array($roles)) {
+					$roles = [$roles];
+				}
+
 				$roleRepo = new UserRoles($sender->getDb(), $sender->getLog());
 
 				foreach (array_values($roles) as $r) {

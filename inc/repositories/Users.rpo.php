@@ -6,6 +6,8 @@
 	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbClass;
+	use Stoic\Utilities\FileHelper;
+	use Stoic\Utilities\LogFileAppender;
 
 	/**
 	 * Joined user data returned by searches.
@@ -91,7 +93,7 @@
 	class Users extends StoicDbClass {
 		const SQL_GALLPROFILE = 'users-getallwithprofile';
 		const SQL_DAUCOUNT    = 'users-getdailyactiveuserscount';
-		const SQL_MAUCOUNT    = 'users-getdailyactiveuserscount';
+		const SQL_MAUCOUNT    = 'users-getmonthlyactiveuserscount';
 		const SQL_VUCOUNT     = 'users-getverifiedusercount';
 
 
@@ -244,7 +246,7 @@
 			$ret = 0;
 
 			$this->tryPdoExcept(function () use (&$ret) {
-				$pastMonth = (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->format('Y-m-1 00:00:00');
+				$pastMonth = (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->format('Y-m-01 00:00:00');
 				$stmt      = $this->db->prepareStored(self::SQL_MAUCOUNT);
 				$stmt->bindParam(':pastMonth', $pastMonth);
 				$stmt->execute();
@@ -307,25 +309,25 @@
 			$sql  = "SELECT ";
 
 			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
-				$sql .= "[Email], [EmailConfirmed], [ID], [Joined], [LastLogin], ";
+				$sql .= "[u].[Email], [u].[EmailConfirmed], [u].[ID], [u].[Joined], [u].[LastLogin], ";
 				$sql .= "[p].[DisplayName], [p].[Birthday], [p].[RealName], [p].[Description], [p].[Gender], ";
 				$sql .= "[v].[Birthday] as [VisBirthday], [v].[Description] as [VisDescription], [v].[Email] as [VisEmail], [v].[Gender] as [VisGender], [v].[Profile] as [VisProfile], [v].[RealName] as [VisRealName] ";
-				$sql .= "FROM [dbo].[User] ";
-				$sql .= "INNER JOIN [dbo].[UserProfile] as [p] ON [p].[UserID] = [ID] ";
-				$sql .= "INNER JOIN [dbo].[UserVisibilities] as [v] ON [v].[UserID] = [ID] ";
-				$sql .= "WHERE ([Email] LIKE :query OR [p].[DisplayName] LIKE :query)";
+				$sql .= "FROM [dbo].[User] as [u] ";
+				$sql .= "INNER JOIN [dbo].[UserProfile] as [p] ON [p].[UserID] = [u].[ID] ";
+				$sql .= "INNER JOIN [dbo].[UserVisibilities] as [v] ON [v].[UserID] = [u].[ID] ";
+				$sql .= "WHERE ([u].[Email] LIKE :query1 OR [p].[DisplayName] LIKE :query2)";
 
 				if ($respectVisibilities) {
 					$sql .= " AND [v].[Searches] > 0";
 				}
 			} else if ($this->db->getDriver()->is(PdoDrivers::PDO_MYSQL)) {
-				$sql .= "`Email`, `EmailConfirmed`, `ID`, `Joined`, `LastLogin`, ";
+				$sql .= "`u`.`Email`, `u`.`EmailConfirmed`, `u`.`ID`, `u`.`Joined`, `u`.`LastLogin`, ";
 				$sql .= "`p`.`DisplayName`, `p`.`Birthday`, `p`.`RealName`, `p`.`Description`, `p`.`Gender`, ";
 				$sql .= "`v`.`Birthday` as `VisBirthday`, `v`.`Description` as `VisDescription`, `v`.`Email` as `VisEmail`, `v`.`Gender` as `VisGender`, `v`.`Profile` as `VisProfile`, `v`.`RealName` as `VisRealName` ";
-				$sql .= "FROM `dbo`.`User` ";
-				$sql .= "INNER JOIN `dbo`.`UserProfile` as `p` ON `p`.`UserID` = `ID` ";
-				$sql .= "INNER JOIN `dbo`.`UserVisibilities` as `v` ON `v`.`UserID` = `ID` ";
-				$sql .= "WHERE (`Email` LIKE :query OR `p`.`DisplayName` LIKE :query)";
+				$sql .= "FROM `User` as `u` ";
+				$sql .= "INNER JOIN `UserProfile` as `p` ON `p`.`UserID` = `u`.`ID` ";
+				$sql .= "INNER JOIN `UserVisibilities` as `v` ON `v`.`UserID` = `u`.`ID` ";
+				$sql .= "WHERE (`u`.`Email` LIKE :query1 OR `p`.`DisplayName` LIKE :query2)";
 
 				if ($respectVisibilities) {
 					$sql .= " AND `v`.`Searches` > 0";
@@ -334,7 +336,8 @@
 
 			$this->tryPdoExcept(function () use (&$ret, $sql, $query, $respectVisibilities) {
 				$stmt = $this->db->prepare($sql);
-				$stmt->bindValue(':query', "%{$query}%", \PDO::PARAM_STR);
+				$stmt->bindValue(':query1', "%{$query}%");
+				$stmt->bindValue(':query2', "%{$query}%");
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -342,6 +345,9 @@
 					}
 				}
 			}, "Failed to search users");
+
+			$this->log->addAppender(new LogFileAppender(new FileHelper(STOIC_CORE_PATH), '~/logs/user-repo.log'));
+			$this->log->output();
 
 			return $ret;
 		}

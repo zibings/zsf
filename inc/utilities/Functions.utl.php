@@ -4,17 +4,14 @@
 
 	use AndyM84\Config\ConfigContainer;
 
+	use League\Plates\Engine;
+
 	use PHPMailer\PHPMailer\PHPMailer;
 
 	use Stoic\Log\Logger;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Utilities\ParameterHelper;
-	use Stoic\Web\Resources\PageVariables;
-
-	use Zibings\User;
-	use Zibings\UserEvents;
-	use Zibings\UserRoles;
-	use Zibings\UserSession;
+	use Stoic\Web\PageHelper;
 
 	/**
 	 * Retrieves a PHPMailer object, using provided settings if available, ready to use for sending mail.
@@ -1020,6 +1017,52 @@
 					return false;
 				}
 			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Attempts to send a password reset email.
+	 *
+	 * @param string                          $email
+	 * @param \Stoic\Web\PageHelper           $page
+	 * @param \AndyM84\Config\ConfigContainer $settings
+	 * @param \Stoic\Pdo\PdoHelper            $db
+	 * @param \Stoic\Log\Logger|null          $log
+	 * @return bool
+	 */
+	function sendResetEmail(string $email, PageHelper $page, ConfigContainer $settings, PdoHelper $db, Logger|null $log = null) : bool {
+		$user = User::fromEmail($email, $db, $log);
+
+		if ($user->id < 1) {
+			return false;
+		}
+
+		$ut          = new UserToken($db, $log);
+		$ut->context = "PASSWORD RESET";
+		$ut->token   = UserSession::generateGuid(false);
+		$ut->userId  = $user->id;
+
+		if ($ut->create()->isBad()) {
+			return false;
+		}
+
+		$tpl = new Engine(null, 'tpl.php');
+		$tpl->addFolder('shared', STOIC_CORE_PATH . '/tpl/shared');
+		$tpl->addFolder('emails', STOIC_CORE_PATH . '/tpl/emails');
+
+		$mail          = getPhpMailer($settings);
+		$mail->Subject = "[WarBanner] Password Reset Request";
+		$mail->isHTML(true);
+		$mail->Body    = $tpl->render('emails::reset-password', [
+			'page'  => $page,
+			'token' => base64_encode("{$ut->userId}:{$ut->token}")
+		]);
+		$mail->addAddress($email);
+
+		if (!$mail->send()) {
+			return false;
 		}
 
 		return true;

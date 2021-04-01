@@ -86,10 +86,14 @@
 
 			$ret->tryPdoExcept(function () use (&$ret, $email) {
 				$stmt = $ret->db->prepareStored(self::SQL_SELBYEMAIL);
-				$stmt->bindParam(':email', $email, \PDO::PARAM_STR);
+				$stmt->bindParam(':email', $email);
 
 				if ($stmt->execute()) {
-					$ret = User::fromArray($stmt->fetch(\PDO::FETCH_ASSOC), $ret->db, $ret->log);
+					$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+					if ($row !== false) {
+						$ret = User::fromArray($row, $ret->db, $ret->log);
+					}
 				}
 			}, "Failed to get user by email address");
 

@@ -6,6 +6,7 @@
 	use Stoic\Utilities\EnumBase;
 	use Stoic\Utilities\ParameterHelper;
 	use Stoic\Web\Api\Response;
+	use Stoic\Web\PageHelper;
 	use Stoic\Web\Request;
 	use Stoic\Web\Resources\HttpStatusCodes;
 	use Stoic\Web\Api\Stoic;
@@ -25,6 +26,8 @@
 	use Zibings\UserRoles;
 	use Zibings\UserSession;
 	use Zibings\UserSettings;
+
+	use function Zibings\sendResetEmail;
 
 	/**
 	 * API controller that deals with account-related endpoints.
@@ -136,8 +139,9 @@
 		 * @return Response
 		 */
 		public function checkEmail(Request $request, array $matches = null) : Response {
-			$ret = new Response(HttpStatusCodes::OK);
-			$usr = User::fromEmail($matches[1][0], $this->db, $this->log);
+			$ret    = new Response(HttpStatusCodes::OK);
+			$params = $request->getInput();
+			$usr    = User::fromEmail($params->getString('email'), $this->db, $this->log);
 
 			if ($usr->id > 0) {
 				$ret->setData($this->newStatusResponseData(1, "Invalid email, already in use"));
@@ -190,8 +194,22 @@
 		 * @return Response
 		 */
 		public function createUser(Request $request, array $matches = null) : Response {
-			$ret = $this->newResponse();
-			$this->processEvent($ret, 'doCreate', $request->getInput());
+			$user    = $this->getUser();
+			$ret     = $this->newResponse();
+			$params  = $request->getInput();
+			$evtData = [
+				'email'          => $params->getString('email'),
+				'key'            => $params->getString('password'),
+				'confirmKey'     => $params->getString('confirmPassword'),
+				'provider'       => $params->getInt('provider'),
+				'emailConfirmed' => false
+			];
+
+			if ($this->userRoles->userInRoleByName($user->id, RoleStrings::ADMINISTRATOR) && $params->has('emailConfirmed')) {
+				$evtData['emailConfirmed'] = $params->getBool('emailConfirmed');
+			}
+
+			$this->processEvent($ret, 'doCreate', new ParameterHelper($evtData));
 
 			return $ret;
 		}
@@ -448,18 +466,19 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('GET',  '/^Account\/?/i',                                 'get',               true);
-			$this->registerEndpoint('GET',  '/^Account\/CheckEmail\/([a-z0-9.\-_]{3,})\/?/i', 'checkEmail',        null);
-			$this->registerEndpoint('POST', '/^Account\/CheckToken\/?/i',                     'checkToken',        null);
-			$this->registerEndpoint('POST', '/^Account\/Create\/?/i',                         'createUser',        RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('POST', '/^Account\/Delete\/?/i',                         'deleteUser',        true);
-			$this->registerEndpoint('POST', '/^Account\/Login\/?/i',                          'login',             null);
-			$this->registerEndpoint('POST', '/^Account\/Logout\/?/i',                         'logout',            true);
-			$this->registerEndpoint('GET',  '/^Account\/Profile\/?/i',                        'getProfile',        true);
-			$this->registerEndpoint('POST', '/^Account\/Register\/?/i',                       'registerUser',      null);
-			$this->registerEndpoint('POST', '/^Account\/ResetPassword\/?/i',                  'resetPassword',     false);
-			$this->registerEndpoint('POST', '/^Account\/SendPasswordReset\/?/i',              'sendPasswordReset', false);
-			$this->registerEndpoint('GET',  '/^Account\/Settings\/?/i',                       'getSettings',       true);
+			$this->registerEndpoint('GET',  '/^Account\/CheckEmail\/?/i',        'checkEmail',        null);
+			$this->registerEndpoint('POST', '/^Account\/CheckToken\/?/i',        'checkToken',        null);
+			$this->registerEndpoint('POST', '/^Account\/Create\/?/i',            'createUser',        RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^Account\/Delete\/?/i',            'deleteUser',        true);
+			$this->registerEndpoint('POST', '/^Account\/Login\/?/i',             'login',             null);
+			$this->registerEndpoint('POST', '/^Account\/Logout\/?/i',            'logout',            true);
+			$this->registerEndpoint('GET',  '/^Account\/Profile\/?/i',           'getProfile',        true);
+			$this->registerEndpoint('POST', '/^Account\/Register\/?/i',          'registerUser',      null);
+			$this->registerEndpoint('GET',  '/^Account\/Relations\/?/i',         'getRelations',      true);
+			$this->registerEndpoint('POST', '/^Account\/ResetPassword\/?/i',     'resetPassword',     false);
+			$this->registerEndpoint('POST', '/^Account\/SendPasswordReset\/?/i', 'sendPasswordReset', false);
+			$this->registerEndpoint('GET',  '/^Account\/Settings\/?/i',          'getSettings',       true);
+			$this->registerEndpoint('GET',  '/^Account\/?/i',                    'get',               true);
 
 			return;
 		}
@@ -500,8 +519,24 @@
 		 * @return Response
 		 */
 		public function sendPasswordReset(Request $request, array $matches = null) : Response {
-			$ret = $this->newResponse();
-			// TODO: This...needs done  - AndyM
+			global $Settings;
+
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
+
+			if (!$params->has('email')) {
+				$ret->setAsError('Invalid parameters supplied for request');
+
+				return $ret;
+			}
+
+			if (!sendResetEmail($params->getString('email'), PageHelper::getPage('api/1/index.php'), $Settings, $this->db, $this->log)) {
+				$ret->setAsError("Failed to send reset email, check spelling and try again");
+
+				return $ret;
+			}
+
+			$ret->setData(true);
 
 			return $ret;
 		}

@@ -95,6 +95,10 @@
 				return false;
 			}
 
+			if ($this->userInRoleByName($user->id, $role->name)) {
+				return true;
+			}
+
 			$this->tryPdoExcept(function () use ($userId, $role) {
 				$stmt = $this->db->prepareStored(self::SQL_INSUSRROLE);
 				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
