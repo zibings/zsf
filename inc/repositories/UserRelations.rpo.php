@@ -51,8 +51,8 @@
 			$this->urObj = new UserRelation($this->db, $this->log);
 
 			if (!static::$dbInitialized) {
-				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELREL, "DELETE FROM {$this->urObj->getDbTableName()} WHERE [UserID_One] = :userOne AND [UserID_Two] = :userTwo");
-				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELREL, "DELETE FROM {$this->urObj->getDbTableName()} WHERE `UserID_One` = :userOne AND `UserID_Two` = :userTwo");
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELREL, "DELETE FROM {$this->urObj->getDbTableName()} WHERE ([UserID_One] = :userOne AND [UserID_Two] = :userTwo) OR ([UserID_One] = :userTwo AND [UserID_Two] = :userOne)");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELREL, "DELETE FROM {$this->urObj->getDbTableName()} WHERE (`UserID_One` = :userOne AND `UserID_Two` = :userTwo) OR (`UserID_One` = :userTwo AND `UserID_Two` = :userOne)");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELALLFORUSR, "DELETE FROM {$this->urObj->getDbTableName()} WHERE [UserID_One] = :userId OR [UserID_Two] = :userId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELALLFORUSR, "DELETE FROM {$this->urObj->getDbTableName()} WHERE `UserID_One` = :userId OR `UserID_Two` = :userId");
@@ -157,6 +157,10 @@
 				return false;
 			}
 
+			if ($rel[0]->stage->is(UserRelationStages::INVITED) && $stage > UserRelationStages::INVITED && $rel[0]->userOne == $userOne) {
+				return false;
+			}
+
 			if ($rel[0]->stage->is($stage)) {
 				return true;
 			}
@@ -190,7 +194,7 @@
 				$stmt->execute();
 			}, "Failed to delete user's relation");
 
-			return false;
+			return true;
 		}
 
 		/**

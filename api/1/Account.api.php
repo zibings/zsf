@@ -475,9 +475,12 @@
 			$this->registerEndpoint('GET',  '/^Account\/Profile\/?/i',           'getProfile',        true);
 			$this->registerEndpoint('POST', '/^Account\/Register\/?/i',          'registerUser',      null);
 			$this->registerEndpoint('GET',  '/^Account\/Relations\/?/i',         'getRelations',      true);
+			$this->registerEndpoint('GET',  '/^Account\/RelatedTo\/?/i',         'relatedTo',         true);
+			$this->registerEndpoint('POST', '/^Account\/RemoveRelation\/?/i',    'removeRelation',    true);
 			$this->registerEndpoint('POST', '/^Account\/ResetPassword\/?/i',     'resetPassword',     false);
 			$this->registerEndpoint('POST', '/^Account\/SendPasswordReset\/?/i', 'sendPasswordReset', false);
 			$this->registerEndpoint('GET',  '/^Account\/Settings\/?/i',          'getSettings',       true);
+			$this->registerEndpoint('POST', '/^Account\/SetRelation\/?/i',       'setRelation',       true);
 			$this->registerEndpoint('GET',  '/^Account\/?/i',                    'get',               true);
 
 			return;
@@ -493,6 +496,52 @@
 		public function registerUser(Request $request, array $matches = null) : Response {
 			$ret = $this->newResponse();
 			$this->processEvent($ret, 'doRegister', $request->getInput());
+
+			return $ret;
+		}
+
+		/**
+		 * Determines if the user is related to the given identifier.
+		 *
+		 * @param \Stoic\Web\Request $request The current request which routed to the endpoint.
+		 * @param array|null         $matches Array of matches returned by endpoint regex pattern.
+		 * @return \Stoic\Web\Api\Response
+		 */
+		public function relatedTo(Request $request, array $matches = null) : Response {
+			$user   = $this->getUser();
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
+
+			if (!$params->has('id')) {
+				$ret->setAsError('Invalid parameters supplied for request');
+
+				return $ret;
+			}
+
+			$ret->setData((new UserRelations($this->db, $this->log))->areRelated($user->id, $params->getInt('id')));
+
+			return $ret;
+		}
+
+		/**
+		 * Attempts to remove a relationship between the authenticated user and another.
+		 *
+		 * @param \Stoic\Web\Request $request The current request which routed to the endpoint.
+		 * @param array|null         $matches Array of matches returned by endpoint regex pattern.
+		 * @return \Stoic\Web\Api\Response
+		 */
+		public function removeRelation(Request $request, array $matches = null) : Response {
+			$user   = $this->getUser();
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
+
+			if (!$params->has('id')) {
+				$ret->setAsError('Invalid parameters supplied');
+
+				return $ret;
+			}
+
+			$ret->setData((new UserRelations($this->db, $this->log))->deleteRelation($user->id, $params->getInt('id')));
 
 			return $ret;
 		}
@@ -537,6 +586,30 @@
 			}
 
 			$ret->setData(true);
+
+			return $ret;
+		}
+
+		/**
+		 * Sets the stage of relationship between two users.
+		 *
+		 * @param \Stoic\Web\Request $request The current request which routed to the endpoint.
+		 * @param array|null         $matches Array of matches returned by endpoint regex pattern.
+		 * @return \Stoic\Web\Api\Response
+		 */
+		public function setRelation(Request $request, array $matches = null) : Response {
+			$user   = $this->getUser();
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
+			$rels   = new UserRelations($this->db, $this->log);
+
+			if (!$params->hasAll('id', 'stage')) {
+				$ret->setAsError('Invalid parameters supplied');
+
+				return $ret;
+			}
+
+			$ret->setData($rels->changeStage($user->id, $params->getInt('id'), $params->getInt('stage')));
 
 			return $ret;
 		}
