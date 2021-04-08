@@ -20,7 +20,7 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('GET',  '/^System\/Version\/?/i',      'getVersion',  true);
+			$this->registerEndpoint('GET',  '/^System\/Version\/?/i',      'getVersion');
 
 			return;
 		}
