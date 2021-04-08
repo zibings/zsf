@@ -702,6 +702,12 @@
 				return $ret;
 			}
 
+			if (!$user->emailConfirmed) {
+				$this->assignError($ret, "Cannot login without confirming your email");
+
+				return $ret;
+			}
+
 			$login = LoginKey::fromUserAndProvider($user->id, $provider, $this->db, $this->log);
 
 			if ($login->userId < 1) {
