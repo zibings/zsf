@@ -1,6 +1,11 @@
 <?php
 
-	/* @var Stoic\Web\PageHelper $page */
+	/**
+	 * @var Stoic\Web\PageHelper $page
+	 * @var \AndyM84\Config\ConfigContainer $settings
+	 */
+
+	use Zibings\SettingsStrings;
 
 ?>
 <?php $this->layout('shared::auth-master', ['page' => $page]); ?>
@@ -9,7 +14,7 @@
 			<img class="mb-4" src="<?=$page->getAssetPath('~/assets/img/bootstrap-solid.svg')?>" alt="" width="72" height="72">
 
 			<div class="mt-3 text-muted text-center">
-				You're all set!  Go login, and thanks for registering on WarBanner.
+				You're all set!  Go login, and thanks for registering on <?=$settings->get(SettingsStrings::SITE_NAME)?>.
 			</div>
 
 			<div class="mt-5 text-center">

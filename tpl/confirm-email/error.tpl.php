@@ -9,7 +9,7 @@
 			<img class="mb-4" src="<?=$page->getAssetPath('~/assets/img/bootstrap-solid.svg')?>" alt="" width="72" height="72">
 
 			<div class="mt-3 text-muted text-center">
-				There was an issue processing your request. Check your email link and try again, and if you continue to have problems feel free to contact us at bringiton@warbanner.net.
+				There was an issue processing your request. Check your email link and try again, and if you continue to have problems feel free to contact us at [EMAIL].
 			</div>
 
 			<div class="mt-5 text-center">

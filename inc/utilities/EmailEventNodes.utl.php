@@ -67,7 +67,7 @@
 			$tpl->addFolder('emails', STOIC_CORE_PATH . '/tpl/emails');
 
 			$mail = getPhpMailer($this->settings);
-			$mail->Subject = "[WarBanner] Account Setup: Please Confirm Your Email";
+			$mail->Subject = "[{$this->settings->get(SettingsStrings::SITE_NAME)}] Account Setup: Please Confirm Your Email";
 			$mail->isHTML(true);
 			$mail->Body = $tpl->render('emails::confirm-email', [
 				'page'  => $this->page,
@@ -136,7 +136,7 @@
 			$tpl->addFolder('emails', STOIC_CORE_PATH . '/tpl/emails');
 
 			$mail = getPhpMailer($this->settings);
-			$mail->Subject = "[WarBanner] Account Updated: Please Confirm Your New Email";
+			$mail->Subject = "[{$this->settings->get(SettingsStrings::SITE_NAME)}] Account Updated: Please Confirm Your New Email";
 			$mail->isHTML(true);
 			$mail->Body = $tpl->render('emails::confirm-email', [
 				'page' => $this->page,

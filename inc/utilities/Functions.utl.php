@@ -1053,7 +1053,7 @@
 		$tpl->addFolder('emails', STOIC_CORE_PATH . '/tpl/emails');
 
 		$mail          = getPhpMailer($settings);
-		$mail->Subject = "[WarBanner] Password Reset Request";
+		$mail->Subject = "[{$settings->get(SettingsStrings::SITE_NAME)}] Password Reset Request";
 		$mail->isHTML(true);
 		$mail->Body    = $tpl->render('emails::reset-password', [
 			'page'  => $page,
