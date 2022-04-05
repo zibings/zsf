@@ -172,5 +172,8 @@ yarn-error.log*
 logs/
 
 # Config files
-composer.lock
 siteSettings.json
+composer.lock
+
+# Whatever
+vendor/
