@@ -8,6 +8,7 @@
 	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbModel;
+	use Stoic\Utilities\ReturnHelper;
 
 	/**
 	 * Class for representing a single device associated with a user.
@@ -125,7 +126,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canCreate() {
+		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->id > 0 || empty($this->linkPhrase) || empty($this->identifier)) {
 				return false;
 			}
@@ -140,7 +141,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canDelete() {
+		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->id < 1) {
 				return false;
 			}
@@ -153,7 +154,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canRead() {
+		protected function __canRead() : bool|ReturnHelper {
 			if ($this->id < 1) {
 				return false;
 			}
@@ -166,7 +167,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canUpdate() {
+		protected function __canUpdate() : bool|ReturnHelper {
 			if ($this->id < 1) {
 				return false;
 			}

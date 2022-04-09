@@ -134,7 +134,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canCreate() {
+		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->id > 0 || empty($this->name) || $this->name === null) {
 				return false;
 			}
@@ -166,7 +166,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canDelete() {
+		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->id < 1) {
 				return false;
 			}
@@ -179,7 +179,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canRead() {
+		protected function __canRead() : bool|ReturnHelper {
 			if ($this->id < 1) {
 				return false;
 			}
@@ -192,7 +192,7 @@
 		 *
 		 * @return ReturnHelper
 		 */
-		protected function __canUpdate() {
+		protected function __canUpdate() : bool|ReturnHelper {
 			$ret = new ReturnHelper();
 			$ret->makeBad();
 

@@ -29,9 +29,10 @@
 		 *
 		 * @param mixed $sender Sender data, optional and thus can be 'null'.
 		 * @param DispatchBase $dispatch Dispatch object to process.
+		 * @throws \Exception
 		 * @return void
 		 */
-		public function process($sender, DispatchBase &$dispatch) {
+		public function process(mixed $sender, DispatchBase &$dispatch) : void {
 			if (!($dispatch instanceof ApiAuthorizationDispatch)) {
 				return;
 			}

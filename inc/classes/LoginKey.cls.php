@@ -93,9 +93,10 @@
 		/**
 		 * Determines if the system should attempt to create a new LoginKey in the database.
 		 *
-		 * @return ReturnHelper
+		 * @throws \ReflectionException
+		 * @return bool|ReturnHelper
 		 */
-		protected function __canCreate() {
+		protected function __canCreate() : bool|ReturnHelper {
 			$ret = new ReturnHelper();
 
 			if ($this->userId < 1 || !LoginKeyProviders::validValue($this->provider->getValue()) || empty($this->key)) {
@@ -122,9 +123,10 @@
 		/**
 		 * Determines if the system should attempt to delete a LoginKey from the database.
 		 *
-		 * @return boolean
+		 * @throws \ReflectionException
+		 * @return bool|ReturnHelper
 		 */
-		protected function __canDelete() {
+		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->userId < 1 || !LoginKeyProviders::validValue($this->provider->getValue())) {
 				return false;
 			}
@@ -135,9 +137,10 @@
 		/**
 		 * Determines if the system should attempt to read a LoginKey from the database.
 		 *
-		 * @return boolean
+		 * @throws \ReflectionException
+		 * @return bool|ReturnHelper
 		 */
-		protected function __canRead() {
+		protected function __canRead() : bool|ReturnHelper {
 			if ($this->userId < 1 || !LoginKeyProviders::validValue($this->provider->getValue())) {
 				return false;
 			}
@@ -148,9 +151,10 @@
 		/**
 		 * Determines if the system should attempt to update a LoginKey in the database.
 		 *
-		 * @return boolean
+		 * @throws \ReflectionException
+		 * @return bool|ReturnHelper
 		 */
-		protected function __canUpdate() {
+		protected function __canUpdate() : bool|ReturnHelper {
 			if ($this->userId < 1 || !LoginKeyProviders::validValue($this->provider->getValue())) {
 				return false;
 			}

@@ -1,6 +1,6 @@
 <?php
 
-	define('STOIC_CORE_PATH', '../');
+	const STOIC_CORE_PATH = '../';
 	require(STOIC_CORE_PATH . 'inc/core.php');
 
 	use Stoic\Utilities\ParameterHelper;

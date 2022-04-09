@@ -47,7 +47,7 @@
 		 * @param \Stoic\Chain\DispatchBase $dispatch Dispatch object to process.
 		 * @return void
 		 */
-		public function process($sender, DispatchBase &$dispatch) {
+		public function process(mixed $sender, DispatchBase &$dispatch) : void {
 			if (!($dispatch instanceof UserEventRegisterDispatch) || $dispatch->user->id < 1) {
 				return;
 			}
@@ -116,7 +116,7 @@
 		 * @param \Stoic\Chain\DispatchBase $dispatch Dispatch object to process.
 		 * @return void
 		 */
-		public function process($sender, DispatchBase &$dispatch) {
+		public function process(mixed $sender, DispatchBase &$dispatch) : void {
 			if (!($dispatch instanceof UserEventUpdateDispatch) || $dispatch->user->id < 1 || !$dispatch->emailUpdated) {
 				return;
 			}

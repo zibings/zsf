@@ -3,7 +3,7 @@
 	error_reporting(E_ALL);
 	ini_set('display_errors', 'On');
 
-	define('STOIC_CORE_PATH', '../../../');
+	const STOIC_CORE_PATH = '../../../';
 	require(STOIC_CORE_PATH . 'inc/core.php');
 
 	use Stoic\Web\Api\Stoic;
@@ -23,9 +23,9 @@
 	$Api->linkAuthorizationNode($authorizer);
 
 	$endpoints = [];
-	$loadedfiles = $Api->loadFilesByExtension('~/api/1', '.api.php');
+	$loadedFiles = $Api->loadFilesByExtension('~/api/1', '.api.php');
 
-	foreach (array_values($loadedfiles) as $file) {
+	foreach ($loadedFiles as $file) {
 		$f = str_replace('.api.php', '', basename($file));
 
 		$cls = "\\Api1\\{$f}";

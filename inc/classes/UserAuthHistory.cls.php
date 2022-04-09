@@ -9,6 +9,7 @@
 	use Stoic\Pdo\StoicDbModel;
 	use Stoic\Utilities\EnumBase;
 	use Stoic\Utilities\ParameterHelper;
+	use Stoic\Utilities\ReturnHelper;
 	use Stoic\Web\Resources\ServerIndices;
 
 	/**
@@ -119,7 +120,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canCreate() {
+		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->action === null || $this->action->getValue() === null || $this->userId < 1) {
 				return false;
 			}
@@ -134,7 +135,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canDelete() {
+		protected function __canDelete() : bool|ReturnHelper {
 			return false;
 		}
 
@@ -143,7 +144,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canRead() {
+		protected function __canRead() : bool|ReturnHelper {
 			return false;
 		}
 
@@ -152,7 +153,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canUpdate() {
+		protected function __canUpdate() : bool|ReturnHelper {
 			return false;
 		}
 

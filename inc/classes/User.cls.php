@@ -106,6 +106,7 @@
 		 * @param integer $id Integer identifier to use when searching the database.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
+		 * @throws \Exception
 		 * @return User
 		 */
 		public static function fromId(int $id, PdoHelper $db, Logger $log = null) : User {
@@ -135,7 +136,7 @@
 		 *
 		 * @return ReturnHelper
 		 */
-		protected function __canCreate() {
+		protected function __canCreate() : bool|ReturnHelper {
 			$ret = new ReturnHelper();
 
 			if ($this->id > 0 || !static::validEmail($this->email)) {
@@ -165,7 +166,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canDelete() {
+		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->id < 1) {
 				return false;
 			}
@@ -178,7 +179,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canRead() {
+		protected function __canRead() : bool|ReturnHelper {
 			if ($this->id < 1) {
 				return false;
 			}
@@ -191,7 +192,7 @@
 		 *
 		 * @return ReturnHelper
 		 */
-		protected function __canUpdate() {
+		protected function __canUpdate() : bool|ReturnHelper {
 			$ret = new ReturnHelper();
 
 			if ($this->id < 1 || !static::validEmail($this->email)) {
@@ -219,6 +220,7 @@
 		/**
 		 * Initializes a new User object.
 		 *
+		 * @throws \Exception
 		 * @return void
 		 */
 		protected function __setupModel() : void {

@@ -5,6 +5,7 @@
 	use Stoic\Web\PageHelper;
 
 	use Zibings\SettingsStrings;
+	use function Zibings\getCurlApiResource;
 
 	global $Db, $Settings, $Stoic, $Tpl, $User;
 
@@ -95,7 +96,7 @@
 		$userProfile = $adapter->getUserProfile();
 		$adapter->disconnect();
 
-		if ($userProfile->email === null || empty($userProfile->email)) {
+		if (empty($userProfile->email)) {
 			$page->redirectTo('~/index.php?error=CALLBACK_INVALID_EMAIL');
 		}
 
@@ -115,6 +116,7 @@
 			$page->redirectTo('~/Account/Login?error=CALLBACK_BAD_RESPONSE&code=' . $meta['http_code'] . '&status=' . $resp['status']);
 		}
 
+		// TODO: Fix this, same as getCurlApiResource approach (use SS as example)
 		setcookie(CookieStrings::SESSION_TOKEN, base64_encode("{$resp['userID']}:{$resp['token']}"), (time() + 60*60*24*30), '/', $_SERVER['HTTP_HOST'], (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? true : false);
 
 		$page->redirectTo('~/');

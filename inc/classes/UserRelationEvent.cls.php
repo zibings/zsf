@@ -6,6 +6,7 @@
 	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\StoicDbModel;
 	use Stoic\Utilities\EnumBase;
+	use Stoic\Utilities\ReturnHelper;
 
 	/**
 	 * Types of actions that can be recorded for user relationships.
@@ -68,7 +69,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canCreate() {
+		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->userOne < 1 || $this->userTwo < 1 || $this->action->getValue() === null || $this->stage->getValue() === null) {
 				return false;
 			}
@@ -83,7 +84,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canDelete() {
+		protected function __canDelete() : bool|ReturnHelper {
 			return false;
 		}
 		
@@ -92,7 +93,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canRead() {
+		protected function __canRead() : bool|ReturnHelper {
 			return false;
 		}
 		
@@ -101,7 +102,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canUpdate() {
+		protected function __canUpdate() : bool|ReturnHelper {
 			return false;
 		}
 		

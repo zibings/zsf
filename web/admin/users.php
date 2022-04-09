@@ -1,6 +1,6 @@
 <?php
 
-	define('STOIC_CORE_PATH', '../../');
+	const STOIC_CORE_PATH = '../../';
 	require(STOIC_CORE_PATH . 'inc/core.php');
 
 	use Stoic\Utilities\ParameterHelper;
@@ -127,7 +127,7 @@
 			$userRoles->removeUserFromAllRoles($postData['id']);
 
 			if ($post->has('userRoles')) {
-				foreach (array_values($post->get('userRoles')) as $role) {
+				foreach ($post->get('userRoles') as $role) {
 					$userRoles->addUserToRoleByName($postData['id'], $role);
 				}
 			}

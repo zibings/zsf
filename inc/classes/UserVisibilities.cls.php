@@ -8,6 +8,7 @@
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbModel;
 	use Stoic\Utilities\EnumBase;
+	use Stoic\Utilities\ReturnHelper;
 
 	/**
 	 * Visibility states for custom visibilities.
@@ -102,7 +103,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canCreate() {
+		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->userId < 1) {
 				return false;
 			}
@@ -115,7 +116,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canDelete() {
+		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->userId < 1) {
 				return false;
 			}
@@ -128,7 +129,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canRead() {
+		protected function __canRead() : bool|ReturnHelper {
 			if ($this->userId < 1) {
 				return false;
 			}
@@ -141,7 +142,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function __canUpdate() {
+		protected function __canUpdate() : bool|ReturnHelper {
 			if ($this->userId < 1) {
 				return false;
 			}

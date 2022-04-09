@@ -37,7 +37,7 @@
 		 * @param DispatchBase $dispatch Dispatch object to process.
 		 * @return void
 		 */
-		public function process($sender, DispatchBase &$dispatch) {
+		public function process(mixed $sender, DispatchBase &$dispatch) : void {
 			if (!($dispatch instanceof UserEventLoginDispatch)) {
 				return;
 			}
@@ -77,7 +77,7 @@
 		 * @param DispatchBase $dispatch Dispatch object to process.
 		 * @return void
 		 */
-		public function process($sender, DispatchBase &$dispatch) {
+		public function process(mixed $sender, DispatchBase &$dispatch) : void {
 			if (!($dispatch instanceof UserEventLogoutDispatch)) {
 				return;
 			}

@@ -14,6 +14,65 @@
 	use Stoic\Web\PageHelper;
 
 	/**
+	 * Initializes a new curl handler resource and does its best to automatically include the user authentication variables.
+	 *
+	 * @param string $url The URL suffix to append to the API path from settings.
+	 * @param integer $userId The unique identifier for the user making this request.
+	 * @param string $token The unique session token for the user making this request.
+	 * @param ConfigContainer $settings The site settings to use for building this request.
+	 * @param boolean $isPost Optional toggle to mark this as a POST request.
+	 * @param array|null $postFields Optional array of fields to merge with the authentication variables.
+	 * @return bool|\CurlHandle
+	 */
+	function getCurlApiResource(string $url, int $userId, string $token, ConfigContainer $settings, bool $isPost = false, array $postFields = null) : bool|\CurlHandle {
+		// TODO: Fix this so it works (take cues from SS project)
+//		$curlUrl = $settings->get(SettingsStrings::API_PATH, 'https://syncscene.com/api') . $url;
+//
+//		if ($isPost === false && $userId > 0 && !empty($token)) {
+//			$curlUrl .= (stripos($curlUrl, '?') === false) ? '?' : '&';
+//			$curlUrl .= "UserID={$userId}&Token={$token}";
+//		}
+//
+//		$ch = curl_init();
+//		curl_setopt_array($ch, [
+//			CURLOPT_URL => $curlUrl,
+//			CURLOPT_RETURNTRANSFER => true,
+//			CURLOPT_HEADER => false,
+//		]);
+//
+//		if (!$settings->get(SettingsStrings::CURL_SECURE, false)) {
+//			curl_setopt_array($ch, [
+//				CURLOPT_SSL_VERIFYPEER => false,
+//				CURLOPT_SSL_VERIFYHOST => false
+//			]);
+//		}
+//
+//		if ($isPost) {
+//			$fields = [];
+//
+//			if ($userId > 0 && !empty($token)) {
+//				$fields['UserID'] = $userId;
+//				$fields['Token'] = $token;
+//			}
+//
+//			if ($postFields !== null) {
+//				$fields = array_merge($fields, $postFields);
+//			}
+//
+//			curl_setopt_array($ch, [
+//				CURLOPT_POST => true,
+//				CURLOPT_POSTFIELDS => json_encode($fields, JSON_INVALID_UTF8_SUBSTITUTE),
+//				CURLOPT_HTTPHEADER => [
+//					"Content-Type: application/json"
+//				]
+//			]);
+//		}
+//
+//		return $ch;
+		return false;
+	}
+
+	/**
 	 * Retrieves a PHPMailer object, using provided settings if available, ready to use for sending mail.
 	 *
 	 * @param \AndyM84\Config\ConfigContainer|null $settings Optional system settings to use for SMTP/mail setup.
