@@ -2,7 +2,6 @@
 
 	namespace Zibings;
 
-	use PhpParser\Node\Param;
 	use Stoic\Chain\ChainHelper;
 	use Stoic\Chain\DispatchBase;
 	use Stoic\Chain\NodeBase;
@@ -27,6 +26,7 @@
 		 * @param User $user User object for reference.
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
+		 * @throws \Exception
 		 * @return void
 		 */
 		public function __construct(
@@ -44,7 +44,7 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
-		public function initialize($input) {
+		public function initialize(mixed $input) : void {
 			return;
 		}
 	}
@@ -61,6 +61,7 @@
 		 * @param User $user User object for reference.
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
+		 * @throws \Exception
 		 * @return void
 		 */
 		public function __construct(
@@ -78,7 +79,7 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
-		public function initialize($input) {
+		public function initialize(mixed $input) : void {
 			return;
 		}
 	}
@@ -95,6 +96,7 @@
 		 * @param User $user User object for reference.
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
+		 * @throws \Exception
 		 * @return void
 		 */
 		public function __construct(
@@ -112,7 +114,7 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
-		public function initialize($input) {
+		public function initialize(mixed $input) : void {
 			return;
 		}
 	}
@@ -130,6 +132,7 @@
 		 * @param string $token Generated session token for user.
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
+		 * @throws \Exception
 		 * @return void
 		 */
 		public function __construct(
@@ -148,7 +151,7 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
-		public function initialize($input) {
+		public function initialize(mixed $input) : void {
 			return;
 		}
 	}
@@ -165,6 +168,7 @@
 		 * @param UserSession $session UserSession object for reference.
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
+		 * @throws \Exception
 		 * @return void
 		 */
 		public function __construct(
@@ -182,7 +186,7 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
-		public function initialize($input) {
+		public function initialize(mixed $input) : void {
 			return;
 		}
 	}
@@ -199,6 +203,7 @@
 		 * @param User $user User object for reference.
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
+		 * @throws \Exception
 		 * @return void
 		 */
 		public function __construct(
@@ -216,7 +221,7 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
-		public function initialize($input) {
+		public function initialize(mixed $input) : void {
 			return;
 		}
 	}
@@ -233,6 +238,7 @@
 		 * @param User $user User object for reference.
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
+		 * @throws \Exception
 		 * @return void
 		 */
 		public function __construct(
@@ -250,7 +256,7 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
-		public function initialize($input) {
+		public function initialize(mixed $input) : void {
 			return;
 		}
 	}
@@ -269,6 +275,7 @@
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
 		 * @param bool $emailUpdated Optional toggle to show if the user's email was updated.
+		 * @throws \Exception
 		 * @return void
 		 */
 		public function __construct(
@@ -288,7 +295,7 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
-		public function initialize($input) {
+		public function initialize(mixed $input) : void {
 			return;
 		}
 	}
@@ -349,7 +356,7 @@
 		 *
 		 * @var ChainHelper[]
 		 */
-		protected $events = [
+		protected array $events = [
 			UserEventTypes::CONFIRM       => null,
 			UserEventTypes::CREATE        => null,
 			UserEventTypes::DELETE        => null,
@@ -365,10 +372,9 @@
 		 * Instantiates a new UserEvents object.
 		 *
 		 * @param \PDO $db PDO instance for use by object.
-		 * @param Logger $log Logger instance for use by object, defaults to new instance.
-		 * @return void
+		 * @param null|Logger $log Logger instance for use by object, defaults to new instance.
 		 */
-		public function __construct(\PDO $db, $log = null) {
+		public function __construct(\PDO $db, Logger $log = null) {
 			parent::__construct($db, $log);
 
 			foreach (array_keys($this->events) as $evt) {
@@ -384,12 +390,13 @@
 		 * @param ReturnHelper $ret ReturnHelper to assign error message to for reference.
 		 * @param string $error Error message to reference in ReturnHelper and logs.
 		 * @param int|HttpStatusCodes $status Optional HTTP status code, defaults to INTERNAL_SERVER_ERROR if not supplied.
+		 * @throws \ReflectionException
 		 * @return void
 		 */
 		protected function assignError(ReturnHelper &$ret, string $error, int|HttpStatusCodes $status = HttpStatusCodes::INTERNAL_SERVER_ERROR) : void {
-			$code = EnumBase::tryGetEnum($status, HttpStatusCodes::class);
+			$code = HttpStatusCodes::tryGet($status);
 
-			if ($code === null) {
+			if ($code->getValue() === null) {
 				return;
 			}
 
@@ -411,6 +418,7 @@
 		 * Resulting ReturnHelper will include a suggested HTTP status code in the 'httpCode' index.
 		 *
 		 * @param ParameterHelper $params Parameters provided to perform the event.
+		 * @throws \ReflectionException|\Exception
 		 * @return ReturnHelper
 		 */
 		public function doConfirm(ParameterHelper $params) : ReturnHelper {
@@ -461,7 +469,7 @@
 		 *   'key'            => (string) 'someKey',         # the login key value for the new user
 		 *   'confirmKey'     => (string) 'someKey',         # repeat of the login key value
 		 *   'provider'       => (int|LoginKeyProviders) 1,  # the login key provider type
-		 *   'emailConfirmed' => (bool) false                # whether or not the new user's email is confirmed
+		 *   'emailConfirmed' => (bool) false                # whether the new user's email is confirmed
 		 * ]
 		 *
 		 * After the User and their LoginKey have been created, the system will attempt to create (without guaranteeing) the
@@ -480,6 +488,7 @@
 		 * ]
 		 *
 		 * @param ParameterHelper $params Parameters provided to perform the event.
+		 * @throws \ReflectionException
 		 * @return ReturnHelper
 		 */
 		public function doCreate(ParameterHelper $params) : ReturnHelper {
@@ -599,6 +608,7 @@
 		 * Resulting ReturnHelper will include a suggested HTTP status code in the 'httpCode' index.
 		 *
 		 * @param ParameterHelper $params Parameters for performing operation.
+		 * @throws \ReflectionException|\Exception
 		 * @return ReturnHelper
 		 */
 		public function doDelete(ParameterHelper $params) : ReturnHelper {
@@ -680,6 +690,7 @@
 		 * ]
 		 *
 		 * @param ParameterHelper $params Parameters provided to perform the event.
+		 * @throws \ReflectionException|\Exception
 		 * @return ReturnHelper
 		 */
 		public function doLogin(ParameterHelper $params) : ReturnHelper {
@@ -779,7 +790,7 @@
 
 			if ($sCreate->isBad()) {
 				if ($sCreate->hasMessages()) {
-					foreach (array_values($sCreate->getMessages()) as $msg) {
+					foreach ($sCreate->getMessages() as $msg) {
 						$this->log->error($msg);
 					}
 				} else {
@@ -837,6 +848,7 @@
 		 * ]
 		 *
 		 * @param ParameterHelper $params Parameters for performing operation.
+		 * @throws \ReflectionException|\Exception
 		 * @return ReturnHelper
 		 */
 		public function doLogout(ParameterHelper $params) : ReturnHelper {
@@ -933,6 +945,7 @@
 		 * ]
 		 *
 		 * @param ParameterHelper $params Parameters provided to perform the event.
+		 * @throws \ReflectionException
 		 * @return ReturnHelper
 		 */
 		public function doRegister(ParameterHelper $params) : ReturnHelper {
@@ -1035,6 +1048,7 @@
 		 * Resulting ReturnHelper will include a suggested HTTP status code in the 'httpCode' index.
 		 *
 		 * @param ParameterHelper $params Parameters provided to perform the event.
+		 * @throws \ReflectionException
 		 * @return ReturnHelper
 		 */
 		public function doResetPassword(ParameterHelper $params) : ReturnHelper {
@@ -1085,7 +1099,7 @@
 
 				if ($event->isBad()) {
 					if ($event->hasMessages()) {
-						foreach (array_values($event->getMessages()) as $msg) {
+						foreach ($event->getMessages() as $msg) {
 							$ret->addMessage($msg);
 							$this->log->error($msg);
 						}
@@ -1167,6 +1181,7 @@
 		 * ]
 		 *
 		 * @param ParameterHelper $params Parameters provided to perform the event.
+		 * @throws \ReflectionException|\Exception
 		 * @return ReturnHelper
 		 */
 		public function doUpdate(ParameterHelper $params) : ReturnHelper {
@@ -1343,10 +1358,11 @@
 		 *
 		 * @param UserEventTypes|int $event UserEventTypes object or value to link provided node with in object.
 		 * @param NodeBase $node Valid processing node to notify of event.
+		 * @throws \ReflectionException
 		 * @return void
 		 */
 		public function linkToEvent(UserEventTypes|int $event, NodeBase $node) : void {
-			$e = EnumBase::tryGetEnum($event, UserEventTypes::class);
+			$e = UserEventTypes::tryGet($event);
 
 			if ($e->getValue() === null) {
 				return;
@@ -1358,15 +1374,16 @@
 		}
 
 		/**
-		 * Touches an event, traversing the related chain so all linked nodes receive notification the event was executed. If an
-		 * invalid event type is supplied, nothing will be traversed.
+		 * Touches an event, traversing the related chain so all linked nodes receive notification the event was executed.
+		 * If an invalid event type is supplied, nothing will be traversed.
 		 *
 		 * @param UserEventTypes|int $event UserEventTypes object or value to route dispatch to correct chain.
 		 * @param DispatchBase $dispatch Dispatch with relevant information for the selected chain.
+		 * @throws \ReflectionException
 		 * @return void
 		 */
 		protected function touchEvent(UserEventTypes|int $event, DispatchBase $dispatch) : void {
-			$e = EnumBase::tryGetEnum($event, UserEventTypes::class);
+			$e = UserEventTypes::tryGet($event);
 
 			if ($e->getValue() === null) {
 				return;

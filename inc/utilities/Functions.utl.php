@@ -984,8 +984,9 @@
 	/**
 	 * Attempts to return a User object based off of the Authorization bearer token, if present.
 	 *
-	 * @param \Stoic\Pdo\PdoHelper   $db  PdoHelper instance for internal use.
+	 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
 	 * @param null|\Stoic\Log\Logger $log Optional Logger instance for internal use, new instance created by default.
+	 * @throws \Exception
 	 * @return User
 	 */
 	function getUserFromBearerToken(PdoHelper $db, Logger|null $log = null) : User {
@@ -1013,8 +1014,9 @@
 	 * Attempts to return a User object based off of the session token, if present.
 	 *
 	 * @param \Stoic\Utilities\ParameterHelper $session ParameterHelper for session variables.
-	 * @param \Stoic\Pdo\PdoHelper             $db      PdoHelper instance for internal use.
-	 * @param null|\Stoic\Log\Logger           $log     Optional Logger instance for internal use, new instance created by default.
+	 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
+	 * @param null|\Stoic\Log\Logger $log Optional Logger instance for internal use, new instance created by default.
+	 * @throws \Exception
 	 * @return User
 	 */
 	function getUserFromSessionToken(ParameterHelper $session, PdoHelper $db, Logger|null $log = null) : User {
@@ -1036,10 +1038,10 @@
 	/**
 	 * Determines if the given user is currently authenticated via the session.
 	 *
-	 * @param \Stoic\Pdo\PdoHelper                  $db
-	 * @param mixed|null                            $roles
-	 * @param \Stoic\Utilities\ParameterHelper|null $session
-	 * @param \Stoic\Log\Logger|null                $log
+	 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
+	 * @param mixed|null $roles Optional roles to check against a logged-in user.
+	 * @param \Stoic\Utilities\ParameterHelper|null $session Optional session data, pulls from $_SESSION if not provided.
+	 * @param \Stoic\Log\Logger|null $log Optional Logger instance for internal use, new instance created by default.
 	 * @return bool
 	 */
 	function isAuthenticated(PdoHelper $db, mixed $roles = null, ParameterHelper|null $session = null,  Logger|null $log = null) : bool {
@@ -1071,7 +1073,7 @@
 				return false;
 			}
 
-			foreach (array_values($roles) as $r) {
+			foreach ($roles as $r) {
 				if (array_key_exists($r, $userRoles) === false) {
 					return false;
 				}
@@ -1084,11 +1086,12 @@
 	/**
 	 * Attempts to send a password reset email.
 	 *
-	 * @param string                          $email
-	 * @param \Stoic\Web\PageHelper           $page
-	 * @param \AndyM84\Config\ConfigContainer $settings
-	 * @param \Stoic\Pdo\PdoHelper            $db
-	 * @param \Stoic\Log\Logger|null          $log
+	 * @param string $email Email address to use for finding user in question.
+	 * @param \Stoic\Web\PageHelper $page PageHelper instance for resolving current domain in email links.
+	 * @param \AndyM84\Config\ConfigContainer $settings Settings container for site.
+	 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
+	 * @param \Stoic\Log\Logger|null $log Optional Logger instance for internal use, new instance created by default.
+	 * @throws \PHPMailer\PHPMailer\Exception
 	 * @return bool
 	 */
 	function sendResetEmail(string $email, PageHelper $page, ConfigContainer $settings, PdoHelper $db, Logger|null $log = null) : bool {

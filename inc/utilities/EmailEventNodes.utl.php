@@ -21,10 +21,10 @@
 		/**
 		 * Instantiates a new EmailUserRegisterNode object for use with the UserEvents system.
 		 *
-		 * @param \Stoic\Web\PageHelper           $page     PageHelper instance for internal use.
+		 * @param \Stoic\Web\PageHelper $page PageHelper instance for internal use.
 		 * @param \AndyM84\Config\ConfigContainer $settings ConfigContainer instance for internal use.
-		 * @param \Stoic\Pdo\PdoHelper            $db       PdoHelper instance for internal use.
-		 * @param \Stoic\Log\Logger|null          $log      Optional Logger instance for internal use, defaults to new instance created.
+		 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
+		 * @param \Stoic\Log\Logger|null $log Optional Logger instance for internal use, defaults to new instance created.
 		 */
 		public function __construct(
 			public PageHelper $page,
@@ -43,8 +43,9 @@
 		/**
 		 * Processes the dispatch when touched on a chain.
 		 *
-		 * @param mixed                     $sender   Sender data, optional and thus can be 'null'.
+		 * @param mixed $sender Sender data, optional and thus can be 'null'.
 		 * @param \Stoic\Chain\DispatchBase $dispatch Dispatch object to process.
+		 * @throws \PHPMailer\PHPMailer\Exception
 		 * @return void
 		 */
 		public function process(mixed $sender, DispatchBase &$dispatch) : void {
@@ -90,10 +91,10 @@
 		/**
 		 * Instantiates a new EmailUserUpdateNode object.
 		 *
-		 * @param \Stoic\Web\PageHelper           $page     PageHelper instance for internal use.
+		 * @param \Stoic\Web\PageHelper $page PageHelper instance for internal use.
 		 * @param \AndyM84\Config\ConfigContainer $settings ConfigContainer instance for internal use.
-		 * @param \Stoic\Pdo\PdoHelper            $db       PdoHelper instance for internal use.
-		 * @param \Stoic\Log\Logger|null          $log      Optional Logger instance for internal use, defaults to new instance created.
+		 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
+		 * @param \Stoic\Log\Logger|null $log Optional Logger instance for internal use, defaults to new instance created.
 		 */
 		public function __construct(
 			public PageHelper $page,
@@ -112,8 +113,9 @@
 		/**
 		 * Processes the dispatch when touched on a chain.
 		 *
-		 * @param mixed                     $sender   Sender data, optional and thus can be 'null'.
+		 * @param mixed $sender Sender data, optional and thus can be 'null'.
 		 * @param \Stoic\Chain\DispatchBase $dispatch Dispatch object to process.
+		 * @throws \PHPMailer\PHPMailer\Exception
 		 * @return void
 		 */
 		public function process(mixed $sender, DispatchBase &$dispatch) : void {
