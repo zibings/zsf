@@ -31,11 +31,11 @@
 		 *
 		 * @var UserRelation
 		 */
-		protected $urObj;
+		protected UserRelation $urObj;
 
 
 		/**
-		 * Whether or not the stored queries have been initialized.
+		 * Whether the stored queries have been initialized.
 		 *
 		 * @var bool
 		 */
@@ -91,11 +91,11 @@
 		}
 
 		/**
-		 * Returns whether or not the two users are related.
+		 * Returns whether the two users are related.
 		 *
-		 * @param integer $userOne Integer identifier of first potential relation.
-		 * @param integer $userTwo Integer identifier of second potential relation.
-		 * @return boolean
+		 * @param int $userOne Integer identifier of first potential relation.
+		 * @param int $userTwo Integer identifier of second potential relation.
+		 * @return bool
 		 */
 		public function areRelated(int $userOne, int $userTwo) : bool {
 			$rel = $this->getRelation($userOne, $userTwo);
@@ -111,10 +111,11 @@
 		 * Changes the stage of a user relation. If $stage is set to 'INVITE' and users are not yet related, a new relation
 		 * will be created.
 		 *
-		 * @param integer $userOne Integer identifier of first potential relation.
-		 * @param integer $userTwo Integer identifier of second potential relation.
-		 * @param integer $stage Integer stage specifier.
-		 * @return boolean
+		 * @param int $userOne Integer identifier of first potential relation.
+		 * @param int $userTwo Integer identifier of second potential relation.
+		 * @param int $stage Integer stage specifier.
+		 * @throws \Exception
+		 * @return bool
 		 */
 		public function changeStage(int $userOne, int $userTwo, int $stage) : bool {
 			if ($stage == UserRelationStages::ERROR || !UserRelationStages::validValue($stage)) {
@@ -178,8 +179,8 @@
 		/**
 		 * Removes the given relation.
 		 *
-		 * @param integer $userOne Integer identifier of first potential relation.
-		 * @param integer $userTwo Integer identifier of second potential relation.
+		 * @param int $userOne Integer identifier of first potential relation.
+		 * @param int $userTwo Integer identifier of second potential relation.
 		 * @return bool
 		 */
 		public function deleteRelation(int $userOne, int $userTwo) : bool {
@@ -189,8 +190,8 @@
 
 			$this->tryPdoExcept(function () use ($userOne, $userTwo) {
 				$stmt = $this->db->prepareStored(self::SQL_DELREL);
-				$stmt->bindParam(':userOne', $userOne, \PDO::PARAM_INT);
-				$stmt->bindParam(':userTwo', $userTwo, \PDO::PARAM_INT);
+				$stmt->bindParam(':userOne', $userOne);
+				$stmt->bindParam(':userTwo', $userTwo);
 				$stmt->execute();
 			}, "Failed to delete user's relation");
 
@@ -200,7 +201,7 @@
 		/**
 		 * Removes all relations for the given user.
 		 *
-		 * @param integer $userId Integer identifier for user in question.
+		 * @param int $userId Integer identifier for user in question.
 		 * @return void
 		 */
 		public function deleteAllForUser(int $userId) : void {
@@ -210,7 +211,7 @@
 
 			$this->tryPdoExcept(function () use ($userId) {
 				$stmt = $this->db->prepareStored(self::SQL_DELALLFORUSR);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 				$stmt->execute();
 			}, "Failed to delete user's relations");
 
@@ -220,15 +221,15 @@
 		/**
 		 * Returns a list of a user's relations.
 		 *
-		 * @param integer $userId Integer identifier of user asking about their relations.
+		 * @param int $userId Integer identifier of user asking about their relations.
 		 * @return UserRelation[]
 		 */
-		public function getRelations(int $userId) {
+		public function getRelations(int $userId) : array {
 			$ret = [];
 
 			$this->tryPdoExcept(function () use (&$ret, $userId) {
 				$stmt = $this->db->prepareStored(self::SQL_GUSRRELS);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -243,11 +244,12 @@
 		/**
 		 * Returns a list of a user's relations in the requested stage.
 		 *
-		 * @param integer $userId Integer identifier of user looking for relations.
-		 * @param integer $stage Integer stage specifier.
+		 * @param int $userId Integer identifier of user looking for relations.
+		 * @param int $stage Integer stage specifier.
+		 * @throws \Exception
 		 * @return UserRelation[]
 		 */
-		public function getRelationsByStage(int $userId, int $stage) {
+		public function getRelationsByStage(int $userId, int $stage) : array {
 			$ret = [];
 
 			if ($stage == UserRelationStages::ERROR || !UserRelationStages::validValue($stage)) {
@@ -256,8 +258,8 @@
 
 			$this->tryPdoExcept(function () use (&$ret, $userId, $stage) {
 				$stmt = $this->db->prepareStored(self::SQL_GRELSBYSTAGE);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
-				$stmt->bindParam(':stage', $stage, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
+				$stmt->bindParam(':stage', $stage);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -272,17 +274,17 @@
 		/**
 		 * Retrieves user relation, if available. Will always have array ordered with 'origin' user as first element.
 		 *
-		 * @param integer $userOne Integer identifier of the first potential relation.
-		 * @param integer $userTwo Integer identifier of the second potential relation.
+		 * @param int $userOne Integer identifier of the first potential relation.
+		 * @param int $userTwo Integer identifier of the second potential relation.
 		 * @return UserRelation[]
 		 */
-		public function getRelation(int $userOne, int $userTwo) {
+		public function getRelation(int $userOne, int $userTwo) : array {
 			$ret = [];
 
 			$this->tryPdoExcept(function () use (&$ret, $userOne, $userTwo) {
 				$stmt = $this->db->prepareStored(self::SQL_GRELS);
-				$stmt->bindParam(':userOne', $userOne, \PDO::PARAM_INT);
-				$stmt->bindParam(':userTwo', $userTwo, \PDO::PARAM_INT);
+				$stmt->bindParam(':userOne', $userOne);
+				$stmt->bindParam(':userTwo', $userTwo);
 
 				if ($stmt->execute()) {
 					$rows = [];
@@ -303,8 +305,8 @@
 		/**
 		 * Retrieves a relation's stage, if present. Stage with null value returned if not found.
 		 *
-		 * @param integer $userOne Integer identifier of first potential relation.
-		 * @param integer $userTwo Integer identifier of second potential relation.
+		 * @param int $userOne Integer identifier of first potential relation.
+		 * @param int $userTwo Integer identifier of second potential relation.
 		 * @return UserRelationStages
 		 */
 		public function getRelationStage(int $userOne, int $userTwo) : UserRelationStages {
@@ -320,15 +322,15 @@
 		/**
 		 * Retrieves relations of user by other users, if available.
 		 *
-		 * @param integer $userId Integer identifier of user looking for relations.
+		 * @param int $userId Integer identifier of user looking for relations.
 		 * @return UserRelation[]
 		 */
-		public function getIncomingRelations(int $userId) {
+		public function getIncomingRelations(int $userId) : array {
 			$ret = [];
 
 			$this->tryPdoExcept(function () use (&$ret, $userId) {
 				$stmt = $this->db->prepareStored(self::SQL_GINCRELS);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -343,11 +345,12 @@
 		/**
 		 * Retrieves relations of user by other users, if available, filtered by stage.
 		 *
-		 * @param integer $userId Integer identifier of user looking for relations.
-		 * @param integer $stage Integer stage specifier to filter relations through.
+		 * @param int $userId Integer identifier of user looking for relations.
+		 * @param int $stage Integer stage specifier to filter relations through.
+		 * @throws \Exception
 		 * @return UserRelation[]
 		 */
-		public function getIncomingRelationsByStage(int $userId, int $stage) {
+		public function getIncomingRelationsByStage(int $userId, int $stage) : array {
 			$ret = [];
 
 			if ($stage == UserRelationStages::ERROR || !UserRelationStages::validValue($stage)) {
@@ -356,8 +359,8 @@
 
 			$this->tryPdoExcept(function () use (&$ret, $userId, $stage) {
 				$stmt = $this->db->prepareStored(self::SQL_GINCRELSBYSTAGE);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
-				$stmt->bindParam(':stage', $stage, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
+				$stmt->bindParam(':stage', $stage);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -372,11 +375,12 @@
 		/**
 		 * Retrieves relations of user by other users, if available, except in the given stage.
 		 *
-		 * @param integer $userId Integer identifier of user looking for relations.
-		 * @param integer $stage Integer stage specifier to filter relations through.
+		 * @param int $userId Integer identifier of user looking for relations.
+		 * @param int $stage Integer stage specifier to filter relations through.
+		 * @throws \Exception
 		 * @return UserRelation[]
 		 */
-		public function getIncomingRelationsExceptingStage(int $userId, int $stage) {
+		public function getIncomingRelationsExceptingStage(int $userId, int $stage) : array {
 			$ret = [];
 
 			if ($stage == UserRelationStages::ERROR || !UserRelationStages::validValue($stage)) {
@@ -401,10 +405,10 @@
 		/**
 		 * Retrieves relations by user to other users, if available.
 		 *
-		 * @param integer $userId Integer identifier of user looking for relations.
+		 * @param int $userId Integer identifier of user looking for relations.
 		 * @return UserRelation[]
 		 */
-		public function getOutgoingRelations(int $userId) {
+		public function getOutgoingRelations(int $userId) : array {
 			$ret = [];
 
 			$this->tryPdoExcept(function () use (&$ret, $userId) {
@@ -424,11 +428,12 @@
 		/**
 		 * Retrieves by user to other users, if available, filtered by stage.
 		 *
-		 * @param integer $userId Integer identifier of user looking for relations.
-		 * @param integer $stage Integer stage specifier to filter relations through.
+		 * @param int $userId Integer identifier of user looking for relations.
+		 * @param int $stage Integer stage specifier to filter relations through.
+		 * @throws \Exception
 		 * @return array
 		 */
-		public function getOutgoingRelationsByStage(int $userId, int $stage) {
+		public function getOutgoingRelationsByStage(int $userId, int $stage) : array {
 			$ret = [];
 
 			if ($stage == UserRelationStages::ERROR || !UserRelationStages::validValue($stage)) {
@@ -437,8 +442,8 @@
 
 			$this->tryPdoExcept(function () use (&$ret, $userId, $stage) {
 				$stmt = $this->db->prepareStored(self::SQL_GOUTRELSBYSTAGE);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
-				$stmt->bindParam(':stage', $stage, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
+				$stmt->bindParam(':stage', $stage);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -453,11 +458,12 @@
 		/**
 		 * Retrieves by user to other users, if available, except in the given stage.
 		 *
-		 * @param integer $userId Integer identifier of user looking for relations.
-		 * @param integer $stage Integer stage specifier to filter relations through.
+		 * @param int $userId Integer identifier of user looking for relations.
+		 * @param int $stage Integer stage specifier to filter relations through.
+		 * @throws \Exception
 		 * @return array
 		 */
-		public function getOutgoingRelationsExceptingStage(int $userId, int $stage) {
+		public function getOutgoingRelationsExceptingStage(int $userId, int $stage) : array {
 			$ret = [];
 
 			if ($stage == UserRelationStages::ERROR || !UserRelationStages::validValue($stage)) {

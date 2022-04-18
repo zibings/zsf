@@ -16,7 +16,7 @@
 		 *
 		 * @var UserContact
 		 */
-		protected $ucObj;
+		protected UserContact $ucObj;
 
 
 		/**
@@ -33,7 +33,7 @@
 		/**
 		 * Removes all contacts for the given user.
 		 *
-		 * @param integer $userId Integer identifier for user in question.
+		 * @param int $userId Integer identifier for user in question.
 		 * @return void
 		 */
 		public function deleteAllForUser(int $userId) : void {
@@ -43,7 +43,7 @@
 
 			$this->tryPdoExcept(function () use ($userId) {
 				$stmt = $this->db->prepare("DELETE FROM {$this->ucObj->getDbTableName()} WHERE [UserID] = :userId");
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 				$stmt->execute();
 			}, "Failed to delete user's contacts");
 
@@ -53,15 +53,15 @@
 		/**
 		 * Retrieves all current contacts for a user.
 		 *
-		 * @param integer $userId Integer identifier of user in question.
+		 * @param int $userId Integer identifier of user in question.
 		 * @return UserContact[]
 		 */
-		public function getUserContacts(int $userId) {
+		public function getUserContacts(int $userId) : array {
 			$ret = [];
 
 			$this->tryPdoExcept(function () use (&$ret, $userId) {
 				$stmt = $this->db->prepare($this->ucObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [UserID] = :userId");
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

@@ -16,7 +16,7 @@
 		 *
 		 * @var Role
 		 */
-		protected $rlObj;
+		protected Role $rlObj;
 
 
 		/**
@@ -35,7 +35,7 @@
 		 *
 		 * @return Role[]
 		 */
-		public function getAll() {
+		public function getAll() : array {
 			$ret = [];
 
 			$this->tryPdoExcept(function () use (&$ret) {

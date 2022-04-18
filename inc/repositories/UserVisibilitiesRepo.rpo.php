@@ -2,7 +2,6 @@
 
 	namespace Zibings;
 
-	use Stoic\Pdo\BaseDbQueryTypes;
 	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbClass;
@@ -21,11 +20,11 @@
 		 *
 		 * @var UserVisibilities
 		 */
-		protected $uvObj;
+		protected UserVisibilities $uvObj;
 
 
 		/**
-		 * Whether or not the stored queries have been initialized.
+		 * Whether the stored queries have been initialized.
 		 *
 		 * @var bool
 		 */
@@ -53,7 +52,7 @@
 		/**
 		 * Removes all visibilities for the given user.
 		 *
-		 * @param integer $userId Integer identifier for user in question.
+		 * @param int $userId Integer identifier for user in question.
 		 * @return void
 		 */
 		public function deleteAllForUser(int $userId) : void {
@@ -63,7 +62,7 @@
 
 			$this->tryPdoExcept(function () use ($userId) {
 				$stmt = $this->db->prepareStored(self::SQL_DELFORUSER);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 				$stmt->execute();
 			}, "Failed to delete user's contacts");
 

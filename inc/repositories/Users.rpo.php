@@ -19,6 +19,7 @@
 		 * Static helper method to populate a UserSearchData object from an array.
 		 *
 		 * @param array $data Source data array.
+		 * @throws \ReflectionException|\Exception
 		 * @return UserSearchData
 		 */
 		public static function fromArray(array $data) : UserSearchData {
@@ -118,7 +119,7 @@
 
 
 		/**
-		 * Whether or not the stored queries have been initialized.
+		 * Whether the stored queries have been initialized.
 		 *
 		 * @var bool
 		 */
@@ -159,7 +160,7 @@
 		 *
 		 * @return User[]
 		 */
-		public function getAll() {
+		public function getAll() : array {
 			$ret = [];
 
 			$this->tryPdoExcept(function () use (&$ret) {
@@ -174,8 +175,8 @@
 		}
 
 		/**
-		 * Retrieves all users from the database, joining their profile info onto the array. Returns user info in the following
-		 * format:
+		 * Retrieves all users from the database, joining their profile info onto the array. Returns user info in the
+		 * following format:
 		 *
 		 * [
 		 *   'user'    => (User) {},
@@ -300,11 +301,12 @@
 		/**
 		 * Attempts to search the database by identifiers.
 		 *
-		 * @param string $query               Query value to compare against identifiers.
-		 * @param bool   $respectVisibilities Optional parameter to disable respecting user visibilities, default will respect visibilities.
+		 * @param string $query Query value to compare against identifiers.
+		 * @param bool $respectVisibilities Optional parameter to disable respecting user visibilities, default will respect visibilities.
+		 * @throws \ReflectionException|\Exception
 		 * @return UserSearchData[]
 		 */
-		public function searchUsersByIdentifiers(string $query, bool $respectVisibilities = true) {
+		public function searchUsersByIdentifiers(string $query, bool $respectVisibilities = true) : array {
 			$ret  = [];
 			$sql  = "SELECT ";
 

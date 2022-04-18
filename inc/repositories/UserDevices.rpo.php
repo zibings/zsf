@@ -20,11 +20,11 @@
 		 *
 		 * @var UserDevice
 		 */
-		protected $udObj;
+		protected UserDevice $udObj;
 
 
 		/**
-		 * Whether or not the stored queries have been initialized.
+		 * Whether the stored queries have been initialized.
 		 *
 		 * @var bool
 		 */
@@ -62,7 +62,7 @@
 
 			$this->tryPdoExcept(function () use ($userId) {
 				$stmt = $this->db->prepareStored(self::SQL_DELFORUSER);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 				$stmt->execute();
 			}, "Failed to delete user's devices");
 

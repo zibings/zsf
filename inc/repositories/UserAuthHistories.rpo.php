@@ -16,7 +16,7 @@
 		 *
 		 * @var UserAuthHistory
 		 */
-		protected $uahObj;
+		protected UserAuthHistory $uahObj;
 
 
 		/**
@@ -33,12 +33,12 @@
 		/**
 		 * Retrieves all or a subset of a user's authentication history.
 		 *
-		 * @param integer $userId Integer identifier for the user in question.
-		 * @param integer|null $offset Optional offset, only used if supplied alongside a valid (> 0) limit.
-		 * @param integer|null $limit Optional limit, only used if supplied alongside a valid (>= 0) offset.
+		 * @param int $userId Integer identifier for the user in question.
+		 * @param int|null $offset Optional offset, only used if supplied alongside a valid (> 0) limit.
+		 * @param int|null $limit Optional limit, only used if supplied alongside a valid (>= 0) offset.
 		 * @return UserAuthHistory[]
 		 */
-		public function getUserAuthHistory(int $userId, ?int $offset = null, ?int $limit = null) {
+		public function getUserAuthHistory(int $userId, ?int $offset = null, ?int $limit = null) : array {
 			$ret = [];
 			$sql = $this->uahObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [UserID] = :userId ORDER BY [Recorded] DESC";
 
@@ -48,7 +48,7 @@
 
 			$this->tryPdoExcept(function () use (&$ret, $sql, $userId) {
 				$stmt = $this->db->prepare($sql);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -63,15 +63,15 @@
 		/**
 		 * Retrieves the number of authentication history records that exist for the given user.
 		 *
-		 * @param integer $userId Integer identifier for the user in question.
-		 * @return integer
+		 * @param int $userId Integer identifier for the user in question.
+		 * @return int
 		 */
 		public function getUserAuthHistoryCount(int $userId) : int {
 			$ret = 0;
 
 			$this->tryPdoExcept(function () use (&$ret, $userId) {
 				$stmt = $this->db->prepare("SELECT COUNT(*) FROM {$this->uahObj->getDbTableName()} WHERE [UserID] = :userId");
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 
 				if ($stmt->execute()) {
 					$ret = intval($stmt->fetch()[0]);

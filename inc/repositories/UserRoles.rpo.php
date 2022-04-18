@@ -28,11 +28,11 @@
 		 *
 		 * @var Role
 		 */
-		protected $rlObj;
+		protected Role $rlObj;
 
 
 		/**
-		 * Whether or not the stored queries have been initialized.
+		 * Whether the stored queries have been initialized.
 		 *
 		 * @var bool
 		 */
@@ -83,9 +83,10 @@
 		/**
 		 * Adds a user to the role identified by the provided string.
 		 *
-		 * @param integer $userId Integer identifier of user to add to role.
+		 * @param int $userId Integer identifier of user to add to role.
 		 * @param string $name String identifier of role to add user to.
-		 * @return boolean
+		 * @throws \Exception
+		 * @return bool
 		 */
 		public function addUserToRoleByName(int $userId, string $name) : bool {
 			$user = User::fromId($userId, $this->db, $this->log);
@@ -101,8 +102,8 @@
 
 			$this->tryPdoExcept(function () use ($userId, $role) {
 				$stmt = $this->db->prepareStored(self::SQL_INSUSRROLE);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
-				$stmt->bindParam(':roleId', $role->id, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
+				$stmt->bindParam(':roleId', $role->id);
 				$stmt->execute();
 			}, "Failed to add user to role");
 
@@ -112,7 +113,7 @@
 		/**
 		 * Removes all roles for the given user.
 		 *
-		 * @param integer $userId Integer identifier for user in question.
+		 * @param int $userId Integer identifier for user in question.
 		 * @return void
 		 */
 		public function deleteAllForUser(int $userId) : void {
@@ -122,7 +123,7 @@
 
 			$this->tryPdoExcept(function () use ($userId) {
 				$stmt = $this->db->prepareStored(self::SQL_DELUSRROLE);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 				$stmt->execute();
 			}, "Failed to delete user's contacts");
 
@@ -132,10 +133,10 @@
 		/**
 		 * Retrieves all roles the specified user belongs to, empty array if not found.
 		 *
-		 * @param integer $userId Integer identifier of user in question.
+		 * @param int $userId Integer identifier of user in question.
 		 * @return Role[]
 		 */
-		public function getAllUserRoles(int $userId) {
+		public function getAllUserRoles(int $userId) : array {
 			$ret = [];
 
 			if ($userId < 1) {
@@ -144,7 +145,7 @@
 
 			$this->tryPdoExcept(function () use (&$ret, $userId) {
 				$stmt = $this->db->prepareStored(self::SQL_GROLEFORUSR);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -164,13 +165,13 @@
 		 * @param string $name Name of the role in question.
 		 * @return User[]
 		 */
-		public function getAllUsersInRoleByName(string $name) {
+		public function getAllUsersInRoleByName(string $name) : array {
 			$ret    = [];
 
 			$this->tryPdoExcept(function () use (&$ret, $name) {
 				$role = Role::fromName($name, $this->db, $this->log);
 				$stmt = $this->db->prepareStored(self::SQL_GUSRSINROLEBYNAME);
-				$stmt->bindParam(':roleId', $role->id, \PDO::PARAM_INT);
+				$stmt->bindParam(':roleId', $role->id);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -201,7 +202,7 @@
 		/**
 		 * Removes all roles for the given users.
 		 *
-		 * @param integer $userId Integer identifier of the user in question.
+		 * @param int $userId Integer identifier of the user in question.
 		 * @return void
 		 */
 		public function removeUserFromAllRoles(int $userId) : void {
@@ -211,7 +212,7 @@
 
 			$this->tryPdoExcept(function () use ($userId) {
 				$stmt = $this->db->prepareStored(self::SQL_DELUSRALLROLES);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 				$stmt->execute();
 			}, "Failed to remove user from all roles");
 
@@ -221,7 +222,7 @@
 		/**
 		 * Removes the role from the user in question.
 		 *
-		 * @param integer $userId Integer identifier of the user in question.
+		 * @param int $userId Integer identifier of the user in question.
 		 * @param string $name Name of the role in question.
 		 * @return void
 		 */
@@ -238,8 +239,8 @@
 
 			$this->tryPdoExcept(function () use ($userId, $role) {
 				$stmt = $this->db->prepareStored(self::SQL_DELUSRROLEBYID);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
-				$stmt->bindParam(':roleId', $role->id, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
+				$stmt->bindParam(':roleId', $role->id);
 				$stmt->execute();
 			}, "Failed to remove user from role");
 
@@ -247,11 +248,11 @@
 		}
 
 		/**
-		 * Checks whether or not the user is a member of the role in question.
+		 * Checks whether the user is a member of the role in question.
 		 *
-		 * @param integer $userId Integer identifier of the user in question.
+		 * @param int $userId Integer identifier of the user in question.
 		 * @param string $name Name of the role in question.
-		 * @return boolean
+		 * @return bool
 		 */
 		public function userInRoleByName(int $userId, string $name) : bool {
 			if ($userId < 1 || empty($name)) {
@@ -268,8 +269,8 @@
 
 			$this->tryPdoExcept(function () use (&$ret, $userId, $role) {
 				$stmt = $this->db->prepareStored(self::SQL_USRINROLEBYID);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
-				$stmt->bindParam(':roleId', $role->id, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
+				$stmt->bindParam(':roleId', $role->id);
 
 				if ($stmt->execute()) {
 					while ($stmt->fetch()) {
