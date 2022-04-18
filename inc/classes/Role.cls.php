@@ -245,7 +245,7 @@
 
 			$this->created = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 			$this->id      = 0;
-			$this->name    = null;
+			$this->name    = '';
 
 			return;
 		}

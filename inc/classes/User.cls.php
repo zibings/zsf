@@ -253,6 +253,7 @@
 			$this->id             = 0;
 			$this->lastActive     = null;
 			$this->lastLogin      = null;
+			$this->email          = '';
 			$this->emailConfirmed = false;
 			$this->joined         = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 
