@@ -22,6 +22,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Exception
 		 * @return Response
 		 */
 		public function addRole(Request $request, array $matches = null) : Response {
@@ -95,6 +96,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Exception
 		 * @return Response
 		 */
 		public function removeRole(Request $request, array $matches = null) : Response {
@@ -128,6 +130,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException
 		 * @return Response
 		 */
 		public function removeUserRole(Request $request, array $matches = null) : Response {
@@ -154,6 +157,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\Exception
 		 * @return Response
 		 */
 		public function removeUserRoles(Request $request, array $matches = null) : Response {
@@ -173,6 +177,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
 		public function setUserRole(Request $request, array $matches = null) : Response {
@@ -201,6 +206,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\Exception
 		 * @return Response
 		 */
 		public function userInRole(Request $request, array $matches = null) : Response {

@@ -44,6 +44,7 @@
 		 * @param UserEvents|null $events Optional UserEvent object for internal use.
 		 * @param UserRoles|null $userRoles Optional UserRoles object for internal use.
 		 * @param UserRelations|null $userRels Optional UserRelations object for internal use.
+		 * @throws \ReflectionException
 		 * @return void
 		 */
 		public function __construct(
@@ -79,6 +80,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
 		public function changeRelation(Request $request, array $matches = null) : Response {
@@ -136,6 +138,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException
 		 * @return Response
 		 */
 		public function checkEmail(Request $request, array $matches = null) : Response {
@@ -159,6 +162,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException
 		 * @return Response
 		 */
 		public function checkToken(Request $request, array $matches = null) : Response {
@@ -191,6 +195,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\Exception
 		 * @return Response
 		 */
 		public function createUser(Request $request, array $matches = null) : Response {
@@ -219,6 +224,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
 		public function deleteRelation(Request $request, array $matches = null) : Response {
@@ -265,6 +271,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
 		public function deleteUser(Request $request, array $matches = null) : Response {
@@ -303,6 +310,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
 		public function get(Request $request, array $matches = null) : Response {
@@ -331,6 +339,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
 		public function getProfile(Request $request, array $matches = null) : Response {
@@ -359,6 +368,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
 		public function getRelations(Request $request, array $matches = null) : Response {
@@ -387,6 +397,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
 		public function getSettings(Request $request, array $matches = null) : Response {
@@ -415,6 +426,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException
 		 * @return Response
 		 */
 		public function login(Request $request, array $matches = null) : Response {
@@ -429,6 +441,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException
 		 * @return Response
 		 */
 		public function logout(Request $request, array $matches = null) : Response {
@@ -444,6 +457,7 @@
 		 * @param Response $ret Response object for request.
 		 * @param string $event Name of UserEvents method to call.
 		 * @param ParameterHelper $params ParameterHelper object to supply to UserEvents method.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException
 		 * @return void
 		 */
 		protected function processEvent(Response &$ret, string $event, ParameterHelper $params) : void {
@@ -491,6 +505,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException
 		 * @return Response
 		 */
 		public function registerUser(Request $request, array $matches = null) : Response {
@@ -504,8 +519,9 @@
 		 * Determines if the user is related to the given identifier.
 		 *
 		 * @param \Stoic\Web\Request $request The current request which routed to the endpoint.
-		 * @param array|null         $matches Array of matches returned by endpoint regex pattern.
-		 * @return \Stoic\Web\Api\Response
+		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
+		 * @return Response
 		 */
 		public function relatedTo(Request $request, array $matches = null) : Response {
 			$user   = $this->getUser();
@@ -527,8 +543,9 @@
 		 * Attempts to remove a relationship between the authenticated user and another.
 		 *
 		 * @param \Stoic\Web\Request $request The current request which routed to the endpoint.
-		 * @param array|null         $matches Array of matches returned by endpoint regex pattern.
-		 * @return \Stoic\Web\Api\Response
+		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
+		 * @return Response
 		 */
 		public function removeRelation(Request $request, array $matches = null) : Response {
 			$user   = $this->getUser();
@@ -551,6 +568,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException
 		 * @return Response
 		 */
 		public function resetPassword(Request $request, array $matches = null) : Response {
@@ -565,6 +583,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
 		public function sendPasswordReset(Request $request, array $matches = null) : Response {
@@ -593,9 +612,10 @@
 		/**
 		 * Sets the stage of relationship between two users.
 		 *
-		 * @param \Stoic\Web\Request $request The current request which routed to the endpoint.
-		 * @param array|null         $matches Array of matches returned by endpoint regex pattern.
-		 * @return \Stoic\Web\Api\Response
+		 * @param Request $request The current request which routed to the endpoint.
+		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
+		 * @return Response
 		 */
 		public function setRelation(Request $request, array $matches = null) : Response {
 			$user   = $this->getUser();

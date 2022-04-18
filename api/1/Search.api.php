@@ -35,6 +35,7 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Exception
 		 * @return Response
 		 */
 		public function searchUsers(Request $request, array $matches = null) : Response {
@@ -54,13 +55,13 @@
 			$userRelations = (new UserRelations($this->db, $this->log))->getRelations($user->id);
 			$userIsAdmin   = (new UserRoles($this->db, $this->log))->userInRoleByName($user->id, RoleStrings::ADMINISTRATOR);
 
-			foreach (array_values($userRelations) as $rel) {
+			foreach ($userRelations as $rel) {
 				if ($rel->stage->is(UserRelationStages::ACCEPTED)) {
 					$userRels[strval(($rel->userOne == $user->id) ? $rel->userTwo : $rel->userOne)] = true;
 				}
 			}
 
-			foreach (array_values($usersRepo->searchUsersByIdentifiers($params->getString('query'), !$userIsAdmin)) as $usd) {
+			foreach ($usersRepo->searchUsersByIdentifiers($params->getString('query'), !$userIsAdmin) as $usd) {
 				$tmp = [
 					'email'          => $usd->email,
 					'emailConfirmed' => $usd->emailConfirmed,
