@@ -14,8 +14,6 @@
 	class ApiAuthorizer extends NodeBase {
 		/**
 		 * Instantiates a new ApiAuthorizer object.
-		 *
-		 * @return void
 		 */
 		public function __construct() {
 			$this->setKey('ApiAuthorizer');
@@ -73,7 +71,7 @@
 
 				$roleRepo = new UserRoles($sender->getDb(), $sender->getLog());
 
-				foreach (array_values($roles) as $r) {
+				foreach ($roles as $r) {
 					if ($roleRepo->userInRoleByName($session->userId, $r)) {
 						$dispatch->authorize();
 

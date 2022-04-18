@@ -33,49 +33,49 @@
 		 *
 		 * @var VisibilityState
 		 */
-		public $birthday;
+		public VisibilityState $birthday;
 		/**
 		 * How visible the user's description/about-me should be.
 		 *
 		 * @var VisibilityState
 		 */
-		public $description;
+		public VisibilityState $description;
 		/**
 		 * How visible the user's email should be.
 		 *
 		 * @var VisibilityState
 		 */
-		public $email;
+		public VisibilityState $email;
 		/**
 		 * How visible the user's gender should be.
 		 *
 		 * @var VisibilityState
 		 */
-		public $gender;
+		public VisibilityState $gender;
 		/**
 		 * How visible the user's profile should be.
 		 *
 		 * @var VisibilityState
 		 */
-		public $profile;
+		public VisibilityState $profile;
 		/**
 		 * How visible the user's real name should be.
 		 *
 		 * @var VisibilityState
 		 */
-		public $realName;
+		public VisibilityState $realName;
 		/**
 		 * How visible the user's search history should be.
 		 *
 		 * @var VisibilityState
 		 */
-		public $searches;
+		public VisibilityState $searches;
 		/**
 		 * Integer identifier of user who owns these visibilities.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $userId;
+		public int $userId;
 
 
 		/**
@@ -84,6 +84,7 @@
 		 * @param integer $userId Integer identifier of user whose visibilities to retrieve.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
+		 * @throws \Exception
 		 * @return UserVisibilities
 		 */
 		public static function fromUser(int $userId, PdoHelper $db, Logger $log = null) : UserVisibilities {
@@ -101,7 +102,7 @@
 		/**
 		 * Determines if the system should attempt to create a UserVisibilities in the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->userId < 1) {
@@ -114,7 +115,7 @@
 		/**
 		 * Determines if the system should attempt to delete a UserVisibilities from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->userId < 1) {
@@ -127,7 +128,7 @@
 		/**
 		 * Determines if the system should attempt to read a UserVisibilities from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
 			if ($this->userId < 1) {
@@ -140,7 +141,7 @@
 		/**
 		 * Determines if the system should attempt to update a UserVisibilities in the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
 			if ($this->userId < 1) {
@@ -149,7 +150,7 @@
 
 			return true;
 		}
-		
+
 		/**
 		 * Initializes a new UserVisibilities object.
 		 *

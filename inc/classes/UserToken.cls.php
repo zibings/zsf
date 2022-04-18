@@ -24,35 +24,35 @@
 		 *
 		 * @var \DateTimeInterface
 		 */
-		public $created;
+		public \DateTimeInterface $created;
 		/**
 		 * General context of token, optional data field.
 		 *
 		 * @var string
 		 */
-		public $context;
+		public string $context;
 		/**
 		 * Integer identifier of token.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $id;
+		public int $id;
 		/**
 		 * String identifier of token.
 		 *
 		 * @var string
 		 */
-		public $token;
+		public string $token;
 		/**
 		 * Integer identifier of token owner.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $userId;
+		public int $userId;
 
 
 		/**
-		 * Whether or not the stored queries have been initialized.
+		 * Whether the stored queries have been initialized.
 		 *
 		 * @var bool
 		 */
@@ -62,9 +62,10 @@
 		/**
 		 * Static method to retrieve a token by its unique integer identifier.
 		 *
-		 * @param integer $id Integer identifier of token to retrieve.
+		 * @param int $id Integer identifier of token to retrieve.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
+		 * @throws \Exception
 		 * @return UserToken
 		 */
 		public static function fromId(int $id, PdoHelper $db, Logger $log = null) : UserToken {
@@ -82,7 +83,7 @@
 		 * Static method to retrieve a token by its string and user identifiers.
 		 *
 		 * @param string $token String identifier of token to retrieve.
-		 * @param integer $userId Integer identifier of user who owns token.
+		 * @param int $userId Integer identifier of user who owns token.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
 		 * @return UserToken
@@ -97,7 +98,7 @@
 			$ret->tryPdoExcept(function () use (&$ret, $token, $userId) {
 				$stmt = $ret->db->prepareStored(self::SQL_SELBYTOKENUID);
 				$stmt->bindParam(':token', $token);
-				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $userId);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -113,7 +114,8 @@
 		/**
 		 * Determines if the system should attempt to create a UserToken in the database.
 		 *
-		 * @return boolean
+		 * @throws \Exception
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->id > 0 || $this->userId < 1 || empty($this->token)) {
@@ -128,7 +130,7 @@
 		/**
 		 * Determines if the system should attempt to delete a UserToken from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->id < 1) {
@@ -141,7 +143,7 @@
 		/**
 		 * Determines if the system should attempt to read a UserToken from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
 			if ($this->id < 1) {
@@ -154,7 +156,7 @@
 		/**
 		 * Determines if the system should attempt to update a UserToken in the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
 			if ($this->id < 1) {
@@ -167,6 +169,7 @@
 		/**
 		 * Initializes a new UserToken object.
 		 *
+		 * @throws \Exception
 		 * @return void
 		 */
 		protected function __setupModel() : void {

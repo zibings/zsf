@@ -34,66 +34,68 @@
 		 *
 		 * @var AuthHistoryActions
 		 */
-		public $action;
+		public AuthHistoryActions $action;
 		/**
 		 * Network address of the user when this action occurred.
 		 *
 		 * @var string
 		 */
-		public $address;
+		public string $address;
 		/**
 		 * Network hostname of the user when this action occurred.
 		 *
 		 * @var string
 		 */
-		public $hostname;
+		public string $hostname;
 		/**
 		 * Any relevant notes from the system when the action occurred.
 		 *
 		 * @var string
 		 */
-		public $notes;
+		public string $notes;
 		/**
 		 * Date and time the action occurred.
 		 *
 		 * @var \DateTimeInterface
 		 */
-		public $recorded;
+		public \DateTimeInterface $recorded;
 		/**
 		 * Integer identifier of the associated user. If not matched, value will be 0.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $userId;
+		public int $userId;
 
 
 		/**
 		 * Static method to create a new history record from a user.
 		 *
 		 * @param User $user User object to use for identifier.
-		 * @param integer|AuthHistoryActions $action The authentication action that is being recorded.
+		 * @param int|AuthHistoryActions $action The authentication action that is being recorded.
 		 * @param ParameterHelper $server The server array which needs to contain the 'REMOTE_ADDR' index.
 		 * @param string $notes Optional notes for the recorded action.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
+		 * @throws \ReflectionException
 		 * @return UserAuthHistory
 		 */
-		public static function createFromUser(User $user, $action, ParameterHelper $server, string $notes, PdoHelper $db, Logger $log = null) : UserAuthHistory {
+		public static function createFromUser(User $user, int|AuthHistoryActions $action, ParameterHelper $server, string $notes, PdoHelper $db, Logger $log = null) : UserAuthHistory {
 			return static::createFromUserId($user->id, $action, $server, $notes, $db, $log);
 		}
 
 		/**
 		 * Static method to create a new history record.
 		 *
-		 * @param integer $userId User identifier to use for recorded action.
-		 * @param integer|AuthHistoryActions $action The authentication action that is being recorded.
+		 * @param int $userId User identifier to use for recorded action.
+		 * @param int|AuthHistoryActions $action The authentication action that is being recorded.
 		 * @param ParameterHelper $server The server array which needs to contain the 'REMOTE_ADDR' index.
 		 * @param string $notes Optional notes for the recorded action.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
+		 * @throws \ReflectionException
 		 * @return UserAuthHistory
 		 */
-		public static function createFromUserId(int $userId, $action, ParameterHelper $server, string $notes, PdoHelper $db, Logger $log = null) : UserAuthHistory {
+		public static function createFromUserId(int $userId, int|AuthHistoryActions $action, ParameterHelper $server, string $notes, PdoHelper $db, Logger $log = null) : UserAuthHistory {
 			$ret = new UserAuthHistory($db, $log);
 			$action = AuthHistoryActions::tryGetEnum($action, AuthHistoryActions::class);
 
@@ -101,11 +103,11 @@
 				return $ret;
 			}
 
-			$ret->action = $action;
-			$ret->address = $server->getString(ServerIndices::REMOTE_ADDR);
+			$ret->action   = $action;
+			$ret->address  = $server->getString(ServerIndices::REMOTE_ADDR);
 			$ret->hostname = gethostbyaddr($ret->address);
-			$ret->notes = $notes ?? '';
-			$ret->userId = $userId;
+			$ret->notes    = $notes ?? '';
+			$ret->userId   = $userId;
 
 			if ($ret->create()->isBad()) {
 				$ret = new UserAuthHistory($db, $log);
@@ -118,10 +120,11 @@
 		/**
 		 * Determines if the system should attempt to create a new UserAuthHistory record in the database.
 		 *
-		 * @return boolean
+		 * @throws \Exception
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
-			if ($this->action === null || $this->action->getValue() === null || $this->userId < 1) {
+			if ($this->action->getValue() === null || $this->userId < 1) {
 				return false;
 			}
 
@@ -133,7 +136,7 @@
 		/**
 		 * Disabled for this model.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
 			return false;
@@ -142,7 +145,7 @@
 		/**
 		 * Disabled for this model.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
 			return false;
@@ -151,7 +154,7 @@
 		/**
 		 * Disabled for this model.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
 			return false;
@@ -160,6 +163,7 @@
 		/**
 		 * Initializes a new UserAuthHistory object.
 		 *
+		 * @throws \Exception
 		 * @return void
 		 */
 		protected function __setupModel() : void {

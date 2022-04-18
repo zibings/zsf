@@ -38,41 +38,41 @@
 		 *
 		 * @var \DateTimeInterface
 		 */
-		public $birthday;
+		public \DateTimeInterface $birthday;
 		/**
 		 * The user's general description/about-me.
 		 *
 		 * @var string
 		 */
-		public $description;
+		public string $description;
 		/**
 		 * The user's friendly display name.
 		 *
 		 * @var string
 		 */
-		public $displayName;
+		public string $displayName;
 		/**
 		 * The user's selected gender.
 		 *
 		 * @var UserGenders
 		 */
-		public $gender;
+		public UserGenders $gender;
 		/**
 		 * The user's real name.
 		 *
 		 * @var string
 		 */
-		public $realName;
+		public string $realName;
 		/**
 		 * Integer identifier of the user.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $userId;
+		public int $userId;
 
 
 		/**
-		 * Whether or not the stored queries have been initialized.
+		 * Whether the stored queries have been initialized.
 		 *
 		 * @var bool
 		 */
@@ -106,9 +106,10 @@
 		/**
 		 * Static method to retrieve a user's profile information.
 		 *
-		 * @param integer $userId Integer identifier of user in question.
+		 * @param int $userId Integer identifier of user in question.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param Logger|null $log Optional Logger instance for internal use, default creates new instance.
+		 * @throws \Exception
 		 * @return UserProfile
 		 */
 		public static function fromUser(int $userId, PdoHelper $db, Logger $log = null) : UserProfile {
@@ -126,7 +127,7 @@
 		 * Static method to validate a string as a display name.
 		 *
 		 * @param string $string String to validate as display name.
-		 * @return boolean
+		 * @return bool
 		 */
 		public static function validDisplayName(string $string) : bool {
 			static $chars = [
@@ -141,7 +142,7 @@
 
 			$len = strlen($string);
 
-			if ($string === null || $len < 3 || $len > 16) {
+			if ($len < 3 || $len > 16) {
 				return false;
 			}
 
@@ -158,7 +159,7 @@
 		/**
 		 * Determines if the system should attempt to create a new UserProfile in the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->userId < 1) {
@@ -169,7 +170,7 @@
 
 			$this->tryPdoExcept(function () use (&$ret) {
 				$stmt = $this->db->prepareStored(self::SQL_SELBYUID);
-				$stmt->bindParam(':userId', $this->userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $this->userId);
 
 				if ($stmt->execute()) {
 					while ($stmt->fetch()) {
@@ -186,7 +187,7 @@
 		/**
 		 * Determines if the system should attempt to delete a UserProfile from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->userId < 1) {
@@ -199,7 +200,7 @@
 		/**
 		 * Determines if the system should attempt to read a UserProfile from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
 			if ($this->userId < 1) {
@@ -212,7 +213,7 @@
 		/**
 		 * Determines if the system should attempt to update a UserProfile in the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
 			if ($this->userId < 1) {
@@ -225,6 +226,7 @@
 		/**
 		 * Initializes a new UserProfile object.
 		 *
+		 * @throws \Exception
 		 * @return void
 		 */
 		protected function __setupModel() : void {

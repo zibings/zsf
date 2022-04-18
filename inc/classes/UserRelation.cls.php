@@ -31,37 +31,38 @@
 		 *
 		 * @var \DateTimeInterface
 		 */
-		public $created;
+		public \DateTimeInterface $created;
 		/**
 		 * Current stage of the user relation.
 		 *
 		 * @var UserRelationStages
 		 */
-		public $stage;
+		public UserRelationStages $stage;
 		/**
-		 * Whether or not this was the originating relation.
+		 * Whether this was the originating relation.
 		 *
-		 * @var boolean
+		 * @var bool
 		 */
-		public $origin;
+		public bool $origin;
 		/**
 		 * Identifier of the user who is the source of this relation.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $userOne;
+		public int $userOne;
 		/**
 		 * Identifier of the user who is the recipient of this relation.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $userTwo;
+		public int $userTwo;
 
 
 		/**
 		 * Determines if the system should attempt to create a UserRelation in the database.
 		 *
-		 * @return boolean
+		 * @throws \Exception
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->userOne < 1 || $this->userTwo < 1 || $this->stage->getValue() === null) {
@@ -76,7 +77,7 @@
 		/**
 		 * Determines if the system should attempt to delete a UserRelation from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->userOne < 1 || $this->userTwo < 1) {
@@ -89,7 +90,7 @@
 		/**
 		 * Determines if the system should attempt to read a UserRelation from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
 			if ($this->userOne < 1 || $this->userTwo < 1) {
@@ -102,7 +103,7 @@
 		/**
 		 * Determines if the system should attempt to update a UserRelation in the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
 			if ($this->userOne < 1 || $this->userTwo < 1 || $this->stage->getValue() === null) {
@@ -115,6 +116,7 @@
 		/**
 		 * Initializes a UserRelation object.
 		 *
+		 * @throws \Exception
 		 * @return void
 		 */
 		protected function __setupModel() : void {

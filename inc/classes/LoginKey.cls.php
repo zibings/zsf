@@ -37,25 +37,25 @@
 		 *
 		 * @var string
 		 */
-		public $key;
+		public string $key;
 		/**
 		 * The type of provider this key represents.
 		 *
 		 * @var LoginKeyProviders
 		 */
-		public $provider;
+		public LoginKeyProviders $provider;
 		/**
 		 * Integer identifier of user who owns this key.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $userId;
+		public int $userId;
 
 
 		/**
-		 * Whether or not the stored queries have been initialized.
+		 * Whether the stored queries have been initialized.
 		 *
-		 * @var int
+		 * @var bool
 		 */
 		private static bool $dbInitialized = false;
 
@@ -63,11 +63,11 @@
 		/**
 		 * Static method to retrieve login key given the user and provider. Returns a blank LoginKey object if no key is found.
 		 *
-		 * @param integer $userId Integer identifier of user who owns key.
-		 * @param integer|LoginKeyProviders $provider Type of provider this key represents.
+		 * @param int $userId Integer identifier of user who owns key.
+		 * @param int|LoginKeyProviders $provider Type of provider this key represents.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
-		 * @throws \InvalidArgumentException Thrown if $provider paramter isn't valid LoginKeyProviders value.
+		 * @throws \InvalidArgumentException|\Exception
 		 * @return LoginKey
 		 */
 		public static function fromUserAndProvider(int $userId, int|LoginKeyProviders $provider, PdoHelper $db, Logger $log = null) : LoginKey {
@@ -79,7 +79,7 @@
 
 			if ($userId > 0) {
 				$ret->userId = $userId;
-				$ret->provider = EnumBase::tryGetEnum($provider, LoginKeyProviders::class);
+				$ret->provider = LoginKeyProviders::tryGet($provider);
 
 				if ($ret->read()->isBad()) {
 					$ret = new LoginKey($db, $log);
@@ -107,8 +107,8 @@
 
 			$this->tryPdoExcept(function () use (&$ret) {
 				$stmt = $this->db->prepareStored(self::SQL_GUPCOUNT);
-				$stmt->bindParam(':userId', $this->userId, \PDO::PARAM_INT);
-				$stmt->bindValue(':provider', $this->provider->getValue(), \PDO::PARAM_INT);
+				$stmt->bindParam(':userId', $this->userId);
+				$stmt->bindValue(':provider', $this->provider->getValue());
 
 				if ($stmt->execute() && $stmt->fetch()[0] > 0) {
 					$ret->addMessage("Found duplicate login key for userId #{$this->userId} and provider '{$this->provider->getName()}");

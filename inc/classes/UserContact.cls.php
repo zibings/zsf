@@ -31,37 +31,38 @@
 		 *
 		 * @var \DateTimeInterface
 		 */
-		public $created;
+		public \DateTimeInterface $created;
 		/**
-		 * Whether or not this is the user's primary method of contact.
+		 * Whether this is the user's primary method of contact.
 		 *
-		 * @var boolean
+		 * @var bool
 		 */
-		public $primary;
+		public bool $primary;
 		/**
 		 * Type of contact.
 		 *
 		 * @var UserContactTypes
 		 */
-		public $type;
+		public UserContactTypes $type;
 		/**
 		 * Integer identifier of the user this contact belongs to.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $userId;
+		public int $userId;
 		/**
 		 * Value of the contact.
 		 *
 		 * @var string
 		 */
-		public $value;
+		public string $value;
 
 
 		/**
 		 * Determines if the system should attempt to create a new UserContact in the database.
 		 *
-		 * @return boolean
+		 * @throws \Exception
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->userId < 1 || empty($this->value) || $this->type->getValue() === null) {
@@ -76,7 +77,7 @@
 		/**
 		 * Determines if the system should attempt to delete a UserContact from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->userId < 1 || $this->type->getValue() === null) {
@@ -89,7 +90,7 @@
 		/**
 		 * Disabled for this model.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
 			return false;
@@ -98,7 +99,7 @@
 		/**
 		 * Disabled for this model.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
 			return false;
@@ -107,6 +108,7 @@
 		/**
 		 * Initializes a new UserContact object.
 		 *
+		 * @throws \Exception
 		 * @return void
 		 */
 		protected function __setupModel() : void {

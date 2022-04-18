@@ -26,43 +26,43 @@
 		 *
 		 * @var string
 		 */
-		public $email;
+		public string $email;
 		/**
-		 * Whether or not the user's current email address has been confirmed as 'real'.
+		 * Whether the user's current email address has been confirmed as 'real'.
 		 *
-		 * @var boolean
+		 * @var bool
 		 */
-		public $emailConfirmed;
+		public bool $emailConfirmed;
 		/**
 		 * Integer identifier for the user within the system.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $id;
+		public int $id;
 		/**
 		 * Date and time the user joined the site.
 		 *
 		 * @var \DateTimeInterface
 		 */
-		public $joined;
+		public \DateTimeInterface $joined;
 		/**
 		 * Last date and time the user was active on the site.  Null if the user has not yet logged in.
 		 *
 		 * @var \DateTimeInterface|null
 		 */
-		public $lastActive;
+		public ?\DateTimeInterface $lastActive;
 		/**
 		 * Last date and time the user logged into the site.  Null if the user has not yet logged in.
 		 *
 		 * @var null|\DateTimeInterface
 		 */
-		public $lastLogin;
+		public ?\DateTimeInterface $lastLogin;
 
 
 		/**
-		 * Whether or not the stored queries have been initialized.
+		 * Whether the stored queries have been initialized.
 		 *
-		 * @var int
+		 * @var bool
 		 */
 		private static bool $dbInitialized = false;
 
@@ -72,7 +72,7 @@
 		 *
 		 * @param string $email Email address value to search for in database.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger $log Optional Logger instance for internal use, new instance created if not supplied.
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created if not supplied.
 		 * @return User
 		 */
 		public static function fromEmail(string $email, PdoHelper $db, Logger $log = null) : User {
@@ -103,7 +103,7 @@
 		/**
 		 * Static method to retrieve a user by their integer identifier. Returns blank user if user not found.
 		 *
-		 * @param integer $id Integer identifier to use when searching the database.
+		 * @param int $id Integer identifier to use when searching the database.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
 		 * @throws \Exception
@@ -124,7 +124,7 @@
 		 * Static method to validate the format of an email address.
 		 *
 		 * @param string $email The email address to validate.
-		 * @return boolean
+		 * @return bool
 		 */
 		public static function validEmail(string $email) : bool {
 			return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
@@ -134,7 +134,7 @@
 		/**
 		 * Determines if system should attempt to create a new User in the database.
 		 *
-		 * @return ReturnHelper
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
 			$ret = new ReturnHelper();
@@ -164,7 +164,7 @@
 		/**
 		 * Determines if the system should attempt to delete a User from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->id < 1) {
@@ -177,7 +177,7 @@
 		/**
 		 * Determines if the system should attempt to read a User from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
 			if ($this->id < 1) {
@@ -190,7 +190,7 @@
 		/**
 		 * Determines if the system should attempt to update a User in the database.
 		 *
-		 * @return ReturnHelper
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
 			$ret = new ReturnHelper();
@@ -204,7 +204,7 @@
 			$this->tryPdoExcept(function () use (&$ret) {
 				$stmt = $this->db->prepareStored(self::SQL_SELBYEMAILNOTID);
 				$stmt->bindValue(':email', $this->email);
-				$stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
+				$stmt->bindValue(':id', $this->id);
 				$stmt->execute();
 
 				if ($stmt->fetch()[0] > 0) {
@@ -272,7 +272,7 @@
 			$this->tryPdoExcept(function () {
 				$stmt = $this->db->prepareStored(self::SQL_UPDATELASTACTIVE);
 				$stmt->bindValue(':today', (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'));
-				$stmt->bindValue(':userId', $this->id, \PDO::PARAM_INT);
+				$stmt->bindValue(':userId', $this->id);
 				$stmt->execute();
 			}, "Failed to mark user as active");
 

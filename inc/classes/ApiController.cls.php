@@ -20,12 +20,10 @@
 		 *
 		 * @param int $status Status code for response data.
 		 * @param null|string $message Optional string message for response data.
-		 * @return void
 		 */
 		public function __construct(
 			public int $status,
-			public null|string $message = "")
-		{
+			public null|string $message = "") {
 			return;
 		}
 	}
@@ -42,7 +40,6 @@
 		 * @param Stoic $stoic Internal instance of Stoic API object.
 		 * @param \PDO $db Internal instance of PDO object.
 		 * @param Logger|null $log Optional internal instance of Logger object, new instance created if not supplied.
-		 * @return void
 		 */
 		public function __construct(protected Stoic $stoic, \PDO $db, Logger $log = null) {
 			parent::__construct($db, $log);
@@ -57,6 +54,7 @@
 		 * @param Response $response Response object to set to error state.
 		 * @param ReturnHelper $rh ReturnHelper object to try pulling messages from.
 		 * @param string $defaultMessage Default message if ReturnHelper object has no messages.
+		 * @throws \ReflectionException
 		 * @return void
 		 */
 		protected function assignReturnHelperError(Response &$response, ReturnHelper $rh, string $defaultMessage) : void {
@@ -72,6 +70,7 @@
 		/**
 		 * Attempts to retrieve the User object from the authorization header.
 		 *
+		 * @throws \Exception
 		 * @return User
 		 */
 		protected function getUser() : User {
@@ -94,8 +93,8 @@
 		}
 
 		/**
-		 * Returns a new StatusResponseData structure instance. Will create a new instance with '0' as the status and an empty string
-		 * as the message if no arguments are provided.
+		 * Returns a new StatusResponseData structure instance. Will create a new instance with '0' as the status and an
+		 * empty string as the message if no arguments are provided.
 		 *
 		 * @param int|null $status Optional status code for response data, will be 0 if not supplied.
 		 * @param null|string $message Optional status message for response data, will be an empty string if not supplied.
@@ -132,13 +131,13 @@
 		 *
 		 * @param ParameterHelper $params ParameterHelper instance to check keys against.
 		 * @param array|string $keys String or array of strings for key(s) to check in ParameterHelper before executing action.
-		 * @param \Closure $callable Callable to execute if key(s) pass existence/value guards.
+		 * @param callable $callable Callable to execute if key(s) pass existence/value guards.
 		 * @param bool $canBeEmpty Optional toggle to allow empty values for key(s).
 		 * @return void
 		 */
 		protected function tryParameterAction(ParameterHelper $params, string|array $keys, callable $callable, bool $canBeEmpty = false) : void {
 			if (is_array($keys)) {
-				foreach (array_values($keys) as $k) {
+				foreach ($keys as $k) {
 					if (!$params->has($k) || ($canBeEmpty === false && empty($params->get($k)))) {
 						return;
 					}

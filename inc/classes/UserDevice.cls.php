@@ -24,47 +24,47 @@
 		 *
 		 * @var \DateTimeInterface
 		 */
-		public $created;
+		public \DateTimeInterface $created;
 		/**
 		 * Unique integer identifier of the device.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $id;
+		public int $id;
 		/**
 		 * String 'identifier' for device, used for distinguishing the type of device.
 		 *
 		 * @var string
 		 */
-		public $identifier;
+		public string $identifier;
 		/**
 		 * Last date and time the device was active on the platform.
 		 *
 		 * @var \DateTimeInterface
 		 */
-		public $lastActive;
+		public \DateTimeInterface $lastActive;
 		/**
 		 * Date and time the device was successfully linked.
 		 *
 		 * @var \DateTimeInterface
 		 */
-		public $linked;
+		public \DateTimeInterface $linked;
 		/**
 		 * String phrase to use when linking device w/o user identifier.
 		 *
 		 * @var string
 		 */
-		public $linkPhrase;
+		public string $linkPhrase;
 		/**
 		 * Integer identifier of the user who owns this device.  Initial value is set to 0 before a user claims the device.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $userId;
+		public int $userId;
 
 
 		/**
-		 * Whether or not the stored queries have been initialized.
+		 * Whether the stored queries have been initialized.
 		 *
 		 * @var bool
 		 */
@@ -74,9 +74,10 @@
 		/**
 		 * Static method to retrieve a device by ID.
 		 *
-		 * @param integer $id Integer identifier of device.
+		 * @param int $id Integer identifier of device.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param null|Logger $log Optional Logger instance for internal use, new instance created if not supplied.
+		 * @throws \Exception
 		 * @return UserDevice
 		 */
 		public static function fromId(int $id, PdoHelper $db, Logger $log = null) : UserDevice {
@@ -124,7 +125,8 @@
 		/**
 		 * Determines if the system should attempt to create a UserDevice in the database.
 		 *
-		 * @return boolean
+		 * @throws \Exception
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->id > 0 || empty($this->linkPhrase) || empty($this->identifier)) {
@@ -139,7 +141,7 @@
 		/**
 		 * Determines if the system should attempt to delete a UserDevice from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->id < 1) {
@@ -152,7 +154,7 @@
 		/**
 		 * Determines if the system should attempt to read a UserDevice from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
 			if ($this->id < 1) {
@@ -165,7 +167,7 @@
 		/**
 		 * Determines if the system should attempt to update a UserDevice in the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
 			if ($this->id < 1) {
@@ -174,10 +176,11 @@
 
 			return true;
 		}
-		
+
 		/**
 		 * Initializes a new UserDevice object.
 		 *
+		 * @throws \Exception
 		 * @return void
 		 */
 		protected function __setupModel() : void {
@@ -216,6 +219,7 @@
 		/**
 		 * Helper method to update the lastActive property.
 		 *
+		 * @throws \Exception
 		 * @return void
 		 */
 		public function touch() : void {

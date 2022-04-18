@@ -22,9 +22,9 @@
 		/**
 		 * Internal static cache of constants.
 		 *
-		 * @var array
+		 * @var null|array
 		 */
-		protected static $constCache = null;
+		protected static ?array $constCache = null;
 
 
 		/**
@@ -32,7 +32,7 @@
 		 *
 		 * @return array
 		 */
-		public static function getConstList() {
+		public static function getConstList() : array {
 			if (static::$constCache === null) {
 				$ref = new \ReflectionClass(get_called_class());
 				static::$constCache = $ref->getConstants();
@@ -57,25 +57,25 @@
 		 *
 		 * @var \DateTimeInterface
 		 */
-		public $created;
+		public \DateTimeInterface $created;
 		/**
 		 * Integer identifier of role.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $id;
+		public int $id;
 		/**
 		 * Friendly name of role.
 		 *
 		 * @var string
 		 */
-		public $name;
+		public string $name;
 
 
 		/**
-		 * Whether or not the stored queries have been initialized.
+		 * Whether the stored queries have been initialized.
 		 *
-		 * @var int
+		 * @var bool
 		 */
 		private static bool $dbInitialized = false;
 
@@ -84,9 +84,10 @@
 		 * Static method to retrieve a role from the database using its identifier. Returns an empty Role object if no role is
 		 * found.
 		 *
-		 * @param integer $id Integer identifier of role to retrieve from database.
+		 * @param int $id Integer identifier of role to retrieve from database.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
+		 * @throws \Exception
 		 * @return Role
 		 */
 		public static function fromId(int $id, PdoHelper $db, Logger $log = null) : Role {
@@ -132,10 +133,11 @@
 		/**
 		 * Determines if the system should attempt to create a new Role in the database.
 		 *
-		 * @return boolean
+		 * @throws \Exception
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
-			if ($this->id > 0 || empty($this->name) || $this->name === null) {
+			if ($this->id > 0 || empty($this->name)) {
 				return false;
 			}
 
@@ -145,12 +147,8 @@
 				$stmt = $this->db->prepareStored(self::SQL_SELBYNAME);
 				$stmt->bindParam(':name', $this->name);
 
-				if ($stmt->execute()) {
-					while ($stmt->fetch()) {
-						$ret = false;
-
-						break;
-					}
+				if ($stmt->execute() && $stmt->fetch() !== false) {
+					$ret = false;
 				}
 			}, "Failed to guard against role duplicate");
 
@@ -164,7 +162,7 @@
 		/**
 		 * Determines if the system should attempt to delete a Role from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->id < 1) {
@@ -177,7 +175,7 @@
 		/**
 		 * Determines if the system should attempt to read a Role from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
 			if ($this->id < 1) {
@@ -190,13 +188,13 @@
 		/**
 		 * Determines if the system should attempt to update a Role in the database.
 		 *
-		 * @return ReturnHelper
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
 			$ret = new ReturnHelper();
 			$ret->makeBad();
 
-			if ($this->id < 1 || empty($this->name) || $this->name === null) {
+			if ($this->id < 1 || empty($this->name)) {
 				$ret->addMessage("Invalid name or identifier for update");
 
 				return $ret;
@@ -205,7 +203,7 @@
 			$this->tryPdoExcept(function () use (&$ret) {
 				$stmt = $this->db->prepareStored(self::SQL_SELBYNAMEID);
 				$stmt->bindValue(':name', $this->name);
-				$stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
+				$stmt->bindValue(':id', $this->id);
 				$stmt->execute();
 
 				if ($stmt->fetch()[0] > 0) {
@@ -221,6 +219,7 @@
 		/**
 		 * Initializes a new Role object before use.
 		 *
+		 * @throws \Exception
 		 * @return void
 		 */
 		protected function __setupModel() : void {

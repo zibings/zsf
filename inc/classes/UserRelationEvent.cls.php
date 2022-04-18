@@ -31,43 +31,44 @@
 		 *
 		 * @var UserRelationEventActions
 		 */
-		public $action;
+		public UserRelationEventActions $action;
 		/**
 		 * Any notes relevant to this action.
 		 *
 		 * @var string
 		 */
-		public $notes;
+		public string $notes;
 		/**
 		 * Date and time this action was recorded.
 		 *
 		 * @var \DateTimeInterface
 		 */
-		public $recorded;
+		public \DateTimeInterface $recorded;
 		/**
 		 * The recorded stage of this relationship.
 		 *
 		 * @var UserRelationStages
 		 */
-		public $stage;
+		public UserRelationStages $stage;
 		/**
 		 * Integer identifier of the first friend.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $userOne;
+		public int $userOne;
 		/**
 		 * Integer identifier of the second friend.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $userTwo;
+		public int $userTwo;
 
 
 		/**
 		 * Determines if the system should attempt to create a UserRelationEvent in the database.
 		 *
-		 * @return boolean
+		 * @throws \Exception
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->userOne < 1 || $this->userTwo < 1 || $this->action->getValue() === null || $this->stage->getValue() === null) {
@@ -82,7 +83,7 @@
 		/**
 		 * Disabled for this model.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
 			return false;
@@ -91,7 +92,7 @@
 		/**
 		 * Disabled for this model.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
 			return false;
@@ -100,7 +101,7 @@
 		/**
 		 * Disabled for this model.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
 			return false;
@@ -109,6 +110,7 @@
 		/**
 		 * Initializes a new UserRelationEvent object.
 		 *
+		 * @throws \Exception
 		 * @return void
 		 */
 		protected function __setupModel() : void {

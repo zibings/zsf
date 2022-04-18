@@ -16,31 +16,32 @@
 	 */
 	class UserSettings extends StoicDbModel {
 		/**
-		 * Whether or not emails should be displayed as HTML.
+		 * Whether emails should be displayed as HTML.
 		 *
-		 * @var boolean
+		 * @var bool
 		 */
-		public $htmlEmails;
+		public bool $htmlEmails;
 		/**
-		 * Whether or not site sound effects should be played.
+		 * Whether site sound effects should be played.
 		 *
-		 * @var boolean
+		 * @var bool
 		 */
-		public $playSounds;
+		public bool $playSounds;
 		/**
 		 * Integer identifier of user who owns these settings.
 		 *
-		 * @var integer
+		 * @var int
 		 */
-		public $userId;
+		public int $userId;
 
 
 		/**
 		 * Static method for retrieving a user's settings.
 		 *
-		 * @param integer $userId Integer identifier for user.
+		 * @param int $userId Integer identifier for user.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
+		 * @throws \Exception
 		 * @return UserSettings
 		 */
 		public static function fromUser(int $userId, PdoHelper $db, Logger $log = null) : UserSettings {
@@ -58,7 +59,7 @@
 		/**
 		 * Determines if the system should attempt to create a UserSettings in the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->userId < 1) {
@@ -71,7 +72,7 @@
 		/**
 		 * Determines if the system should attempt to delete a UserSettings from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
 			if ($this->userId < 1) {
@@ -84,7 +85,7 @@
 		/**
 		 * Determines if the system should attempt to read a UserSettings from the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
 			if ($this->userId < 1) {
@@ -97,7 +98,7 @@
 		/**
 		 * Determines if the system should attempt to update a UserSettings in the database.
 		 *
-		 * @return boolean
+		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
 			if ($this->userId < 1) {
