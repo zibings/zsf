@@ -7,6 +7,8 @@
 	}
 
 	class SettingsStrings {
+		const API_PATH             = 'apiPath';
+		const CURL_SECURE          = 'curlSecure';
 		const DEFAULT_FROM_ADDRESS = 'defaultFromAddress';
 		const DEFAULT_FROM_NAME    = 'defaultFromName';
 		const ENABLE_SMTP          = 'enableSmtp';
