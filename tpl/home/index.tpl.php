@@ -15,4 +15,8 @@
 			<p class="lead">
 				Who do you want to fight today?
 			</p>
+
+			<div class="vue-app">
+				<hello-world msg="component"></hello-world>
+			</div>
 		</div>

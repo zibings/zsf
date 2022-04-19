@@ -28,4 +28,5 @@
 		const TWITCH_SECRET        = 'twitchSecret';
 		const TWITTER_KEY          = 'twitterKey';
 		const TWITTER_SECRET       = 'twitterSecret';
+		const VITE_DEV_HOST        = 'viteDevHost';
 	}

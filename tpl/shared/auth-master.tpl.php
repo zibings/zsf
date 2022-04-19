@@ -21,7 +21,6 @@
 		<link rel="apple-touch-icon" href="<?=$page->getAssetPath('~/assets/img/favicons/apple-touch-icon.png')?>" sizes="180x180" />
 		<link rel="icon" href="<?=$page->getAssetPath('~/assets/img/favicons/favicon-32x32.png')?>" sizes="32x32" type="image/png" />
 		<link rel="icon" href="<?=$page->getAssetPath('~/assets/img/favicons/favicon-16x16.png')?>" sizes="16x16" type="image/png" />
-		<link rel="manifest" href="<?=$page->getAssetPath('~/assets/img/favicons/manifest.json')?>" />
 		<link rel="mask-icon" href="<?=$page->getAssetPath('~/assets/img/favicons/safari-pinned-tab.svg')?>" color="#563d7c" />
 		<link rel="icon" href="<?=$page->getAssetPath('~/assets/img/favicons/favicon.ico')?>" />
 		<meta name="msapplication-config" content="<?=$page->getAssetPath('~/assets/img/favicons/browserconfig.xml')?>" />

@@ -32,6 +32,10 @@
 		<link href="<?=$page->getAssetPath('~/admin/assets/css/icons.min.css')?>" rel="stylesheet" type="text/css"/>
 		<link href="<?=$page->getAssetPath('~/admin/assets/css/app-modern.min.css')?>" rel="stylesheet" type="text/css" id="light-style"/>
 		<link href="<?=$page->getAssetPath('~/admin/assets/css/app-modern-dark.min.css')?>" rel="stylesheet" type="text/css" id="dark-style"/>
+
+		<!-- Vite App -->
+		<?=Zibings\viteInitApp('admin.js', $page, $settings)?>
+
 <?=$this->section('stylesheets')?>
 	</head>
 
