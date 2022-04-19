@@ -177,3 +177,5 @@ composer.lock
 
 # Whatever
 vendor/
+node_modules/
+package-lock.json
