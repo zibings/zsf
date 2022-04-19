@@ -43,7 +43,7 @@
 													</tr>
 												</thead>
 												<tbody>
-<?php foreach (array_values($users) as $usr): ?>													<tr>
+<?php foreach ($users as $usr): ?>													<tr>
 														<td class="text-center">
 															<?=$usr['user']->id?>
 														</td>

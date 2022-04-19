@@ -106,7 +106,7 @@
 													<div class="form-group">
 														<label for="userRoles">Active Roles</label>
 														<select name="userRoles[]" id="userRoles" class="form-control select2 select2-multiple" data-toggle="select2" multiple="multiple">
-<?php foreach (array_values($roles->getAll()) as $role): ?>															<option value="<?=$role->name?>"<?php if (array_key_exists($role->id, $userRoles) !== false): ?> selected<?php endif; ?>><?=$role->name?></option>
+<?php foreach ($roles->getAll() as $role): ?>															<option value="<?=$role->name?>"<?php if (array_key_exists($role->id, $userRoles) !== false): ?> selected<?php endif; ?>><?=$role->name?></option>
 <?php endforeach; ?>
 														</select>
 													</div>
@@ -154,7 +154,7 @@
 												<div class="col-4">
 													<h5>Visibility</h5>
 
-<?php foreach (array_values($visibilitySettings) as $vis): ?>						<div class="form-group">
+<?php foreach ($visibilitySettings as $vis): ?>						<div class="form-group">
 														<label for="<?=$vis['id']?>"><?=$vis['label']?></label>
 														<select name="<?=$vis['id']?>" id="<?=$vis['id']?>" class="form-control" disabled>
 															<option value="<?=VisibilityState::PRV?>"<?php if ($vis['selected']->is(VisibilityState::PRV)): ?> selected<?php endif; ?>>Only Them</option>

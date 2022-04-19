@@ -24,6 +24,7 @@
 	use Stoic\Web\Resources\PageVariables;
 	use Stoic\Web\Stoic;
 
+	use Zibings\SettingsStrings;
 	use Zibings\UserProfile;
 	use Zibings\UserRoles;
 
@@ -84,6 +85,6 @@
 		'reset-password.php'
 	];
 
-	foreach (array_values($pages) as $pg) {
-		PageHelper::getPage($pg)->setTitlePrefix($Settings->get(\Zibings\SettingsStrings::SITE_NAME, 'ZSF'));
+	foreach ($pages as $pg) {
+		PageHelper::getPage($pg)->setTitlePrefix($Settings->get(SettingsStrings::SITE_NAME, 'ZSF'));
 	}

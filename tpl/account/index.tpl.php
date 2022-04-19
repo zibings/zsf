@@ -133,7 +133,7 @@
 					<div class="col-4">
 						<h5>Visibility</h5>
 
-<?php foreach (array_values($visibilitySettings) as $vis): ?>						<div class="form-group">
+<?php foreach ($visibilitySettings as $vis): ?>						<div class="form-group">
 							<label for="<?=$vis['id']?>"><?=$vis['label']?></label>
 							<select name="<?=$vis['id']?>" id="<?=$vis['id']?>" class="form-control">
 								<option value="<?=VisibilityState::PRV?>"<?php if ($vis['selected']->is(VisibilityState::PRV)): ?> selected<?php endif; ?>>Only Me</option>
