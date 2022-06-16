@@ -29,4 +29,5 @@
 		const TWITTER_KEY          = 'twitterKey';
 		const TWITTER_SECRET       = 'twitterSecret';
 		const VITE_DEV_HOST        = 'viteDevHost';
+		const VITE_IS_PROD         = 'viteIsProd';
 	}

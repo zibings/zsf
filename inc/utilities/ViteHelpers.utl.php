@@ -91,6 +91,12 @@
 			return $devCheck;
 		}
 
+		if ($settings->get(SettingsStrings::VITE_IS_PROD, false)) {
+			$devCheck = false;
+
+			return false;
+		}
+
 		$fh     = new FileHelper(STOIC_CORE_PATH);
 		$url    = $fh->pathJoin($settings->get(SettingsStrings::VITE_DEV_HOST, 'http://localhost:3000/'), $fileName);
 		$handle = curl_init($url);
