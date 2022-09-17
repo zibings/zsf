@@ -825,6 +825,13 @@
 				$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
 
 				setcookie(self::STR_COOKIE_TOKEN, $session->token, time() + 31536000, '/', '', $secure, true);
+
+				$ret->addResult([
+					self::STR_HTTP_CODE => HttpStatusCodes::OK,
+					self::STR_DATA      => [
+						self::STR_USERID => $user->id
+					]
+				]);
 			}
 
 			$this->touchEvent(UserEventTypes::LOGIN, new UserEventLoginDispatch($user, $session->token, $this->db, $this->log));
