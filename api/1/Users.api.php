@@ -51,7 +51,18 @@
 			$ret = $this->newResponse();
 
 			if (str_ends_with($matches[0][0], '/Columns')) {
-				$ret->setData($this->users->getColumnsForGetAll());
+				$dat  = [];
+				$cols = $this->users->getColumnsForGetAll();
+
+				foreach ($cols as $col) {
+					$dat[] = [
+						'field'  => $col,
+						'header' => ucwords($col),
+						'filter' => $col !== 'id'
+					];
+				}
+
+				$ret->setData($dat);
 			} else {
 				$ret->setData($this->users->getAll());
 			}
