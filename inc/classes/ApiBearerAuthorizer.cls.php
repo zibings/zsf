@@ -11,12 +11,12 @@
 	 *
 	 * @package Zibings
 	 */
-	class ApiAuthorizer extends NodeBase {
+	class ApiBearerAuthorizer extends NodeBase {
 		/**
 		 * Instantiates a new ApiAuthorizer object.
 		 */
 		public function __construct() {
-			$this->setKey('ApiAuthorizer');
+			$this->setKey('ApiBearerAuthorizer');
 			$this->setVersion('1.0.0');
 
 			return;
