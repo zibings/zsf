@@ -217,6 +217,17 @@
 		}
 
 		/**
+		 * Returns all column names returned by 'getAll' method.
+		 *
+		 * @return array
+		 */
+		public function getColumnsForGetAll() : array {
+			$user = new User($this->db, $this->log);
+
+			return array_keys($user->toSerializableArray());
+		}
+
+		/**
 		 * Retrieves the number of users active today.
 		 *
 		 * @return int
