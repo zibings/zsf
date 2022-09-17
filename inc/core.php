@@ -2,7 +2,8 @@
 
 	$zsfDefaultConstants = [
 		'STOIC_CORE_PATH'       => './',
-		'STOIC_API_AUTH_COOKIE' => false
+		'STOIC_API_AUTH_COOKIE' => false,
+		'STOIC_DISABLE_SESSION' => false
 	];
 
 	foreach ($zsfDefaultConstants as $constant => $default) {

@@ -804,7 +804,7 @@
 				return $ret;
 			}
 
-			if (!defined('STOIC_DISABLE_SESSION')) {
+			if (!STOIC_DISABLE_SESSION) {
 				$_SESSION[self::STR_SESSION_USERID] = $user->id;
 				$_SESSION[self::STR_SESSION_TOKEN]  = $session->token;
 			}
@@ -865,7 +865,7 @@
 				$userId  = $session->getInt(self::STR_SESSION_USERID);
 				$token   = $session->getString(self::STR_SESSION_TOKEN);
 
-				if (!defined('STOIC_DISABLE_SESSION')) {
+				if (!STOIC_DISABLE_SESSION) {
 					if ($session->has(self::STR_SESSION_USERID)) {
 						unset($_SESSION[self::STR_SESSION_USERID]);
 					}

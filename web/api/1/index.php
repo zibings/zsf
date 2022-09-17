@@ -21,7 +21,7 @@
 
 	$authorizer = null;
 
-	if (STOIC_AUTH_API_COOKIE) {
+	if (STOIC_API_AUTH_COOKIE) {
 		$authorizer = new Zibings\ApiCookieAuthorizer();
 	} else {
 		$authorizer = new Zibings\ApiBearerAuthorizer();
