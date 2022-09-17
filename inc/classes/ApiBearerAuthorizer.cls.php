@@ -1,6 +1,6 @@
 <?php
 
-	namespace Zibings;;
+	namespace Zibings;
 
 	use Stoic\Chain\DispatchBase;
 	use Stoic\Chain\NodeBase;
