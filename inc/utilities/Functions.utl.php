@@ -1137,15 +1137,8 @@
 	 * @link https://stackoverflow.com/a/1993772 Original source
 	 */
 	function camelCaseToWords(string $input) : string {
-		$input = ucwords($input);
-		$re = '/(?#! splitCamelCase Rev:20140412)
-           # Split camelCase "words". Two global alternatives. Either g1of2:
-            (?<=[a-z])      # Position is after a lowercase,
-            (?=[A-Z])       # and before an uppercase letter.
-          | (?<=[A-Z])      # Or g2of2; Position is after uppercase,
-            (?=[A-Z][a-z])  # and before upper-then-lower case.
-          /x';
-		$a = preg_split($re, $input);
+		$input = trim(ucwords($input));
+		$a = preg_split('~[^A-Z]+\K|(?=[A-Z][^A-Z]+)~', $input, 0, PREG_SPLIT_NO_EMPTY);
 		
-		return implode(" ", $a);
+		return trim(implode(" ", $a));
 	}

@@ -58,9 +58,14 @@
 
 				foreach ($cols as $col) {
 					$dat[] = [
-						'field'  => $col,
-						'header' => camelCaseToWords($col),
-						'filter' => $col !== 'id'
+						'field'    => $col,
+						'header'   => camelCaseToWords($col),
+						'filter'   => match($col) {
+							'id','emailConfirmed' => false,
+							default => true
+						},
+						'sortable' => $col !== 'emailConfirmed',
+						'display'  => true,
 					];
 				}
 
