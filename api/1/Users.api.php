@@ -11,6 +11,8 @@
 	use Zibings\RoleStrings;
 	use Zibings\Users as ZUsers;
 
+	use function Zibings\camelCaseToWords;
+
 	/**
 	 * API controller that deals with user management endpoints.
 	 *
@@ -57,7 +59,7 @@
 				foreach ($cols as $col) {
 					$dat[] = [
 						'field'  => $col,
-						'header' => ucwords($col),
+						'header' => camelCaseToWords($col),
 						'filter' => $col !== 'id'
 					];
 				}
