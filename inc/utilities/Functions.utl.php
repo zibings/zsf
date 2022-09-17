@@ -1131,7 +1131,7 @@
 	/**
 	 * Splits CamelCase strings into a sentence.
 	 *
-	 * @param string $imput CamelCase string to split.
+	 * @param string $input CamelCase string to split.
 	 * @return string
 	 * 
 	 * @link https://stackoverflow.com/a/1993772 Original source
