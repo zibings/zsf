@@ -7,18 +7,18 @@
 	use Stoic\Web\Resources\ApiAuthorizationDispatch;
 
 	/**
-	 * Processing node that authorizes API requests by bearer token.
+	 * Processing node that authorizes API requests by a session cookie.
 	 *
 	 * @package Zibings
 	 */
-	class ApiBearerAuthorizer extends NodeBase {
+	class ApiCookieAuthorizer extends NodeBase {
 		/**
-		 * Instantiates a new ApiBearerAuthorizer object.
+		 * Instantiates a new ApiCookieAuthorizer object.
 		 *
 		 * @return void
 		 */
 		public function __construct() {
-			$this->setKey('ApiBearerAuthorizer');
+			$this->setKey('ApiCookieAuthorizer');
 			$this->setVersion('1.0.0');
 
 			return;
@@ -28,7 +28,7 @@
 		 * Handles the processing of a given dispatch.
 		 *
 		 * @param mixed $sender Sender data, optional and thus can be 'null'.
-		 * @param DispatchBase $dispatch Dispatch object to process.
+		 * @param \Stoic\Chain\DispatchBase $dispatch Dispatch object to process.
 		 * @throws \Exception
 		 * @return void
 		 */
@@ -37,7 +37,6 @@
 				return;
 			}
 
-			$headers = getallheaders();
 			$roles = $dispatch->getRequiredRoles();
 
 			if ($roles === false) {
@@ -46,9 +45,11 @@
 				return;
 			}
 
-			if (array_key_exists('Authorization', $headers) !== false) {
-				$token = explode(':', base64_decode(str_replace('Bearer ', '', $headers['Authorization'])));
-				$session = UserSession::fromToken($token[1], $sender->getDb(), $sender->getLog());
+			$cookies = $sender->getRequest()->getCookies();
+
+			if ($cookies->has(UserEvents::STR_COOKIE_TOKEN)) {
+				$token    = $cookies->getString(UserEvents::STR_COOKIE_TOKEN, '');
+				$session  = UserSession::fromToken($token, $sender->getDb(), $sender->getLog());
 				$expiryDt = (new \DateTime('now', new \DateTimeZone('UTC')))->sub(new \DateInterval('P1Y'));
 
 				if ($session->id < 1) {
