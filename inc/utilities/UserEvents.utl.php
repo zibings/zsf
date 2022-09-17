@@ -327,6 +327,7 @@
 		const STR_BIRTHDAY       = 'birthday';
 		const STR_CONFIRM_EMAIL  = 'confirmEmail';
 		const STR_CONFIRM_KEY    = 'confirmKey';
+		const STR_COOKIE_TOKEN   = 'zsf_token';
 		const STR_DATA           = 'data';
 		const STR_DESCRIPTION    = 'description';
 		const STR_DISPLAY_NAME   = 'displayName';
@@ -810,14 +811,21 @@
 			}
 
 			$ret->makeGood();
-			$ret->addResult([
-				self::STR_HTTP_CODE => HttpStatusCodes::OK,
-				self::STR_DATA      => [
-					self::STR_USERID => $user->id,
-					self::STR_TOKEN  => $session->token,
-					self::STR_BEARER => base64_encode("{$user->id}:{$session->token}")
-				]
-			]);
+
+			if (!STOIC_API_AUTH_COOKIE) {
+				$ret->addResult([
+					self::STR_HTTP_CODE => HttpStatusCodes::OK,
+					self::STR_DATA      => [
+						self::STR_USERID => $user->id,
+						self::STR_TOKEN  => $session->token,
+						self::STR_BEARER => base64_encode("{$user->id}:{$session->token}")
+					]
+				]);
+			} else {
+				$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+
+				setcookie(self::STR_COOKIE_TOKEN, $session->token, time() + 31536000, '/', '', $secure, true);
+			}
 
 			$this->touchEvent(UserEventTypes::LOGIN, new UserEventLoginDispatch($user, $session->token, $this->db, $this->log));
 
@@ -874,6 +882,10 @@
 						unset($_SESSION[self::STR_SESSION_TOKEN]);
 					}
 				}
+			}
+
+			if (STOIC_API_AUTH_COOKIE) {
+				setcookie(self::STR_COOKIE_TOKEN, '', time() - 3600);
 			}
 
 			if ($userId === null || $token === null) {
