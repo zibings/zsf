@@ -16,10 +16,17 @@
 	 * @var \Stoic\Log\Logger $Log
 	 * @var \AndyM84\Config\ConfigContainer $Settings
 	 */
-
-	$authorizer = new Zibings\ApiAuthorizer();
 	
 	$Api = Stoic::getInstance(STOIC_CORE_PATH);
+
+	$authorizer = null;
+
+	if (STOIC_AUTH_API_COOKIE) {
+		$authorizer = new Zibings\ApiCookieAuthorizer();
+	} else {
+		$authorizer = new Zibings\ApiBearerAuthorizer();
+	}
+
 	$Api->linkAuthorizationNode($authorizer);
 
 	$endpoints = [];

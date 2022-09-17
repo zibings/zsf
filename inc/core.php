@@ -1,7 +1,14 @@
 <?php
 
-	if (!defined('STOIC_CORE_PATH')) {
-		define('STOIC_CORE_PATH', './');
+	$zsfDefaultConstants = [
+		'STOIC_CORE_PATH'       => './',
+		'STOIC_API_AUTH_COOKIE' => false
+	];
+
+	foreach ($zsfDefaultConstants as $constant => $default) {
+		if (!defined($constant)) {
+			define($constant, $default);
+		}
 	}
 
 	$corePath       = STOIC_CORE_PATH;
