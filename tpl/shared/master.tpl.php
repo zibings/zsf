@@ -21,15 +21,15 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<!-- App favicon -->
-		<link rel="shortcut icon" href="<?=$page->getAssetPath('~/admin/assets/images/favicon.ico')?>">
+		<link rel="shortcut icon" href="<?=$page->getAssetPath('~/assets/images/favicon.ico')?>">
 
 		<!-- third party css -->
-		<link href="<?=$page->getAssetPath('~/admin/assets/css/vendor/jquery-jvectormap-1.2.2.css')?>" rel="stylesheet" type="text/css" />
+		<link href="<?=$page->getAssetPath('~/assets/css/vendor/jquery-jvectormap-1.2.2.css')?>" rel="stylesheet" type="text/css" />
 		<!-- third party css end -->
 
 		<!-- App css -->
-		<link href="<?=$page->getAssetPath('~/admin/assets/css/icons.min.css')?>" rel="stylesheet" type="text/css" />
-		<link href="<?=$page->getAssetPath('~/admin/assets/css/app.min.css')?>" rel="stylesheet" type="text/css" id="app-style" />
+		<link href="<?=$page->getAssetPath('~/assets/css/icons.min.css')?>" rel="stylesheet" type="text/css" />
+		<link href="<?=$page->getAssetPath('~/assets/css/app.min.css')?>" rel="stylesheet" type="text/css" id="app-style" />
 
 		<!-- Vite App -->
 		<?=Zibings\viteInitApp('admin.js', $page, $settings)?>
@@ -43,22 +43,22 @@
 			<!-- ========== Left Sidebar Start ========== -->
 			<div class="leftside-menu">
 				<!-- LOGO -->
-				<a href="<?=$page->getAssetPath('~/admin/')?>" class="logo text-center logo-light">
+				<a href="<?=$page->getAssetPath('~/')?>" class="logo text-center logo-light">
 					<span class="logo-lg">
-						<img src="<?=$page->getAssetPath('~/admin/assets/images/logo.png')?>" alt="" height="16">
+						<img src="<?=$page->getAssetPath('~/assets/images/logo.png')?>" alt="" height="16">
 					</span>
 					<span class="logo-sm">
-						<img src="<?=$page->getAssetPath('~/admin/assets/images/logo_sm.png')?>" alt="" height="16">
+						<img src="<?=$page->getAssetPath('~/assets/images/logo_sm.png')?>" alt="" height="16">
 					</span>
 				</a>
 
 				<!-- LOGO -->
-				<a href="<?=$page->getAssetPath('~/admin/')?>" class="logo text-center logo-dark">
+				<a href="<?=$page->getAssetPath('~/')?>" class="logo text-center logo-dark">
 					<span class="logo-lg">
-						<img src="<?=$page->getAssetPath('~/admin/assets/images/logo-dark.png')?>" alt="" height="16">
+						<img src="<?=$page->getAssetPath('~/assets/images/logo-dark.png')?>" alt="" height="16">
 					</span>
 					<span class="logo-sm">
-						<img src="<?=$page->getAssetPath('~/admin/assets/images/logo_sm_dark.png')?>" alt="" height="16">
+						<img src="<?=$page->getAssetPath('~/assets/images/logo_sm_dark.png')?>" alt="" height="16">
 					</span>
 				</a>
 
@@ -68,14 +68,14 @@
 						<li class="side-nav-title side-nav-item">Navigation</li>
 
 						<li class="side-nav-item">
-							<a href="<?=$page->getAssetPath('~/admin/')?>" class="side-nav-link">
+							<a href="<?=$page->getAssetPath('~/')?>" class="side-nav-link">
 								<i class="uil-home-alt"></i>
 								<span> Dashboard </span>
 							</a>
 						</li>
 
 						<li class="side-nav-item">
-							<a href="<?=$page->getAssetPath('~/admin/users.php')?>" class="side-nav-link">
+							<a href="<?=$page->getAssetPath('~/users.php')?>" class="side-nav-link">
 								<i class="uil-user-circle"></i>
 								<span> User Management </span>
 							</a>
@@ -338,7 +338,7 @@
 							<li class="dropdown notification-list">
 								<a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
 									<span class="account-user-avatar">
-										<img src="<?=$page->getAssetPath('~/admin/assets/images/users/avatar-1.jpg')?>" alt="user-image" class="rounded-circle">
+										<img src="<?=$page->getAssetPath('~/assets/images/users/avatar-1.jpg')?>" alt="user-image" class="rounded-circle">
 									</span>
 									<span>
 										<span class="account-user-name"><?=$profile->displayName?></span>
@@ -406,7 +406,7 @@
 								<div class="notification-list">
 									<a href="javascript:void(0);" class="dropdown-item notify-item">
 										<div class="d-flex">
-											<img class="d-flex me-2 rounded-circle" src="<?=$page->getAssetPath('~/admin/assets/images/users/avatar-2.jpg')?>" alt="Generic placeholder image" height="32">
+											<img class="d-flex me-2 rounded-circle" src="<?=$page->getAssetPath('~/assets/images/users/avatar-2.jpg')?>" alt="Generic placeholder image" height="32">
 											<div class="w-100">
 												<h5 class="m-0 font-14">Erwin Brown</h5>
 												<span class="font-12 mb-0">UI Designer</span>
@@ -416,7 +416,7 @@
 
 									<a href="javascript:void(0);" class="dropdown-item notify-item">
 										<div class="d-flex">
-											<img class="d-flex me-2 rounded-circle" src="<?=$page->getAssetPath('~/admin/assets/images/users/avatar-5.jpg')?>" alt="Generic placeholder image" height="32">
+											<img class="d-flex me-2 rounded-circle" src="<?=$page->getAssetPath('~/assets/images/users/avatar-5.jpg')?>" alt="Generic placeholder image" height="32">
 											<div class="w-100">
 												<h5 class="m-0 font-14">Jacob Deo</h5>
 												<span class="font-12 mb-0">Developer</span>
@@ -557,14 +557,14 @@
 		<!-- /End-bar -->
 
 		<!-- bundle -->
-		<script src="<?=$page->getAssetPath('~/admin/assets/js/vendor.min.js')?>"></script>
-		<script src="<?=$page->getAssetPath('~/admin/assets/js/app.min.js')?>"></script>
+		<script src="<?=$page->getAssetPath('~/assets/js/vendor.min.js')?>"></script>
+		<script src="<?=$page->getAssetPath('~/assets/js/app.min.js')?>"></script>
 
 		<!-- third party js -->
-		<!-- <script src="<?=$page->getAssetPath('~/admin/assets/js/vendor/chart.min.js')?>"></script> -->
-		<script src="<?=$page->getAssetPath('~/admin/assets/js/vendor/apexcharts.min.js')?>"></script>
-		<script src="<?=$page->getAssetPath('~/admin/assets/js/vendor/jquery-jvectormap-1.2.2.min.js')?>"></script>
-		<script src="<?=$page->getAssetPath('~/admin/assets/js/vendor/jquery-jvectormap-world-mill-en.js')?>"></script>
+		<!-- <script src="<?=$page->getAssetPath('~/assets/js/vendor/chart.min.js')?>"></script> -->
+		<script src="<?=$page->getAssetPath('~/assets/js/vendor/apexcharts.min.js')?>"></script>
+		<script src="<?=$page->getAssetPath('~/assets/js/vendor/jquery-jvectormap-1.2.2.min.js')?>"></script>
+		<script src="<?=$page->getAssetPath('~/assets/js/vendor/jquery-jvectormap-world-mill-en.js')?>"></script>
 		<!-- third party js ends -->
 
 		<!-- page variables -->

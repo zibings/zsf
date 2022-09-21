@@ -26,7 +26,7 @@
 	];
 
 ?>
-<?php $this->layout('shared::admin-master', ['page' => $page]); ?>
+<?php $this->layout('shared::master', ['page' => $page]); ?>
 
 						<!-- start page title -->
 						<div class="row">
@@ -46,7 +46,7 @@
 										</form>
 									</div>
 									<h4 class="page-title">
-										<a href="<?=$page->getAssetPath('~/admin/users.php')?>">User Management</a>
+										<a href="<?=$page->getAssetPath('~/users.php')?>">User Management</a>
 										&rarr; <?=($get->getString('action') == 'create') ? 'Create New' : "Edit {$profile->displayName}"?></h4>
 								</div>
 							</div>
@@ -68,7 +68,7 @@
 							<div class="col-12">
 								<div class="card">
 									<div class="card-body">
-										<form class="form-account" name="form-account" method="post" action="<?=$page->getAssetPath('~/admin/users.php', ['id' => $currentUser->id, 'action' => $get->getString('action')])?>">
+										<form class="form-account" name="form-account" method="post" action="<?=$page->getAssetPath('~/users.php', ['id' => $currentUser->id, 'action' => $get->getString('action')])?>">
 											<input type="hidden" name="action" value="<?=$get->getString('action')?>" />
 
 											<div class="row">
@@ -184,7 +184,7 @@
 						data: JSON.stringify({ "id": id }),
 						dataType: 'json',
 						success: function (dat) {
-							location.href = "<?=$page->getAssetPath('~/admin/users.php')?>";
+							location.href = "<?=$page->getAssetPath('~/users.php')?>";
 
 							return;
 						},

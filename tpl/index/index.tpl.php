@@ -3,7 +3,7 @@
 	/* @var Stoic\Web\PageHelper $page */
 
 ?>
-<?php $this->layout('shared::admin-master', ['page' => $page]); ?>
+<?php $this->layout('shared::master', ['page' => $page]); ?>
 
 						<!-- start page title -->
 						<div class="row">
@@ -444,10 +444,10 @@
 
 <?php $this->push('scripts') ?>
 		<!-- Apex js -->
-		<script src="<?=$page->getAssetPath('~/admin/assets/js/vendor/apexcharts.min.js')?>"></script>
+		<script src="<?=$page->getAssetPath('~/assets/js/vendor/apexcharts.min.js')?>"></script>
 
 		<!-- Todo js -->
-		<script src="<?=$page->getAssetPath('~/admin/assets/js/ui/component.todo.js')?>"></script>
+		<script src="<?=$page->getAssetPath('~/assets/js/ui/component.todo.js')?>"></script>
 
 		<script type="text/javascript">
 			var colors = ["#727cf5", "#0acf97", "#fa5c7c", "#ffbc00"];

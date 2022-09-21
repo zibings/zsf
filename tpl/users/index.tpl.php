@@ -6,7 +6,7 @@
 	 */
 
 ?>
-<?php $this->layout('shared::admin-master', ['page' => $page]); ?>
+<?php $this->layout('shared::master', ['page' => $page]); ?>
 
 						<!-- start page title -->
 						<div class="row">
@@ -14,7 +14,7 @@
 								<div class="page-title-box">
 									<div class="page-title-right">
 										<form class="form-inline">
-											<a href="<?=$page->getAssetPath('~/admin/users.php', ['action' => 'create'])?>" class="btn btn-outline-primary ml-1" title="Create User">
+											<a href="<?=$page->getAssetPath('~/users.php', ['action' => 'create'])?>" class="btn btn-outline-primary ml-1" title="Create User">
 												Create User &nbsp;
 												<i class="mdi mdi-account-plus"></i>
 											</a>
@@ -48,12 +48,12 @@
 															<?=$usr['user']->id?>
 														</td>
 														<td class="text-center">
-															<a href="<?=$page->getAssetPath('~/admin/users.php', ['id' => $usr['user']->id, 'action' => 'edit'])?>">
+															<a href="<?=$page->getAssetPath('~/users.php', ['id' => $usr['user']->id, 'action' => 'edit'])?>">
 																<?=$usr['profile']->displayName?>
 															</a>
 														</td>
 														<td class="text-center">
-															<a href="<?=$page->getAssetPath('~/admin/users.php', ['id' => $usr['user']->id, 'action' => 'edit'])?>">
+															<a href="<?=$page->getAssetPath('~/users.php', ['id' => $usr['user']->id, 'action' => 'edit'])?>">
 																<?=$usr['user']->email?>
 															</a>
 														</td>
@@ -64,7 +64,7 @@
 															<?php if ($usr['user']->lastLogin !== null): ?><?=$usr['user']->joined->format('M j, Y H:i:s')?><?php else: ?>N/A<?php endif; ?>
 														</td>
 														<td class="text-center">
-															<a href="<?=$page->getAssetPath('~/admin/users.php', ['id' => $usr['user']->id, 'action' => 'edit'])?>" class="btn btn-outline-primary btn-sm ml-1">
+															<a href="<?=$page->getAssetPath('~/users.php', ['id' => $usr['user']->id, 'action' => 'edit'])?>" class="btn btn-outline-primary btn-sm ml-1">
 																<i class="mdi mdi-human-edit"></i>
 															</a>
 
@@ -85,10 +85,10 @@
 
 <?php $this->push('scripts') ?>
 		<!-- Datatables js -->
-		<script src="<?=$page->getAssetPath('~/admin/assets/js/vendor/jquery.dataTables.min.js')?>"></script>
-		<script src="<?=$page->getAssetPath('~/admin/assets/js/vendor/dataTables.bootstrap4.js')?>"></script>
-		<script src="<?=$page->getAssetPath('~/admin/assets/js/vendor/dataTables.responsive.min.js')?>"></script>
-		<script src="<?=$page->getAssetPath('~/admin/assets/js/vendor/responsive.bootstrap4.min.js')?>"></script>
+		<script src="<?=$page->getAssetPath('~/assets/js/vendor/jquery.dataTables.min.js')?>"></script>
+		<script src="<?=$page->getAssetPath('~/assets/js/vendor/dataTables.bootstrap4.js')?>"></script>
+		<script src="<?=$page->getAssetPath('~/assets/js/vendor/dataTables.responsive.min.js')?>"></script>
+		<script src="<?=$page->getAssetPath('~/assets/js/vendor/responsive.bootstrap4.min.js')?>"></script>
 
 		<script type="text/javascript">
 			const doDelete = function (id) {
@@ -100,7 +100,7 @@
 						data: JSON.stringify({ "id": id }),
 						dataType: 'json',
 						success: function (dat) {
-							location.href = "<?=$page->getAssetPath('~/admin/users.php')?>";
+							location.href = "<?=$page->getAssetPath('~/users.php')?>";
 
 							return;
 						},
@@ -132,6 +132,6 @@
 
 <?php $this->push('stylesheets') ?>
 		<!-- Datatables css -->
-		<link href="<?=$page->getAssetPath('~/admin/assets/css/vendor/dataTables.bootstrap4.css')?>" rel="stylesheet" type="text/css" />
-		<link href="<?=$page->getAssetPath('~/admin/assets/css/vendor/responsive.bootstrap4.css')?>" rel="stylesheet" type="text/css" />
+		<link href="<?=$page->getAssetPath('~/assets/css/vendor/dataTables.bootstrap4.css')?>" rel="stylesheet" type="text/css" />
+		<link href="<?=$page->getAssetPath('~/assets/css/vendor/responsive.bootstrap4.css')?>" rel="stylesheet" type="text/css" />
 <?php $this->end() ?>

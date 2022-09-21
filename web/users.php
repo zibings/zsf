@@ -131,7 +131,7 @@
 				}
 			}
 
-			$page->redirectTo("~/admin/users.php?id={$postData['id']}");
+			$page->redirectTo("~/users.php?id={$postData['id']}");
 		}
 
 		$tplVars['message'] = implode("<br />", $update->getMessages());
