@@ -97,7 +97,7 @@
 		$adapter->disconnect();
 
 		if (empty($userProfile->email)) {
-			$page->redirectTo('~/index.php?error=CALLBACK_INVALID_EMAIL');
+			$page->redirectTo('~/?error=CALLBACK_INVALID_EMAIL');
 		}
 
 		$postData = [
@@ -113,7 +113,7 @@
 		curl_close($ch);
 
 		if ($meta['http_code'] != 200 || $resp['status'] > 0) {
-			$page->redirectTo('~/Account/Login?error=CALLBACK_BAD_RESPONSE&code=' . $meta['http_code'] . '&status=' . $resp['status']);
+			$page->redirectTo('~/login.php?error=CALLBACK_BAD_RESPONSE&code=' . $meta['http_code'] . '&status=' . $resp['status']);
 		}
 
 		// TODO: Fix this, same as getCurlApiResource approach (use SS as example)
