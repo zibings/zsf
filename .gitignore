@@ -184,3 +184,9 @@ package-lock.json
 admin/
 web/assets/
 web/index.html
+web/data/
+web/images/
+web/layout/
+web/themes/
+web/config.json
+web/favicon.ico
