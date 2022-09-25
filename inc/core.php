@@ -24,29 +24,23 @@
 
 	use AndyM84\Config\ConfigContainer;
 
-	use League\Plates\Engine;
-
 	use Stoic\Log\Logger;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Utilities\ParameterHelper;
-	use Stoic\Web\PageHelper;
 	use Stoic\Web\Resources\PageVariables;
 	use Stoic\Web\Stoic;
 
-	use Zibings\SettingsStrings;
 	use Zibings\UserProfile;
-	use Zibings\UserRoles;
 
 	use function Zibings\getUserFromSessionToken;
 
-	global $Db, $Log, $Settings, $Stoic, $Tpl, $User, $Profile;
+	global $Db, $Log, $Settings, $Stoic, $User, $Profile;
 
 	/**
 	 * @var PdoHelper $Db
 	 * @var Logger $Log
 	 * @var ConfigContainer $Settings
 	 * @var Stoic $Stoic
-	 * @var Engine $Tpl
 	 * @var \Zibings\User $User
 	 * @var \Zibings\UserProfile $Profile
 	 */
@@ -70,30 +64,4 @@
 		}
 
 		$User->markActive();
-	}
-
-	$Tpl = new Engine(null, 'tpl.php');
-	$Tpl->addFolder('shared', STOIC_CORE_PATH . '/tpl/shared');
-	$Tpl->addData([
-		'get'       => $Stoic->getRequest()->getGet(),
-		'post'      => $Stoic->getRequest()->getPost(),
-		'profile'   => $Profile,
-		'request'   => $Stoic->getRequest(),
-		'session'   => $Session,
-		'settings'  => $Settings,
-		'user'      => $User,
-		'userRoles' => new UserRoles($Db, $Log)
-	]);
-
-	$pages = [
-		'account.php',
-		'confirm-email.php',
-		'home.php',
-		'index.php',
-		'register.php',
-		'reset-password.php'
-	];
-
-	foreach ($pages as $pg) {
-		PageHelper::getPage($pg)->setTitlePrefix($Settings->get(SettingsStrings::SITE_NAME, 'ZSF'));
 	}

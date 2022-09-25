@@ -1,3 +1,9 @@
+if (!(Test-Path ./admin)) {
+  Write-Host "No admin detected, nothing to build"
+
+  Exit
+}
+
 Write-Host "Cleaning output files.. " -NoNewLine
 
 $toDelete = @{
