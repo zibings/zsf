@@ -13,6 +13,7 @@
 
 	use Zibings\ApiController;
 	use Zibings\AuthHistoryActions;
+	use Zibings\LoginKeyProviders;
 	use Zibings\RoleStrings;
 	use Zibings\User;
 	use Zibings\UserAuthHistory;
@@ -26,6 +27,7 @@
 	use Zibings\UserRoles;
 	use Zibings\UserSession;
 	use Zibings\UserSettings;
+	use Zibings\UserVisibilities;
 
 	use function Zibings\sendResetEmail;
 
@@ -480,22 +482,23 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('GET',  '/^Account\/CheckEmail\/?/i',        'checkEmail',        null);
-			$this->registerEndpoint('POST', '/^Account\/CheckToken\/?/i',        'checkToken',        null);
-			$this->registerEndpoint('POST', '/^Account\/Create\/?/i',            'createUser',        RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('POST', '/^Account\/Delete\/?/i',            'deleteUser',        true);
-			$this->registerEndpoint('POST', '/^Account\/Login\/?/i',             'login',             null);
-			$this->registerEndpoint('POST', '/^Account\/Logout\/?/i',            'logout',            true);
-			$this->registerEndpoint('GET',  '/^Account\/Profile\/?/i',           'getProfile',        true);
-			$this->registerEndpoint('POST', '/^Account\/Register\/?/i',          'registerUser',      null);
-			$this->registerEndpoint('GET',  '/^Account\/Relations\/?/i',         'getRelations',      true);
-			$this->registerEndpoint('GET',  '/^Account\/RelatedTo\/?/i',         'relatedTo',         true);
-			$this->registerEndpoint('POST', '/^Account\/RemoveRelation\/?/i',    'removeRelation',    true);
-			$this->registerEndpoint('POST', '/^Account\/ResetPassword\/?/i',     'resetPassword',     false);
-			$this->registerEndpoint('POST', '/^Account\/SendPasswordReset\/?/i', 'sendPasswordReset', false);
-			$this->registerEndpoint('GET',  '/^Account\/Settings\/?/i',          'getSettings',       true);
-			$this->registerEndpoint('POST', '/^Account\/SetRelation\/?/i',       'setRelation',       true);
-			$this->registerEndpoint('GET',  '/^Account\/?/i',                    'get',               true);
+			$this->registerEndpoint('GET',  '/^\/?Account\/CheckEmail\/?/i',        'checkEmail',        null);
+			$this->registerEndpoint('POST', '/^\/?Account\/CheckToken\/?/i',        'checkToken',        null);
+			$this->registerEndpoint('POST', '/^\/?Account\/Create\/?/i',            'createUser',        RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^\/?Account\/Delete\/?/i',            'deleteUser',        true);
+			$this->registerEndpoint('POST', '/^\/?Account\/Login\/?/i',             'login',             null);
+			$this->registerEndpoint('POST', '/^\/?Account\/Logout\/?/i',            'logout',            true);
+			$this->registerEndpoint('GET',  '/^\/?Account\/Profile\/?/i',           'getProfile',        true);
+			$this->registerEndpoint('POST', '/^\/?Account\/Register\/?/i',          'registerUser',      null);
+			$this->registerEndpoint('GET',  '/^\/?Account\/Relations\/?/i',         'getRelations',      true);
+			$this->registerEndpoint('GET',  '/^\/?Account\/RelatedTo\/?/i',         'relatedTo',         true);
+			$this->registerEndpoint('POST', '/^\/?Account\/RemoveRelation\/?/i',    'removeRelation',    true);
+			$this->registerEndpoint('POST', '/^\/?Account\/ResetPassword\/?/i',     'resetPassword',     false);
+			$this->registerEndpoint('POST', '/^\/?Account\/SendPasswordReset\/?/i', 'sendPasswordReset', false);
+			$this->registerEndpoint('GET',  '/^\/?Account\/Settings\/?/i',          'getSettings',       true);
+			$this->registerEndpoint('POST', '/^\/?Account\/SetRelation\/?/i',       'setRelation',       true);
+			$this->registerEndpoint('POST', '/^\/?Account\/Update\/?/i',            'update',            true);
+			$this->registerEndpoint('GET',  '/^\/?Account\/?/i',                    'get',               true);
 
 			return;
 		}
@@ -630,6 +633,79 @@
 			}
 
 			$ret->setData($rels->changeStage($user->id, $params->getInt('id'), $params->getInt('stage')));
+
+			return $ret;
+		}
+
+		/**
+		 * Attempts to update a user's account details.
+		 *
+		 * @param Request $request The current request which routed to the endpoint.
+		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Exception
+		 * @throws \ReflectionException
+		 * @throws \Stoic\Web\Resources\InvalidRequestException
+		 * @throws \Stoic\Web\Resources\NonJsonInputException
+		 * @return Response
+		 */
+		public function update(Request $request, array $matches = null) : Response {
+			$user   = $this->getUser();
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
+
+			if ($user->id < 1) {
+				$ret->setAsError("Invalid user identifier provided");
+
+				return $ret;
+			}
+
+			$userEvents = new UserEvents($this->db, $this->log);
+			$userVis    = UserVisibilities::fromUser($user->id, $this->db, $this->log);
+
+			$postData = [
+				'id'             => $user->id,
+				'email'          => $params->getString('email'),
+				'confirmEmail'   => $params->getString('email'),
+				'emailConfirmed' => true,
+				'key'            => $params->getString('password'),
+				'confirmKey'     => $params->getString('password'),
+				'oldKey'         => $params->getString('oldPassword'),
+				'provider'       => LoginKeyProviders::PASSWORD,
+				'profile'        => [
+					'birthday'     => $params->getString('birthday'),
+					'description'  => $params->getString('description'),
+					'displayName'  => $params->getString('displayName'),
+					'gender'       => $params->getInt('gender'),
+					'realName'     => $params->getString('realName')
+				],
+				'settings'       => [
+					'htmlEmails'   => $params->has('set_htmlEmails'),
+					'playSounds'   => $params->has('set_playSounds')
+				],
+				'visibilities'   => [
+					'birthday'     => $params->getInt('vis_birthday',    $userVis->birthday->getValue()),
+					'description'  => $params->getInt('vis_description', $userVis->description->getValue()),
+					'email'        => $params->getInt('vis_email',       $userVis->email->getValue()),
+					'gender'       => $params->getInt('vis_gender',      $userVis->gender->getValue()),
+					'profile'      => $params->getInt('vis_profile',     $userVis->profile->getValue()),
+					'realName'     => $params->getInt('vis_realName',    $userVis->realName->getValue()),
+					'searches'     => $params->getInt('vis_searches',    $userVis->searches->getValue())
+				]
+			];
+
+			$update = $userEvents->doUpdate(new ParameterHelper($postData));
+
+			if ($update->isBad()) {
+				if ($update->hasMessages()) {
+					$ret->setAsError($update->getMessages()[0]);
+				} else {
+					$ret->setAsError("Failed to update account info");
+				}
+
+				return $ret;
+			}
+
+			$ret->setData("Account info updated successfully");
 
 			return $ret;
 		}

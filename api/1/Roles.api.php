@@ -78,15 +78,15 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('POST', '/^Roles\/Add\/?/i',                       'addRole',         RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('GET',  '/^Roles\/GetRoles\/?/i',                  'getRoles',        RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('GET',  '/^Roles\/GetUserRoles\/([0-9]{1,})\/?/i', 'getUserRoles',    RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('POST', '/^Roles\/RemoveUserRoles\/?/i',           'removeUserRoles', RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('POST', '/^Roles\/RemoveUserRole\/?/i',            'removeUserRole',  RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('POST', '/^Roles\/Remove\/?/i',                    'removeRole',      RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('POST', '/^Roles\/SetUserRole\/?/i',               'setUserRole',     RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('POST', '/^Roles\/UserInRole\/?/i',                'userInRole',      RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('GET',  '/^Roles\/UsersInRole\/([a-z]{3,})\/?/i',  'usersInRole',     RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^\/?Roles\/Add\/?/i',                       'addRole',         RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('GET',  '/^\/?Roles\/GetRoles\/?/i',                  'getRoles',        RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('GET',  '/^\/?Roles\/GetUserRoles\/([0-9]{1,})\/?/i', 'getUserRoles',    RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^\/?Roles\/RemoveUserRoles\/?/i',           'removeUserRoles', RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^\/?Roles\/RemoveUserRole\/?/i',            'removeUserRole',  RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^\/?Roles\/Remove\/?/i',                    'removeRole',      RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^\/?Roles\/SetUserRole\/?/i',               'setUserRole',     RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^\/?Roles\/UserInRole\/?/i',                'userInRole',      RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('GET',  '/^\/?Roles\/UsersInRole\/([a-z]{3,})\/?/i',  'usersInRole',     RoleStrings::ADMINISTRATOR);
 
 			return;
 		}
