@@ -35,6 +35,21 @@ EXAMPLE
 		"API version",
 		"The API version to scan for OpenAPI specifications",
 		true
+	)->addOption(
+		"output-file",
+		"o",
+		"output",
+		"Output file for spec",
+		"Optional file to write spec to when finished (will overwrite)",
+		false
+	)->addOption(
+		"format",
+		"f",
+		"format",
+		"Output format (json or yaml)",
+		"Format to use for OpenAPI spec output",
+		false,
+		"json"
 	);
 
 	$script->startScript($ch);
@@ -49,9 +64,32 @@ EXAMPLE
 		exit;
 	}
 
+	$ch->put("Collecting API controllers.. ");
+
 	$Stoic->loadFilesByExtension("~/api/{$params['version']}", '.api.php');
+
+	$ch->putLine("DONE");
+	$ch->put("Generating OpenAPI spec from controllers.. ");
 
 	$oa = (new \OpenApi\Generator($Log))
 				->generate(['./']);
 
-	echo $oa->toJson();
+	$ch->putLine("DONE");
+	$ch->put("Gathering spec for output.. ");
+
+	$output = (strtolower($params["format"]) == "json") ? $oa->toJson() : $oa->toYaml();
+
+	$ch->putLine("DONE");
+
+	if (array_key_exists("output", $params) !== false) {
+		$ch->put("Writing OpenAPI spec to file '{$params["output"]}'.. ");
+
+		$fh->putContents($params["output"], $output);
+
+		$ch->putLine("DONE");
+	} else {
+		$ch->putLine();
+		$ch->putLine($output);
+	}
+
+	$ch->putLine();
