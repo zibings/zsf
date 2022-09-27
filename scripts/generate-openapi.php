@@ -81,7 +81,7 @@ EXAMPLE
 
 	$ch->putLine("DONE");
 
-	if (array_key_exists("output", $params) !== false) {
+	if (!empty($params["output"])) {
 		$ch->put("Writing OpenAPI spec to file '{$params["output"]}'.. ");
 
 		$fh->putContents($params["output"], $output);
