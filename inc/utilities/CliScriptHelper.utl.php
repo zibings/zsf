@@ -150,7 +150,7 @@
 					}
 				}
 
-				$this->showBasicHelp($ch, "Must include " . implode(', ', array_values($required)) . " arguments");
+				$this->showBasicHelp($ch, "Must include " . implode(', ', array_values($required)) . " argument(s)");
 
 				exit;
 			}
@@ -266,18 +266,24 @@
 				}
 			}
 
-			$ch->putLine("Required Arguments:");
-			$ch->putLine(implode(PHP_EOL, array_values($required)));
-			$ch->putLine();
+			if (count($required) > 0) {
+				$ch->putLine("Required Arguments:");
+				$ch->putLine(implode(PHP_EOL, array_values($required)));
+				$ch->putLine();
+			}
 
-			$ch->putLine("Optional Arguments:");
-			$ch->putLine(implode(PHP_EOL, array_values($optional)));
-			$ch->putLine();
+			if (count($optional) > 0) {
+				$ch->putLine("Optional Arguments:");
+				$ch->putLine(implode(PHP_EOL, array_values($optional)));
+				$ch->putLine();
+			}
 
-			$ch->putLine("Examples:");
-			$ch->putLine();
-			$ch->putLine(implode(PHP_EOL . PHP_EOL, array_values($this->examples)));
-			$ch->putLine();
+			if (count($this->examples) > 0) {
+				$ch->putLine("Examples:");
+				$ch->putLine();
+				$ch->putLine(implode(PHP_EOL . PHP_EOL, array_values($this->examples)));
+				$ch->putLine();
+			}
 
 			return $this;
 		}

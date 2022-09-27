@@ -3,14 +3,13 @@
 	error_reporting(E_ALL);
 	ini_set('display_errors', 'On');
 
-	define('CORE_PATH', './');
+	const CORE_PATH = './';
 	require(CORE_PATH . 'inc/core.php');
 
 	use Stoic\Utilities\ConsoleHelper;
-	use Stoic\Utilities\LogFileAppender;
 	use Stoic\Utilities\ParameterHelper;
+
 	use Zibings\CliScriptHelper;
-	use Zibings\LoginKey;
 	use Zibings\LoginKeyProviders;
 	use Zibings\RoleStrings;
 	use Zibings\User;
@@ -18,13 +17,12 @@
 	use Zibings\UserProfile;
 	use Zibings\UserRoles;
 
-	global $Db, $Log, $Settings, $Stoic;
+	global $Db, $Log, $Stoic;
 
 	/**
-	 * @var \Stoic\Pdo\PdoHelper            $Db
-	 * @var \Stoic\Log\Logger               $Log
-	 * @var \AndyM84\Config\ConfigContainer $Settings
-	 * @var \Stoic\Web\Stoic                $Stoic
+	 * @var \Stoic\Pdo\PdoHelper $Db
+	 * @var \Stoic\Log\Logger $Log
+	 * @var \Stoic\Web\Stoic $Stoic
 	 */
 
 	$ch     = new ConsoleHelper($argv);
@@ -50,7 +48,7 @@ EXAMPLE
 		"ni",
 		"non-interactive",
 		"Runs script without asking for user input",
-		"Attempts to add user without prompting user for input. Requires "
+		"Attempts to add user without prompting user for input (requires other options be supplied)"
 	)->addOption(
 		"email",
 		"e",
