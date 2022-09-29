@@ -55,13 +55,16 @@
 	$Db       = $Stoic->getDb();
 	$Session  = new ParameterHelper($_SESSION);
 	$Settings = $Stoic->getConfig();
-	$User     = getUserFromSessionToken($Session, $Db, $Log);
-	$Profile  = ($User->id > 0) ? UserProfile::fromUser($User->id, $Db, $Log) : new UserProfile($Db, $Log);
 
-	if ($User->id > 0) {
-		if (empty($Profile->displayName)) {
-			$Profile->displayName = "*{$User->email}";
+	if ($Db->isActive()) {
+		$User     = getUserFromSessionToken($Session, $Db, $Log);
+		$Profile  = ($User->id > 0) ? UserProfile::fromUser($User->id, $Db, $Log) : new UserProfile($Db, $Log);
+
+		if ($User->id > 0) {
+			if (empty($Profile->displayName)) {
+				$Profile->displayName = "*{$User->email}";
+			}
+
+			$User->markActive();
 		}
-
-		$User->markActive();
 	}
