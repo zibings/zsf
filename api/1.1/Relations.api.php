@@ -58,7 +58,7 @@
 		 * Attempts to retrieve any relations for the given user.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Relations",
+		 *   path="/Relations",
 		 *   operationId="getRelations",
 		 *   summary="Retrieve any user relations",
 		 *   description="Retrieve any user relations",
@@ -127,7 +127,7 @@
 		 * Determines if the user is related to the given identifier.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Relations/RelatedTo",
+		 *   path="/Relations/RelatedTo",
 		 *   operationId="getRelatedTo",
 		 *   summary="Checks if users are related",
 		 *   description="Checks if users are related",
@@ -171,7 +171,7 @@
 		 * Attempts to remove a relationship between the authenticated user and another.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Relations/Remove",
+		 *   path="/Relations/Remove",
 		 *   operationId="removeRelation",
 		 *   summary="Removes the given relationship",
 		 *   description="Removes the given relationship",
@@ -215,7 +215,7 @@
 		 * Sets the stage of relationship between two users.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Relations/Set",
+		 *   path="/Relations/Set",
 		 *   operationId="setRelation",
 		 *   summary="Set stage of relationship",
 		 *   description="Set stage of relationship",

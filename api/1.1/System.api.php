@@ -52,7 +52,7 @@
 		 * Retrieves basic dashboard statistics for administrators.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/System/DashboardMetrics",
+		 *   path="/System/DashboardMetrics",
 		 *   operationId="getDashboardMetrics",
 		 *   summary="Returns some basic metrics",
 		 *   description="Returns basic metrics for an admin dashboard",
@@ -90,7 +90,7 @@
 		 * Returns the currently configured system version.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/System/Version",
+		 *   path="/System/Version",
 		 *   operationId="getVersion",
 		 *   summary="Returns defined system version",
 		 *   description="Returns system version as defined in the siteSettings file",

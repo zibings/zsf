@@ -41,7 +41,7 @@
 		 * Searches database for users who are visible.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Search/Users",
+		 *   path="/Search/Users",
 		 *   operationId="searchUsers",
 		 *   summary="Search visible users",
 		 *   description="Search users who are configured as visible in the system",
@@ -149,7 +149,7 @@
 		 * Searches database for users who are visible.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Search/Users/Admin",
+		 *   path="/Search/Users/Admin",
 		 *   operationId="searchUsersAdmin",
 		 *   summary="Search all users",
 		 *   description="Search all users in the system",

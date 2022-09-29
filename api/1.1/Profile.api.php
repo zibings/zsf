@@ -54,7 +54,7 @@
 		 * Attempts to retrieve a user's profile information, only works for current user and administrators.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Profile",
+		 *   path="/Profile",
 		 *   operationId="getProfile",
 		 *   summary="Retrieves user's profile information",
 		 *   description="Retrieves user's profile information",
@@ -119,7 +119,7 @@
 		 * Attempts to update a user's settings
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Profile",
+		 *   path="/Profile",
 		 *   operationId="updateProfile",
 		 *   summary="Update user profile",
 		 *   description="Update user profile",

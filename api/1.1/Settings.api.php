@@ -62,7 +62,7 @@
 		 * Attempts to retrieve a user's settings, only works for current user and administrators.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Settings",
+		 *   path="/Settings",
 		 *   operationId="getSettings",
 		 *   summary="Retrieve's a user's settings",
 		 *   description="Retrieve's a user's settings",
@@ -124,7 +124,7 @@
 		 * Attempts to update a user's settings
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Settings",
+		 *   path="/Settings",
 		 *   operationId="updateSettings",
 		 *   summary="Update user settings",
 		 *   description="Update user settings",

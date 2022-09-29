@@ -76,7 +76,7 @@
 		 * Checks if an email is valid and in-use, returning a status of 0 only if it is both valid and currently not in use.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Account/CheckEmail",
+		 *   path="/Account/CheckEmail",
 		 *   operationId="checkEmail",
 		 *   summary="Check if an email is valid and not in-use",
 		 *   description="Check if an email is valid and not in-use",
@@ -120,7 +120,7 @@
 		 * Checks if the given token is valid for the given user identifier.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Account/CheckToken",
+		 *   path="/Account/CheckToken",
 		 *   operationId="checkToken",
 		 *   summary="Check if a token is valid for a user",
 		 *   description="Check if a token is valid for a user",
@@ -178,7 +178,7 @@
 		 * Attempts to create a user in the system, only callable by administrators.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Account/Create",
+		 *   path="/Account/Create",
 		 *   operationId="createUser",
 		 *   summary="Creates a new user in the system",
 		 *   description="Creates a new user in the system",
@@ -243,7 +243,7 @@
 		 * Attempts to remove a user from the system.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Account/Delete",
+		 *   path="/Account/Delete",
 		 *   operationId="deleteUser",
 		 *   summary="Removes user from system",
 		 *   description="Removes user from system",
@@ -302,7 +302,7 @@
 		 * Attempts to retrieve a user's account information, only works for current user and administrators.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Account",
+		 *   path="/Account",
 		 *   operationId="getAccount",
 		 *   tags={"Account"},
 		 *   @OA\Parameter(
@@ -352,7 +352,7 @@
 		 * Attempts to log the user into the system, returning either error information or the user ID and token.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Account/Login",
+		 *   path="/Account/Login",
 		 *   operationId="Login",
 		 *   summary="Logs user into system",
 		 *   description="Logs user into system",
@@ -394,7 +394,7 @@
 		 * Attempts to log the current user out, returning error information or a success message.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Account/Logout",
+		 *   path="/Account/Logout",
 		 *   operationId="Logout",
 		 *   summary="Logs current user out of system",
 		 *   description="Logs current user out of system",
@@ -478,7 +478,7 @@
 		 * Attempts to register a user with the system.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Account/Register",
+		 *   path="/Account/Register",
 		 *   operationId="registerUser",
 		 *   summary="Registers user with system",
 		 *   description="Registers user with system",
@@ -523,7 +523,7 @@
 		 * Attempts to reset the user's password.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Account/ResetPassword",
+		 *   path="/Account/ResetPassword",
 		 *   operationId="resetPassword",
 		 *   summary="Resets a user's password",
 		 *   description="Resets a user's password",
@@ -564,7 +564,7 @@
 		 * Attempts to send the user a password reset token.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Account/SendPasswordReset",
+		 *   path="/Account/SendPasswordReset",
 		 *   operationId="sendPasswordReset",
 		 *   summary="Sends user a password reset token",
 		 *   description="Sends user a password reset token",
@@ -615,7 +615,7 @@
 		 * Attempts to update a user's account details.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Account/Update",
+		 *   path="/Account/Update",
 		 *   operationId="updateAccount",
 		 *   summary="Updates a user's account details",
 		 *   description="Updates a user's account details",

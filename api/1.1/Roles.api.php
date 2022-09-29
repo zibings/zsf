@@ -28,7 +28,7 @@
 		 * Attempts to add a new role to the system.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Roles/Add",
+		 *   path="/Roles/Add",
 		 *   operationId="addRole",
 		 *   summary="Add new role to system",
 		 *   description="Add new role to system",
@@ -83,7 +83,7 @@
 		 * Retrieves all roles in the database.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Roles",
+		 *   path="/Roles",
 		 *   operationId="getRoles",
 		 *   summary="Retrieves all roles",
 		 *   description="Retrieves all roles",
@@ -118,7 +118,7 @@
 		 * Retrieves any roles in the database for the given user.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Roles/UserRoles/{userId}",
+		 *   path="/Roles/UserRoles/{userId}",
 		 *   operationId="getUserRoles",
 		 *   summary="Retrieve user roles",
 		 *   description="Retrieve user roles",
@@ -179,7 +179,7 @@
 		 * Attempts to remove a role from the system.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Roles/Remove",
+		 *   path="/Roles/Remove",
 		 *   operationId="removeRole",
 		 *   summary="Remove role from system",
 		 *   description="Remove role from system",
@@ -238,7 +238,7 @@
 		 * Removes role for given user, if present.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Roles/RemoveUserRole",
+		 *   path="/Roles/RemoveUserRole",
 		 *   operationId="removeUserRole",
 		 *   summary="Removes role for given user",
 		 *   description="Removes role for given user",
@@ -286,7 +286,7 @@
 		 * Removes all roles for given user.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Roles/RemoveUserRoles",
+		 *   path="/Roles/RemoveUserRoles",
 		 *   operationId="removeUserRoles",
 		 *   summary="Removes all roles for user",
 		 *   description="Removes all roles for user",
@@ -326,7 +326,7 @@
 		 * Assigns a user to a given role.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Roles/SetUserRole",
+		 *   path="/Roles/SetUserRole",
 		 *   operationId="setUserRole",
 		 *   summary="Assigns role to user",
 		 *   description="Assigns role to user",
@@ -381,7 +381,7 @@
 		 * Checks if a user is assigned a role.
 		 *
 		 * @OA\Post(
-		 *   path="/api/1.1/Roles/UserInRole",
+		 *   path="/Roles/UserInRole",
 		 *   operationId="userInRole",
 		 *   summary="Check if user is assigned a role",
 		 *   description="Check if user is assigned a role",
@@ -420,7 +420,7 @@
 		 * Retrieves any and all users assigned to a specific role.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Roles/UsersInRole/{RoleName}",
+		 *   path="/Roles/UsersInRole/{RoleName}",
 		 *   operationId="usersInRole",
 		 *   summary="Retrieve any users assigned to a role",
 		 *   description="Retrieve any users assigned to a role",

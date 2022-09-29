@@ -9,5 +9,10 @@
 	 *   title="ZSF API",
 	 *   version="1.1"
 	 * )
+	 * 
+	 * @OA\Server(
+	 *  url="/api/1.1",
+	 *  description="ZSF API"
+	 * )
 	 */
 	class ZsfApi { }

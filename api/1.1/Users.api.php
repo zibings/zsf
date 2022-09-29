@@ -53,7 +53,7 @@
 		 * Retrieves all users in the database.
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Users",
+		 *   path="/Users",
 		 *   operationId="getUsers",
 		 *   summary="Retrieves all users in system",
 		 *   description="Retrieves all users in system",
@@ -77,7 +77,7 @@
 		 * )
 		 *
 		 * @OA\Get(
-		 *   path="/api/1.1/Users/Columns",
+		 *   path="/Users/Columns",
 		 *   operationId="getUsersColumns",
 		 *   summary="Retrieves columns returned by ",
 		 *   description="Retrieves all users in system",
