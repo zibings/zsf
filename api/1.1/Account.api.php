@@ -641,7 +641,11 @@
 		 *       @OA\Property(property="provider",        type="number"),
 		 *       @OA\Property(property="emailConfirmed",  type="boolean")
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token2": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
