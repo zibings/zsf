@@ -63,7 +63,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Settings",
-		 *   operationId="Settings",
+		 *   operationId="getSettings",
 		 *   summary="Retrieve's a user's settings",
 		 *   description="Retrieve's a user's settings",
 		 *   tags={"Settings"},

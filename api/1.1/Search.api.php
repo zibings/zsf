@@ -42,7 +42,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Search/Users",
-		 *   operationId="SearchUsers",
+		 *   operationId="searchUsers",
 		 *   summary="Search visible users",
 		 *   description="Search users who are configured as visible in the system",
 		 *   tags={"Search"},
@@ -150,7 +150,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Search/Users/Admin",
-		 *   operationId="SearchUsersAdmin",
+		 *   operationId="searchUsersAdmin",
 		 *   summary="Search all users",
 		 *   description="Search all users in the system",
 		 *   tags={"Search"},

@@ -84,6 +84,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Roles",
+		 *   operationId="getRoles",
 		 *   summary="Retrieves all roles",
 		 *   description="Retrieves all roles",
 		 *   tags={"Roles"},

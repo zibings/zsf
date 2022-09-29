@@ -53,12 +53,13 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/System/DashboardMetrics",
+		 *   operationId="getDashboardMetrics",
 		 *   summary="Returns some basic metrics",
 		 *   description="Returns basic metrics for an admin dashboard",
 		 *   tags={"System"},
 		 *   @OA\Response(
 		 *     response="200",
-		 *     description="OK',
+		 *     description="OK",
 		 *     @OA\JsonContent(
 		 *       type="object",
 		 *       @OA\Property(property="dau", type="number", description="Daily Active Users"),
@@ -90,7 +91,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/System/Version",
-		 *   operationId="SystemVersion",
+		 *   operationId="getVersion",
 		 *   summary="Returns defined system version",
 		 *   description="Returns system version as defined in the siteSettings file",
 		 *   tags={"System"},
