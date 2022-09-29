@@ -79,9 +79,16 @@
 		 *     description="OK",
 		 *     @OA\JsonContent(
 		 *       type="object",
-		 *       @OA\Property(property="htmlEmails", type="boolean"),
-		 *       @OA\Property(property="playSounds", type="boolean"),
-		 *       @OA\Property(property="userId",     type="number")
+		 *       @OA\Property(property="htmlEmails",     type="boolean"),
+		 *       @OA\Property(property="playSounds",     type="boolean"),
+		 *       @OA\Property(property="userId",         type="number"),
+		 *       @OA\Property(property="visBirthday",    type="number"),
+		 *       @OA\Property(property="visDescription", type="number"),
+		 *       @OA\Property(property="visEmail",       type="number"),
+		 *       @OA\Property(property="visGender",      type="number"),
+		 *       @OA\Property(property="visProfile",     type="number"),
+		 *       @OA\Property(property="visRealName",    type="number"),
+		 *       @OA\Property(property="visSearches",    type="number")
 		 *     )
 		 *   ),
 		 *   security={
@@ -107,7 +114,21 @@
 				return $ret;
 			}
 
-			$ret->setData(UserSettings::fromUser($userId, $this->db, $this->log));
+			$settings     = UserSettings::fromUser($userId, $this->db, $this->log);
+			$visibilities = UserVisibilities::fromUser($userId, $this->db, $this->log);
+
+			$ret->setData([
+				"htmlEmail"      => $settings->htmlEmails,
+				"playSounds"     => $settings->playSounds,
+				"userId"         => $userId,
+				"visBirthday"    => $visibilities->birthday->getValue(),
+				"visDescription" => $visibilities->description->getValue(),
+				"visEmail"       => $visibilities->email->getValue(),
+				"visGender"      => $visibilities->gender->getValue(),
+				"visProfile"     => $visibilities->profile->getValue(),
+				"visRealName"    => $visibilities->realName->getValue(),
+				"visSearches"    => $visibilities->searches->getValue()
+			]);
 
 			return $ret;
 		}
@@ -138,6 +159,8 @@
 		 *     @OA\JsonContent(
 		 *       type="object",
 		 *       @OA\Property(property="userId",         type="number"),
+		 *       @OA\Property(property="htmlEmail",      type="boolean"),
+		 *       @OA\Property(property="playSounds",     type="boolean"),
 		 *       @OA\Property(property="visBirthday",    type="number"),
 		 *       @OA\Property(property="visDescription", type="number"),
 		 *       @OA\Property(property="visEmail",       type="number"),
@@ -182,8 +205,8 @@
 				'id'             => $userId,
 				'actor'          => $user->id,
 				'settings'       => [
-					'htmlEmails'   => $params->has('set_htmlEmails'),
-					'playSounds'   => $params->has('set_playSounds')
+					'htmlEmails'   => $params->has('htmlEmails'),
+					'playSounds'   => $params->has('playSounds')
 				],
 				'visibilities'   => [
 					'birthday'     => $params->getInt('visBirthday',    $userVis->birthday->getValue()),

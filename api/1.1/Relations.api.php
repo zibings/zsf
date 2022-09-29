@@ -212,13 +212,13 @@
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
 
-			if (!$params->has('id')) {
+			if (!$params->has('userId')) {
 				$ret->setAsError('Invalid parameters supplied');
 
 				return $ret;
 			}
 
-			$ret->setData((new UserRelations($this->db, $this->log))->deleteRelation($user->id, $params->getInt('id')));
+			$ret->setData((new UserRelations($this->db, $this->log))->deleteRelation($user->id, $params->getInt('userId')));
 
 			return $ret;
 		}

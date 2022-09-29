@@ -132,7 +132,12 @@
 		 *     required=false,
 		 *     @OA\JsonContent(
 		 *       type="object",
-		 *       @OA\Property(property="userId", type="number")
+		 *       @OA\Property(property="userId",      type="number"),
+		 *       @OA\Property(property="birthday",    type="string"),
+		 *       @OA\Property(property="description", type="string"),
+		 *       @OA\Property(property="displayName", type="string"),
+		 *       @OA\Property(property="gender",      type="number"),
+		 *       @OA\Property(property="realName",    type="string")
 		 *     )
 		 *   ),
 		 *   @OA\Response(

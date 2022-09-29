@@ -157,6 +157,31 @@
 		 *   }
 		 * )
 		 *
+		 * @OA\Get(
+		 *   path="/Roles/UserRoles",
+		 *   operationId="getUserRoles",
+		 *   summary="Retrieve user roles",
+		 *   description="Retrieve user roles",
+		 *   tags={"Roles"},
+		 *   @OA\Response(
+		 *     response="200",
+		 *     description="OK",
+		 *     @OA\JsonContent(
+		 *       type="array",
+		 *       @OA\Items(
+		 *         type="object",
+		 *         @OA\Property(property="created", type="string"),
+		 *         @OA\Property(property="id",      type="number"),
+		 *         @OA\Property(property="name",    type="string")
+		 *       )
+		 *     )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
+		 * )
+		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Exception
@@ -193,6 +218,7 @@
 			$this->registerEndpoint('POST', '/^\/?Roles\/UserInRole\/?/i',               'userInRole',      true);
 			$this->registerEndpoint('GET',  '/^\/?Roles\/UsersInRole\/([a-z]{3,})\/?/i', 'usersInRole',     RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('GET',  '/^\/?Roles\/UserRoles\/([0-9]{1,})\/?/i',   'getUserRoles',    true);
+			$this->registerEndpoint('GET',  '/^\/?Roles\/UserRoles\/?/i',                'getUserRoles',    true);
 			$this->registerEndpoint('GET',  '/^\/?Roles\/?/i',                           'getRoles',        RoleStrings::ADMINISTRATOR);
 
 			return;
@@ -291,10 +317,11 @@
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
-		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
 		public function removeUserRole(Request $request, array $matches = null) : Response {
+			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
 
@@ -304,9 +331,17 @@
 				return $ret;
 			}
 
-			$userId = $params->getInt('userId');
-			$role   = $params->getString('name');
-			(new UserRoles($this->db, $this->log))->removeUserFromRoleByName($userId, $role);
+			$role      = $params->getString('name');
+			$userId    = $params->getInt('userId', $user->id);
+			$userRoles = new UserRoles($this->db, $this->log);
+
+			if ($userId == $user->id || $userRoles->userInRoleByName($userId, RoleStrings::ADMINISTRATOR)) {
+				$ret->setAsError("You cannot modify other administrators from the API");
+
+				return $ret;
+			}
+
+			$userRoles->removeUserFromRoleByName($userId, $role);
 
 			$ret->setData(true);
 
@@ -346,11 +381,19 @@
 		 * @return Response
 		 */
 		public function removeUserRoles(Request $request, array $matches = null) : Response {
-			$user   = $this->getUser();
-			$ret    = $this->newResponse();
-			$params = $request->getInput();
+			$user      = $this->getUser();
+			$ret       = $this->newResponse();
+			$params    = $request->getInput();
+			$userId    = $params->getInt('userId', $user->id);
+			$userRoles = new UserRoles($this->db, $this->log);
 
-			(new UserRoles($this->db, $this->log))->removeUserFromAllRoles(intval($params->getInt('userId', $user->id)));
+			if ($userId == $user->id || $userRoles->userInRoleByName($userId, RoleStrings::ADMINISTRATOR)) {
+				$ret->setAsError("You cannot modify other administrators from the API.");
+
+				return $ret;
+			}
+
+			$userRoles->removeUserFromAllRoles(intval($params->getInt('userId', $user->id)));
 
 			$ret->setData(true);
 

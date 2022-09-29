@@ -75,18 +75,17 @@
 		/**
 		 * Checks if an email is valid and in-use, returning a status of 0 only if it is both valid and currently not in use.
 		 *
-		 * @OA\Get(
+		 * @OA\Post(
 		 *   path="/Account/CheckEmail",
 		 *   operationId="checkEmail",
 		 *   summary="Check if an email is valid and not in-use",
 		 *   description="Check if an email is valid and not in-use",
 		 *   tags={"Account"},
-		 *   @OA\Parameter(
-		 *     name="email",
-		 *     in="query",
-		 *     description="Email to validate",
-		 *     required=true,
-		 *     @OA\Schema(type="string")
+		 *   @OA\RequestBody(
+		 *     @OA\JsonContent(
+		 *       type="object",
+		 *       @OA\Property(property="email", type="string")
+		 *     )
 		 *   ),
 		 *   @OA\Response(
 		 *     response="200",
@@ -475,7 +474,7 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('GET',  '/^\/?Account\/CheckEmail\/?/i',        'checkEmail',        null);
+			$this->registerEndpoint('POST', '/^\/?Account\/CheckEmail\/?/i',        'checkEmail',        null);
 			$this->registerEndpoint('POST', '/^\/?Account\/CheckToken\/?/i',        'checkToken',        null);
 			$this->registerEndpoint('POST', '/^\/?Account\/Create\/?/i',            'createUser',        RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('POST', '/^\/?Account\/Delete\/?/i',            'deleteUser',        true);
