@@ -29,6 +29,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Roles/Add",
+		 *   operationId="addRole",
 		 *   summary="Add new role to system",
 		 *   description="Add new role to system",
 		 *   tags={"Roles"},
@@ -117,6 +118,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Roles/UserRoles/{userId}",
+		 *   operationId="getUserRoles",
 		 *   summary="Retrieve user roles",
 		 *   description="Retrieve user roles",
 		 *   tags={"Roles"},
@@ -177,6 +179,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Roles/Remove",
+		 *   operationId="removeRole",
 		 *   summary="Remove role from system",
 		 *   description="Remove role from system",
 		 *   tags={"Roles"},
@@ -235,6 +238,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Roles/RemoveUserRole",
+		 *   operationId="removeUserRole",
 		 *   summary="Removes role for given user",
 		 *   description="Removes role for given user",
 		 *   tags={"Roles"},
@@ -282,6 +286,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Roles/RemoveUserRoles",
+		 *   operationId="removeUserRoles",
 		 *   summary="Removes all roles for user",
 		 *   description="Removes all roles for user",
 		 *   tags={"Roles"},
@@ -321,6 +326,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Roles/SetUserRole",
+		 *   operationId="setUserRole",
 		 *   summary="Assigns role to user",
 		 *   description="Assigns role to user",
 		 *   tags={"Roles"},
@@ -375,6 +381,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Roles/UserInRole",
+		 *   operationId="userInRole",
 		 *   summary="Check if user is assigned a role",
 		 *   description="Check if user is assigned a role",
 		 *   tags={"Roles"},
@@ -413,6 +420,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Roles/UsersInRole/{RoleName}",
+		 *   operationId="usersInRole",
 		 *   summary="Retrieve any users assigned to a role",
 		 *   description="Retrieve any users assigned to a role",
 		 *   tags={"Roles"},

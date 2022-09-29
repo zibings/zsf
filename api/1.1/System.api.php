@@ -90,6 +90,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/System/Version",
+		 *   operationId="SystemVersion",
 		 *   summary="Returns defined system version",
 		 *   description="Returns system version as defined in the siteSettings file",
 		 *   tags={"System"},

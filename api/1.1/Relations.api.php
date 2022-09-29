@@ -59,6 +59,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Relations",
+		 *   operationId="getRelations",
 		 *   summary="Retrieve any user relations",
 		 *   description="Retrieve any user relations",
 		 *   tags={"Relations"},
@@ -127,6 +128,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Relations/RelatedTo",
+		 *   operationId="getRelatedTo",
 		 *   summary="Checks if users are related",
 		 *   description="Checks if users are related",
 		 *   tags={"Relations"},
@@ -170,6 +172,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Relations/Remove",
+		 *   operationId="removeRelation",
 		 *   summary="Removes the given relationship",
 		 *   description="Removes the given relationship",
 		 *   tags={"Relations"},
@@ -213,6 +216,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Relations/Set",
+		 *   operationId="setRelation",
 		 *   summary="Set stage of relationship",
 		 *   description="Set stage of relationship",
 		 *   tags={"Relations"},

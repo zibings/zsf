@@ -54,6 +54,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Users",
+		 *   operationId="Users",
 		 *   summary="Retrieves all users in system",
 		 *   description="Retrieves all users in system",
 		 *   tags={"Users"},
@@ -77,6 +78,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Users/Columns",
+		 *   operationId="UsersColumns",
 		 *   summary="Retrieves columns returned by ",
 		 *   description="Retrieves all users in system",
 		 *   tags={"Users"},

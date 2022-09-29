@@ -55,6 +55,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Profile",
+		 *   operationId="getProfile",
 		 *   summary="Retrieves user's profile information",
 		 *   description="Retrieves user's profile information",
 		 *   tags={"Profile"},
@@ -119,6 +120,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Profile",
+		 *   operationId="updateProfile",
 		 *   summary="Update user profile",
 		 *   description="Update user profile",
 		 *   tags={"Profile"},

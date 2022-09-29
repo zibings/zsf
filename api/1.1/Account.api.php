@@ -77,6 +77,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Account/CheckEmail",
+		 *   operationId="CheckEmail",
 		 *   summary="Check if an email is valid and not in-use",
 		 *   description="Check if an email is valid and not in-use",
 		 *   tags={"Account"},
@@ -120,6 +121,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Account/CheckToken",
+		 *   operationId="CheckToken",
 		 *   summary="Check if a token is valid for a user",
 		 *   description="Check if a token is valid for a user",
 		 *   tags={"Account"},
@@ -177,6 +179,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Account/Create",
+		 *   operationId="CreateUser",
 		 *   summary="Creates a new user in the system",
 		 *   description="Creates a new user in the system",
 		 *   tags={"Account"},
@@ -241,6 +244,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Account/Delete",
+		 *   operationId="DeleteUser",
 		 *   summary="Removes user from system",
 		 *   description="Removes user from system",
 		 *   tags={"Account"},
@@ -299,6 +303,7 @@
 		 *
 		 * @OA\Get(
 		 *   path="/api/1.1/Account",
+		 *   operationId="GetAccount",
 		 *   tags={"Account"},
 		 *   @OA\Parameter(
 		 *     name="userId",
@@ -348,6 +353,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Account/Login",
+		 *   operationId="Login",
 		 *   summary="Logs user into system",
 		 *   description="Logs user into system",
 		 *   tags={"Account"},
@@ -389,6 +395,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Account/Logout",
+		 *   operationId="Logout",
 		 *   summary="Logs current user out of system",
 		 *   description="Logs current user out of system",
 		 *   tags={"Account"},
@@ -472,6 +479,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Account/Register",
+		 *   operationId="RegisterUser",
 		 *   summary="Registers user with system",
 		 *   description="Registers user with system",
 		 *   tags={"Account"},
@@ -516,6 +524,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Account/ResetPassword",
+		 *   operationId="ResetPassword",
 		 *   summary="Resets a user's password",
 		 *   description="Resets a user's password",
 		 *   tags={"Account"},
@@ -556,6 +565,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Account/SendPasswordReset",
+		 *   operationId="SendPasswordReset",
 		 *   summary="Sends user a password reset token",
 		 *   description="Sends user a password reset token",
 		 *   tags={"Account"},
@@ -606,6 +616,7 @@
 		 *
 		 * @OA\Post(
 		 *   path="/api/1.1/Account/Update",
+		 *   operationId="UpdateAccount",
 		 *   summary="Updates a user's account details",
 		 *   description="Updates a user's account details",
 		 *   tags={"Account"},
