@@ -12,6 +12,13 @@
 	/**
 	 * Basic response data structure for including a status code and a message.
 	 *
+	 * @OA\Schema(
+	 *   schema="StatusResponseData",
+	 *   type="object",
+	 *   @OA\Property(property="status",  type="number"),
+	 *   @OA\Property(property="message", type="string")
+	 * )
+	 *
 	 * @package Zibings
 	 */
 	class StatusResponseData {
