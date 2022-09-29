@@ -11,3 +11,10 @@ Usage instructions:
 - Run 'vendor/bin/stoic-migrate' to initialize your database
 - Create things
 ```
+
+## Generating OpenAPI Spec
+We now include a script to generate OpenAPI specs and have included them for the new v1.1 of the API.  To see usage, execute the following command:
+
+```
+php scripts/generate-openapi.php -h
+```
