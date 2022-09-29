@@ -67,7 +67,11 @@
 		 *       @OA\Property(property="tu",  type="number", description="Total Users"),
 		 *       @OA\Property(property="tvu", type="number", description="Total Verified Users")
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"admin_header_token": {}},
+		 *     {"admin_cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.

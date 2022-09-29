@@ -73,7 +73,11 @@
 		 *         @OA\Property(property="lastLogin",      type="string",  description="Date and time the user last logged in, if available")
 		 *       )
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"admin_header_token": {}},
+		 *     {"admin_cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @OA\Get(
@@ -96,7 +100,11 @@
 		 *         @OA\Property(property="display",  type="boolean")
 		 *       )
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"admin_header_token": {}},
+		 *     {"admin_cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.

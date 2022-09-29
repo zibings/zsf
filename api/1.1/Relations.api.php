@@ -84,7 +84,11 @@
 		 *         @OA\Property(property="userTwo", type="number")
 		 *       )
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -143,7 +147,11 @@
 		 *     response="200",
 		 *     description="OK",
 		 *     @OA\JsonContent(type="boolean")
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param \Stoic\Web\Request $request The current request which routed to the endpoint.
@@ -187,7 +195,11 @@
 		 *     response="200",
 		 *     description="OK",
 		 *     @OA\JsonContent(type="boolean")
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param \Stoic\Web\Request $request The current request which routed to the endpoint.
@@ -232,7 +244,11 @@
 		 *     response="200",
 		 *     description="OK",
 		 *     @OA\JsonContent(type="boolean")
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.

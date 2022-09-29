@@ -32,7 +32,7 @@
 		 */
 		protected function registerEndpoints() : void {
 			$this->registerEndpoint('GET',  '/^\/?Search\/Users\/Admin\/?/i', 'usersForAdmins', RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('GET',  '/^\/?Search\/Users\/?/i',       'users',          true);
+			$this->registerEndpoint('GET',  '/^\/?Search\/Users\/?/i',        'users',          true);
 
 			return;
 		}
@@ -72,7 +72,11 @@
 		 *         @OA\Property(property="gender",         type="string")
 		 *       )
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -180,7 +184,11 @@
 		 *         @OA\Property(property="gender",         type="string")
 		 *       )
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"admin_header_token": {}},
+		 *     {"admin_cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.

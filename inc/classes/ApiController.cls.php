@@ -15,8 +15,9 @@
 	 * @OA\Schema(
 	 *   schema="StatusResponseData",
 	 *   type="object",
-	 *   @OA\Property(property="status",  type="number"),
-	 *   @OA\Property(property="message", type="string")
+	 *   description="Basic response data structure for including a status code and message",
+	 *   @OA\Property(property="status",  type="number", description="Status code for response"),
+	 *   @OA\Property(property="message", type="string", description="Message for response")
 	 * )
 	 *
 	 * @package Zibings

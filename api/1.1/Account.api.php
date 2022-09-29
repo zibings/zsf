@@ -210,7 +210,11 @@
 		 *     response="500",
 		 *     description="Failed",
 		 *     @OA\JsonContent(type="string")
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"admin_header_token": {}},
+		 *     {"admin_cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -263,7 +267,11 @@
 		 *     response="500",
 		 *     description="Failed",
 		 *     @OA\JsonContent(type="string"),
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -323,7 +331,11 @@
 		 *       @OA\Property(property="lastActive",     type="string",  description="Date and time the user was last active, if available"),
 		 *       @OA\Property(property="lastLogin",      type="string",  description="Date and time the user last logged in, if available")
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -415,7 +427,11 @@
 		 *       @OA\Property(property="userId", type="number"),
 		 *       @OA\Property(property="token",  type="string")
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -644,7 +660,7 @@
 		 *   ),
 		 *   security={
 		 *     {"header_token": {}},
-		 *     {"cookie_token2": {}}
+		 *     {"cookie_token": {}}
 		 *   }
 		 * )
 		 *

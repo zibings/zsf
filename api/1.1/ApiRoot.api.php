@@ -32,14 +32,14 @@
 	 * @OA\SecurityScheme(
 	 *   type="apiKey",
 	 *   in="header",
-	 *   securityScheme="header_token",
+	 *   securityScheme="admin_header_token",
 	 *   name="admin_header_token",
 	 * )
 	 *
 	 * @OA\SecurityScheme(
 	 *   type="apiKey",
 	 *   in="cookie",
-	 *   securityScheme="cookie_token",
+	 *   securityScheme="admin_cookie_token",
 	 *   name="admin_cookie_token"
 	 * )
 	 */

@@ -83,7 +83,11 @@
 		 *       @OA\Property(property="playSounds", type="boolean"),
 		 *       @OA\Property(property="userId",     type="number")
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -147,7 +151,11 @@
 		 *     response="200",
 		 *     description="OK",
 		 *     @OA\JsonContent(type="string")
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.

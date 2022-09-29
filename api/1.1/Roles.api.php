@@ -52,7 +52,11 @@
 		 *         @OA\Property(property="name",    type="string")
 		 *       )
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"admin_header_token": {}},
+		 *     {"admin_cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -100,7 +104,11 @@
 		 *         @OA\Property(property="name",    type="string")
 		 *       )
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"admin_header_token": {}},
+		 *     {"admin_cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -127,7 +135,7 @@
 		 *     name="userId",
 		 *     in="path",
 		 *     description="unique user identifier",
-		 *     required=true,
+		 *     required=false,
 		 *     @OA\Schema(type="number")
 		 *   ),
 		 *   @OA\Response(
@@ -142,16 +150,31 @@
 		 *         @OA\Property(property="name",    type="string")
 		 *       )
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Exception
 		 * @return Response
 		 */
 		public function getUserRoles(Request $request, array $matches = null) : Response {
-			$ret = $this->newResponse();
-			$ret->setData((new UserRoles($this->db, $this->log))->getAllUserRoles(intval($matches[1][0])));
+			$user      = $this->getUser();
+			$ret       = $this->newResponse();
+			$userRoles = new UserRoles($this->db, $this->log);
+			$userId    = (count($matches) > 1) ? intval($matches[1][0]) : $user->id;
+
+			if ($userId != $user->id && !$userRoles->userInRoleByName($user->id, RoleStrings::ADMINISTRATOR)) {
+				$ret->setAsError("Invalid user identifier");
+
+				return $ret;
+			}
+
+			$ret->setData($userRoles->getAllUserRoles($userId));
 
 			return $ret;
 		}
@@ -167,9 +190,9 @@
 			$this->registerEndpoint('POST', '/^\/?Roles\/RemoveUserRole\/?/i',           'removeUserRole',  RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('POST', '/^\/?Roles\/Remove\/?/i',                   'removeRole',      RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('POST', '/^\/?Roles\/SetUserRole\/?/i',              'setUserRole',     RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('POST', '/^\/?Roles\/UserInRole\/?/i',               'userInRole',      RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^\/?Roles\/UserInRole\/?/i',               'userInRole',      true);
 			$this->registerEndpoint('GET',  '/^\/?Roles\/UsersInRole\/([a-z]{3,})\/?/i', 'usersInRole',     RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('GET',  '/^\/?Roles\/UserRoles\/([0-9]{1,})\/?/i',   'getUserRoles',    RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('GET',  '/^\/?Roles\/UserRoles\/([0-9]{1,})\/?/i',   'getUserRoles',    true);
 			$this->registerEndpoint('GET',  '/^\/?Roles\/?/i',                           'getRoles',        RoleStrings::ADMINISTRATOR);
 
 			return;
@@ -200,7 +223,11 @@
 		 *       @OA\Property(property="id",      type="number"),
 		 *       @OA\Property(property="name",    type="string")
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"admin_header_token": {}},
+		 *     {"admin_cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -255,7 +282,11 @@
 		 *     response="200",
 		 *     description="OK",
 		 *     @OA\JsonContent(type="boolean")
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"admin_header_token": {}},
+		 *     {"admin_cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -302,7 +333,11 @@
 		 *     response="200",
 		 *     description="OK",
 		 *     @OA\JsonContent(type="boolean")
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"admin_header_token": {}},
+		 *     {"admin_cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -344,11 +379,16 @@
 		 *     description="OK",
 		 *     @OA\JsonContent(
 		 *       type="object",
+		 *
 		 *       @OA\Property(property="created", type="string"),
 		 *       @OA\Property(property="id",      type="number"),
 		 *       @OA\Property(property="name",    type="string")
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"admin_header_token": {}},
+		 *     {"admin_cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -398,7 +438,11 @@
 		 *     response="200",
 		 *     description="OK",
 		 *     @OA\JsonContent(type="boolean")
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
@@ -407,11 +451,19 @@
 		 * @return Response
 		 */
 		public function userInRole(Request $request, array $matches = null) : Response {
-			$user   = $this->getUser();
-			$ret    = $this->newResponse();
-			$params = $request->getInput();
+			$user      = $this->getUser();
+			$ret       = $this->newResponse();
+			$params    = $request->getInput();
+			$userId    = $params->getInt('userId', $user->id);
+			$userRoles = new UserRoles($this->db, $this->log);
 
-			$ret->setData((new UserRoles($this->db, $this->log))->userInRoleByName($params->getInt('userId', $user->id), $params->getString('name')));
+			if ($userId != $user->id && !$userRoles->userInRoleByName($user->id, RoleStrings::ADMINISTRATOR)) {
+				$ret->setAsError("Invalid user identifier");
+
+				return $ret;
+			}
+
+			$ret->setData($userRoles->userInRoleByName($userId, $params->getString('name')));
 
 			return $ret;
 		}
@@ -429,7 +481,7 @@
 		 *     name="RoleName",
 		 *     in="path",
 		 *     description="Role name to search with",
-		 *     required=true,
+		 *     required=false,
 		 *     @OA\Schema(type="string")
 		 *   ),
 		 *   @OA\Response(
@@ -447,11 +499,16 @@
 		 *         @OA\Property(property="lastLogin",      type="string",  description="Date and time the user last logged in, if available")
 		 *       )
 		 *     )
-		 *   )
+		 *   ),
+		 *   security={
+		 *     {"admin_header_token": {}},
+		 *     {"admin_cookie_token": {}}
+		 *   }
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
 		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Exception
 		 * @return Response
 		 */
 		public function usersInRole(Request $request, array $matches = null) : Response {
