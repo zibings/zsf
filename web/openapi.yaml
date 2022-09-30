@@ -597,14 +597,14 @@ paths:
       tags:
         - Roles
       summary: 'Retrieve user roles'
-      description: 'Retrieve user roles'
+      description: 'Retrieve roles for the given user'
       operationId: getUserRoles
       parameters:
         -
           name: userId
           in: path
           description: 'unique user identifier'
-          required: false
+          required: true
           schema:
             type: number
       responses:
@@ -626,9 +626,9 @@ paths:
     get:
       tags:
         - Roles
-      summary: 'Retrieve user roles'
-      description: 'Retrieve user roles'
-      operationId: getUserRoles
+      summary: 'Retrieve my user roles'
+      description: 'Retrieve my user roles'
+      operationId: getMyRoles
       responses:
         '200':
           description: OK
@@ -810,7 +810,7 @@ paths:
           name: RoleName
           in: path
           description: 'Role name to search with'
-          required: false
+          required: true
           schema:
             type: string
       responses:

@@ -129,13 +129,13 @@
 		 *   path="/Roles/UserRoles/{userId}",
 		 *   operationId="getUserRoles",
 		 *   summary="Retrieve user roles",
-		 *   description="Retrieve user roles",
+		 *   description="Retrieve roles for the given user",
 		 *   tags={"Roles"},
 		 *   @OA\Parameter(
 		 *     name="userId",
 		 *     in="path",
 		 *     description="unique user identifier",
-		 *     required=false,
+		 *     required=true,
 		 *     @OA\Schema(type="number")
 		 *   ),
 		 *   @OA\Response(
@@ -159,9 +159,9 @@
 		 *
 		 * @OA\Get(
 		 *   path="/Roles/UserRoles",
-		 *   operationId="getUserRoles",
-		 *   summary="Retrieve user roles",
-		 *   description="Retrieve user roles",
+		 *   operationId="getMyRoles",
+		 *   summary="Retrieve my user roles",
+		 *   description="Retrieve my user roles",
 		 *   tags={"Roles"},
 		 *   @OA\Response(
 		 *     response="200",
@@ -524,7 +524,7 @@
 		 *     name="RoleName",
 		 *     in="path",
 		 *     description="Role name to search with",
-		 *     required=false,
+		 *     required=true,
 		 *     @OA\Schema(type="string")
 		 *   ),
 		 *   @OA\Response(
