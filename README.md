@@ -18,3 +18,5 @@ We now include a script to generate OpenAPI specs and have included them for the
 ```
 php scripts/generate-openapi.php -h
 ```
+
+Once generated, you can place this inside of `web` so that it can be utilized by things such as AXIOS.
