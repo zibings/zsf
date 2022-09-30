@@ -16,31 +16,29 @@
 	 * )
 	 *
 	 * @OA\SecurityScheme(
-	 *   type="apiKey",
-	 *   in="header",
-	 *   securityScheme="header_token",
-	 *   name="header_token"
+	 *   type="http",
+	 *   scheme="bearer",
+	 *   securityScheme="header_token"
 	 * )
 	 *
 	 * @OA\SecurityScheme(
 	 *   type="apiKey",
 	 *   in="cookie",
 	 *   securityScheme="cookie_token",
-	 *   name="cookie_token"
+	 *   name="zsf_token"
 	 * )
 	 *
 	 * @OA\SecurityScheme(
-	 *   type="apiKey",
-	 *   in="header",
+	 *   type="http",
+	 *   scheme="bearer",
 	 *   securityScheme="admin_header_token",
-	 *   name="admin_header_token",
 	 * )
 	 *
 	 * @OA\SecurityScheme(
 	 *   type="apiKey",
 	 *   in="cookie",
 	 *   securityScheme="admin_cookie_token",
-	 *   name="admin_cookie_token"
+	 *   name="zsf_token"
 	 * )
 	 */
 	class ZsfApi { }
