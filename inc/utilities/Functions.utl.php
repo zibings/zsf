@@ -25,7 +25,7 @@
 	 * @return bool|\CurlHandle
 	 */
 	function getCurlApiResource(string $url, int $userId, string $token, ConfigContainer $settings, bool $isPost = false, array $postFields = null) : bool|\CurlHandle {
-		$curlUrl = $settings->get(SettingsStrings::API_PATH, 'http://localhost/api/1') . $url;
+		$curlUrl = $settings->get(SettingsStrings::API_PATH, 'http://localhost/api') . "/1{$url}";
 
 		if ($isPost === false && $userId > 0 && !empty($token)) {
 			$curlUrl .= (stripos($curlUrl, '?') === false) ? '?' : '&';
