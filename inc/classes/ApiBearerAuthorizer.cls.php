@@ -37,7 +37,6 @@
 				return;
 			}
 
-			$headers = getallheaders();
 			$roles = $dispatch->getRequiredRoles();
 
 			if ($roles === false) {
@@ -46,39 +45,25 @@
 				return;
 			}
 
-			if (array_key_exists('Authorization', $headers) !== false) {
-				$token = explode(':', base64_decode(str_replace('Bearer ', '', $headers['Authorization'])));
+			$authHeader    = "";
+			$hasAuthHeader = false;
+			$headers       = getallheaders();
+
+			foreach (array_keys($headers) as $header) {
+				if (strtolower($header) === 'authorization') {
+					$hasAuthHeader = true;
+					$authHeader    = $header;
+
+					break;
+				}
+			}
+
+			if ($hasAuthHeader) {
+				$token = explode(':', base64_decode(str_replace('Bearer ', '', $headers[$authHeader])));
 				$session = UserSession::fromToken($token[1], $sender->getDb(), $sender->getLog());
-				$expiryDt = (new \DateTime('now', new \DateTimeZone('UTC')))->sub(new \DateInterval('P1Y'));
 
-				if ($session->id < 1) {
-					return;
-				}
-
-				if ($session->created < $expiryDt) {
-					$session->delete();
-
-					return;
-				}
-
-				if ($roles === true) {
+				if (isSessionValidForRoles($session, $roles, $sender->getDb(), $sender->getLog())) {
 					$dispatch->authorize();
-
-					return;
-				}
-
-				if (!is_array($roles)) {
-					$roles = [$roles];
-				}
-
-				$roleRepo = new UserRoles($sender->getDb(), $sender->getLog());
-
-				foreach ($roles as $r) {
-					if ($roleRepo->userInRoleByName($session->userId, $r)) {
-						$dispatch->authorize();
-
-						break;
-					}
 				}
 			}
 

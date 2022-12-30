@@ -1082,6 +1082,48 @@
 	}
 
 	/**
+	 * Determines if the session is active and valid for the given roles.
+	 *
+	 * @param UserSession $session UserSession instance to compare to requirements.
+	 * @param mixed $roles Role specification (boolean, string, or array of strings).
+	 * @param \PDO $db PDO instance for internal use.
+	 * @param Logger|null $log Optional Logger instance for internal use.
+	 * @throws \Exception
+	 * @return bool
+	 */
+	function isSessionValidForRoles(UserSession $session, mixed $roles, \PDO $db, Logger $log = null) : bool {
+		if ($session->id < 1) {
+			return false;
+		}
+
+		$expiryDt = (new \DateTime('now', new \DateTimeZone('UTC')))->sub(new \DateInterval('P1Y'));
+
+		if ($session->created < $expiryDt) {
+			$session->delete();
+
+			return false;
+		}
+
+		if ($roles === true) {
+			return true;
+		}
+
+		if (!is_array($roles)) {
+			$roles = [$roles];
+		}
+
+		$roleRepo = new UserRoles($db, $log);
+
+		foreach ($roles as $r) {
+			if ($roleRepo->userInRoleByName($session->userId, $r)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Attempts to send a password reset email.
 	 *
 	 * @param string $email Email address to use for finding user in question.
