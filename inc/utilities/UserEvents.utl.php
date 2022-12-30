@@ -1059,7 +1059,8 @@
 		 * [
 		 *   'id'         => (int) 1,            # user identifier
 		 *   'key'        => (string) 'someKey', # new password
-		 *   'confirmKey' => (string) 'someKey'  # confirmation of new password
+		 *   'confirmKey' => (string) 'someKey', # confirmation of new password
+		 *   'token'      => (string) 'token'    # token to confirm this is authorized
 		 * ]
 		 *
 		 * This method makes NO checks against the new password's complexity.
@@ -1067,13 +1068,13 @@
 		 * Resulting ReturnHelper will include a suggested HTTP status code in the 'httpCode' index.
 		 *
 		 * @param ParameterHelper $params Parameters provided to perform the event.
-		 * @throws \ReflectionException
+		 * @throws \ReflectionException|\Exception
 		 * @return ReturnHelper
 		 */
 		public function doResetPassword(ParameterHelper $params) : ReturnHelper {
 			$ret = new ReturnHelper();
 
-			if (!$params->hasAll(self::STR_ID, self::STR_KEY, self::STR_CONFIRM_KEY)) {
+			if (!$params->hasAll(self::STR_ID, self::STR_KEY, self::STR_CONFIRM_KEY, self::STR_TOKEN)) {
 				$this->assignError($ret, "Missing parameters for reset");
 
 				return $ret;
@@ -1081,6 +1082,7 @@
 
 			$id         = $params->getInt(self::STR_ID);
 			$key        = $params->getString(self::STR_KEY);
+			$token      = $params->getString(self::STR_TOKEN);
 			$confirmKey = $params->getString(self::STR_CONFIRM_KEY);
 
 			if ($key !== $confirmKey) {
@@ -1097,6 +1099,15 @@
 				return $ret;
 			}
 
+			$tok = UserToken::fromToken($token, $user->id, $this->db, $this->log);
+
+			if ($tok->id < 1) {
+				$this->assignError($ret, "Invalid token for reset");
+
+				return $ret;
+			}
+
+			$tok->delete();
 			$login = LoginKey::fromUserAndProvider($user->id, LoginKeyProviders::PASSWORD, $this->db, $this->log);
 
 			try {

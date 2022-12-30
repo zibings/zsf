@@ -569,7 +569,8 @@
 			$this->processEvent($ret, 'doResetPassword', new ParameterHelper([
 				'id'         => $params->getInt('userId', 0),
 				'key'        => $params->getString('key', ''),
-				'confirmKey' => $params->getString('key', '')
+				'confirmKey' => $params->getString('key', ''),
+				'token'      => $params->getString('token', '')
 			]));
 
 			return $ret;
