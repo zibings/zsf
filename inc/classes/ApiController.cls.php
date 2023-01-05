@@ -3,6 +3,7 @@
 	namespace Zibings;
 
 	use Stoic\Log\Logger;
+	use Stoic\Pdo\PdoHelper;
 	use Stoic\Utilities\ParameterHelper;
 	use Stoic\Utilities\ReturnHelper;
 	use Stoic\Web\Api\BaseDbApi;
@@ -43,13 +44,19 @@
 	 */
 	abstract class ApiController extends BaseDbApi {
 		/**
+		 * @var PdoHelper
+		 */
+		protected $db;
+
+
+		/**
 		 * Default constructor for ApiController objects.
 		 *
 		 * @param Stoic $stoic Internal instance of Stoic API object.
 		 * @param \PDO $db Internal instance of PDO object.
 		 * @param Logger|null $log Optional internal instance of Logger object, new instance created if not supplied.
 		 */
-		public function __construct(protected Stoic $stoic, \PDO $db, Logger $log = null) {
+		public function __construct(protected Stoic $stoic, PdoHelper $db, Logger $log = null) {
 			parent::__construct($db, $log);
 			$this->registerEndpoints();
 
@@ -82,14 +89,25 @@
 		 * @return User
 		 */
 		protected function getUser() : User {
-			$ret     = new User($this->db, $this->log);
-			$headers = getallheaders();
+			$authHeader    = "";
+			$hasAuthHeader = false;
+			$headers       = getallheaders();
+			$ret           = new User($this->db, $this->log);
 
-			if (array_key_exists('Authorization', $headers) === false) {
+			foreach (array_keys($headers) as $header) {
+				if (strtolower($header) === 'authorization') {
+					$hasAuthHeader = true;
+					$authHeader    = $header;
+
+					break;
+				}
+			}
+
+			if (!$hasAuthHeader) {
 				return $ret;
 			}
 
-			$token    = explode(':', base64_decode(str_replace('Bearer ', '', $headers['Authorization'])));
+			$token    = explode(':', base64_decode(str_replace('Bearer ', '', $headers[$authHeader])));
 			$session  = UserSession::fromToken($token[1], $this->db, $this->log);
 			$expiryDt = (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->sub(new \DateInterval('P1Y'));
 
