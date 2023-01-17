@@ -83,8 +83,8 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('GET',  '/^\/?Users\/GetAll\/Columns\/?/i', 'getUsers', RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('GET',  '/^\/?Users\/GetAll\/?/i',          'getUsers', RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('GET',  '/^\/?Users\/GetAll\/Columns\/?$/i', 'getUsers', RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('GET',  '/^\/?Users\/GetAll\/?$/i',          'getUsers', RoleStrings::ADMINISTRATOR);
 
 			return;
 		}

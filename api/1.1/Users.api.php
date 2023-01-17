@@ -145,8 +145,8 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('GET',  '/^\/?Users\/Columns\/?/i', 'get', RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('GET',  '/^\/?Users\/?/i',          'get', RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('GET',  '/^\/?Users\/Columns\/?$/i', 'get', RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('GET',  '/^\/?Users\/?$/i',          'get', RoleStrings::ADMINISTRATOR);
 
 			return;
 		}

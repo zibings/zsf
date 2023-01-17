@@ -31,8 +31,8 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('GET',  '/^\/?Search\/Users\/Admin\/?/i', 'usersForAdmins', RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('GET',  '/^\/?Search\/Users\/?/i',        'users',          true);
+			$this->registerEndpoint('GET',  '/^\/?Search\/Users\/Admin\/?$/i', 'usersForAdmins', RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('GET',  '/^\/?Search\/Users\/?$/i',        'users',          true);
 
 			return;
 		}

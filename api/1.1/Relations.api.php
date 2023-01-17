@@ -119,10 +119,10 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('GET',  '/^\/?Relations\/RelatedTo\/?/i', 'relatedTo',      true);
-			$this->registerEndpoint('POST', '/^\/?Relations\/Remove\/?/i',    'removeRelation', true);
-			$this->registerEndpoint('POST', '/^\/?Relations\/Set\/?/i',       'setRelation',    true);
-			$this->registerEndpoint('GET',  '/^\/?Relations\/?/i',            'get',            true);
+			$this->registerEndpoint('GET',  '/^\/?Relations\/RelatedTo\/?$/i', 'relatedTo',      true);
+			$this->registerEndpoint('POST', '/^\/?Relations\/Remove\/?$/i',    'removeRelation', true);
+			$this->registerEndpoint('POST', '/^\/?Relations\/Set\/?$/i',       'setRelation',    true);
+			$this->registerEndpoint('GET',  '/^\/?Relations\/?$/i',            'get',            true);
 
 			return;
 		}

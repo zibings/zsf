@@ -25,7 +25,7 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('GET',  '/^\/?Search\/Users\/?/i',      'searchUsers',  true);
+			$this->registerEndpoint('GET',  '/^\/?Search\/Users\/?$/i',      'searchUsers',  true);
 
 			return;
 		}

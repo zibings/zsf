@@ -139,8 +139,8 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('POST', '/^\/?Settings\/?/i', 'update', true);
-			$this->registerEndpoint('GET',  '/^\/?Settings\/?/i', 'get',    true);
+			$this->registerEndpoint('POST', '/^\/?Settings\/?$/i', 'update', true);
+			$this->registerEndpoint('GET',  '/^\/?Settings\/?$/i', 'get',    true);
 
 			return;
 		}

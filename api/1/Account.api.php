@@ -482,23 +482,23 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('GET',  '/^\/?Account\/CheckEmail\/?/i',        'checkEmail',        null);
-			$this->registerEndpoint('POST', '/^\/?Account\/CheckToken\/?/i',        'checkToken',        null);
-			$this->registerEndpoint('POST', '/^\/?Account\/Create\/?/i',            'createUser',        RoleStrings::ADMINISTRATOR);
-			$this->registerEndpoint('POST', '/^\/?Account\/Delete\/?/i',            'deleteUser',        true);
-			$this->registerEndpoint('POST', '/^\/?Account\/Login\/?/i',             'login',             null);
-			$this->registerEndpoint('POST', '/^\/?Account\/Logout\/?/i',            'logout',            true);
-			$this->registerEndpoint('GET',  '/^\/?Account\/Profile\/?/i',           'getProfile',        true);
-			$this->registerEndpoint('POST', '/^\/?Account\/Register\/?/i',          'registerUser',      null);
-			$this->registerEndpoint('GET',  '/^\/?Account\/Relations\/?/i',         'getRelations',      true);
-			$this->registerEndpoint('GET',  '/^\/?Account\/RelatedTo\/?/i',         'relatedTo',         true);
-			$this->registerEndpoint('POST', '/^\/?Account\/RemoveRelation\/?/i',    'removeRelation',    true);
-			$this->registerEndpoint('POST', '/^\/?Account\/ResetPassword\/?/i',     'resetPassword',     false);
-			$this->registerEndpoint('POST', '/^\/?Account\/SendPasswordReset\/?/i', 'sendPasswordReset', false);
-			$this->registerEndpoint('GET',  '/^\/?Account\/Settings\/?/i',          'getSettings',       true);
-			$this->registerEndpoint('POST', '/^\/?Account\/SetRelation\/?/i',       'setRelation',       true);
-			$this->registerEndpoint('POST', '/^\/?Account\/Update\/?/i',            'update',            true);
-			$this->registerEndpoint('GET',  '/^\/?Account\/?/i',                    'get',               true);
+			$this->registerEndpoint('GET',  '/^\/?Account\/CheckEmail\/?$/i',        'checkEmail',        null);
+			$this->registerEndpoint('POST', '/^\/?Account\/CheckToken\/?$/i',        'checkToken',        null);
+			$this->registerEndpoint('POST', '/^\/?Account\/Create\/?$/i',            'createUser',        RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^\/?Account\/Delete\/?$/i',            'deleteUser',        true);
+			$this->registerEndpoint('POST', '/^\/?Account\/Login\/?$/i',             'login',             null);
+			$this->registerEndpoint('POST', '/^\/?Account\/Logout\/?$/i',            'logout',            true);
+			$this->registerEndpoint('GET',  '/^\/?Account\/Profile\/?$/i',           'getProfile',        true);
+			$this->registerEndpoint('POST', '/^\/?Account\/Register\/?$/i',          'registerUser',      null);
+			$this->registerEndpoint('GET',  '/^\/?Account\/Relations\/?$/i',         'getRelations',      true);
+			$this->registerEndpoint('GET',  '/^\/?Account\/RelatedTo\/?$/i',         'relatedTo',         true);
+			$this->registerEndpoint('POST', '/^\/?Account\/RemoveRelation\/?$/i',    'removeRelation',    true);
+			$this->registerEndpoint('POST', '/^\/?Account\/ResetPassword\/?$/i',     'resetPassword',     false);
+			$this->registerEndpoint('POST', '/^\/?Account\/SendPasswordReset\/?$/i', 'sendPasswordReset', false);
+			$this->registerEndpoint('GET',  '/^\/?Account\/Settings\/?$/i',          'getSettings',       true);
+			$this->registerEndpoint('POST', '/^\/?Account\/SetRelation\/?$/i',       'setRelation',       true);
+			$this->registerEndpoint('POST', '/^\/?Account\/Update\/?$/i',            'update',            true);
+			$this->registerEndpoint('GET',  '/^\/?Account\/?$/i',                    'get',               true);
 
 			return;
 		}

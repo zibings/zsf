@@ -45,8 +45,8 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('GET', '/^\/?System\/Version\/?/i',          'getVersion',          false);
-			$this->registerEndpoint('GET', '/^\/?System\/DashboardMetrics\/?/i', 'getDashboardMetrics', RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('GET', '/^\/?System\/Version\/?$/i',          'getVersion',          false);
+			$this->registerEndpoint('GET', '/^\/?System\/DashboardMetrics\/?$/i', 'getDashboardMetrics', RoleStrings::ADMINISTRATOR);
 
 			return;
 		}
