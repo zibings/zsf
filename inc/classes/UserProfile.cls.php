@@ -172,13 +172,11 @@
 				$stmt = $this->db->prepareStored(self::SQL_SELBYUID);
 				$stmt->bindParam(':userId', $this->userId);
 
-				if ($stmt->execute()) {
-					while ($stmt->fetch()) {
-						$ret = false;
-
-						break;
-					}
+				if ($stmt->execute() && $stmt->fetch()) {
+					$ret = false;
 				}
+
+				return;
 			}, "Failed to check for duplicate user profile info");
 
 			return $ret;

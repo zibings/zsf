@@ -4,7 +4,8 @@
 		'STOIC_CORE_PATH'             => './',
 		'STOIC_API_AUTH_COOKIE'       => false,
 		'STOIC_DISABLE_SESSION'       => false,
-		'STOIC_DISABLE_DB_EXCEPTIONS' => false
+		'STOIC_DISABLE_DB_EXCEPTIONS' => false,
+		'STOIC_ENABLE_DEBUG'          => false
 	];
 
 	foreach ($zsfDefaultConstants as $constant => $default) {
@@ -18,6 +19,11 @@
 
 	if ($corePathSuffix != '/') {
 		$corePath .= '/';
+	}
+
+	if (STOIC_ENABLE_DEBUG) {
+		error_reporting(E_ALL);
+		ini_set('display_errors', 'On');
 	}
 
 	require(STOIC_CORE_PATH . 'vendor/autoload.php');

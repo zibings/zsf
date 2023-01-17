@@ -1,0 +1,1111 @@
+openapi: 3.0.0
+info:
+  title: 'ZSF API'
+  version: '1.1'
+servers:
+  -
+    url: /api/1.1
+    description: 'ZSF API'
+paths:
+  /Account/CheckEmail:
+    post:
+      tags:
+        - Account
+      summary: 'Check if an email is valid and not in-use'
+      description: 'Check if an email is valid and not in-use'
+      operationId: checkEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponseData'
+  /Account/CheckToken:
+    post:
+      tags:
+        - Account
+      summary: 'Check if a token is valid for a user'
+      description: 'Check if a token is valid for a user'
+      operationId: checkToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+                token:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                type: string
+  /Account/Create:
+    post:
+      tags:
+        - Account
+      summary: 'Creates a new user in the system'
+      description: 'Creates a new user in the system'
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                confirmPassword:
+                  type: string
+                provider:
+                  type: number
+                emailConfirmed:
+                  type: boolean
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  email: { type: string }
+                  password: { type: string }
+                  confirmPassword: { type: string }
+                  provider: { type: number }
+                  emailConfirmed: { type: boolean }
+                type: object
+        '500':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: string
+      security:
+        -
+          admin_header_token: []
+        -
+          admin_cookie_token: []
+  /Account/Delete:
+    post:
+      tags:
+        - Account
+      summary: 'Removes user from system'
+      description: 'Removes user from system'
+      operationId: deleteUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+              type: object
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Failed
+          content:
+            application/json:
+              schema:
+                type: string
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /Account:
+    get:
+      tags:
+        - Account
+      summary: 'Attempts to retrieve a user''s account information, only works for current user and administrators.'
+      operationId: getAccount
+      parameters:
+        -
+          name: userId
+          in: query
+          description: 'unique user identifier'
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: 'Account data'
+          content:
+            application/json:
+              schema:
+                properties:
+                  email: { description: 'User''s email address', type: string }
+                  emailConfirmed: { description: 'If user''s email address has been confirmed', type: boolean }
+                  id: { description: 'User''s unique identifier', type: number }
+                  joined: { description: 'Date and time the user joined', type: string }
+                  lastActive: { description: 'Date and time the user was last active, if available', type: string }
+                  lastLogin: { description: 'Date and time the user last logged in, if available', type: string }
+                type: object
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /Account/Login:
+    post:
+      tags:
+        - Account
+      summary: 'Logs user into system'
+      description: 'Logs user into system'
+      operationId: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                key:
+                  type: string
+                provider:
+                  type: number
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  userId: { type: number }
+                  token: { type: string }
+                  bearer: { type: string }
+                type: object
+  /Account/Logout:
+    post:
+      tags:
+        - Account
+      summary: 'Logs current user out of system'
+      description: 'Logs current user out of system'
+      operationId: Logout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+                token:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  userId: { type: number }
+                  token: { type: string }
+                type: object
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /Account/Register:
+    post:
+      tags:
+        - Account
+      summary: 'Registers user with system'
+      description: 'Registers user with system'
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                key:
+                  type: string
+                confirmKey:
+                  type: string
+                provider:
+                  type: number
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  email: { type: string }
+                  password: { type: string }
+                  confirmPassword: { type: string }
+                  provider: { type: number }
+                  emailConfirmed: { type: boolean }
+                type: object
+  /Account/ResetPassword:
+    post:
+      tags:
+        - Account
+      summary: 'Resets a user''s password'
+      description: 'Resets a user''s password'
+      operationId: resetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+                key:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+  /Account/SendPasswordReset:
+    post:
+      tags:
+        - Account
+      summary: 'Sends user a password reset token'
+      description: 'Sends user a password reset token'
+      operationId: sendPasswordReset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+  /Account/Update:
+    post:
+      tags:
+        - Account
+      summary: 'Updates a user''s account details'
+      description: 'Updates a user''s account details'
+      operationId: updateAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+                email:
+                  type: string
+                password:
+                  type: string
+                oldPassword:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  email: { type: string }
+                  password: { type: string }
+                  confirmPassword: { type: string }
+                  provider: { type: number }
+                  emailConfirmed: { type: boolean }
+                type: object
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /Profile:
+    get:
+      tags:
+        - Profile
+      summary: 'Retrieves user''s profile information'
+      description: 'Retrieves user''s profile information'
+      operationId: getProfile
+      parameters:
+        -
+          name: userId
+          in: query
+          description: 'unique user identifier'
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  userId: { type: number }
+                  displayName: { type: string }
+                  birthday: { type: string }
+                  realName: { type: string }
+                  description: { type: string }
+                  gender: { type: number }
+                type: object
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+    post:
+      tags:
+        - Profile
+      summary: 'Update user profile'
+      description: 'Update user profile'
+      operationId: updateProfile
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+                birthday:
+                  type: string
+                description:
+                  type: string
+                displayName:
+                  type: string
+                gender:
+                  type: number
+                realName:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /Relations:
+    get:
+      tags:
+        - Relations
+      summary: 'Retrieve any user relations'
+      description: 'Retrieve any user relations'
+      operationId: getRelations
+      parameters:
+        -
+          name: userId
+          in: query
+          description: 'unique user identifier'
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties: { created: { type: string }, stage: { type: number }, origin: { type: boolean }, userOne: { type: number }, userTwo: { type: number } }
+                  type: object
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /Relations/RelatedTo:
+    get:
+      tags:
+        - Relations
+      summary: 'Checks if users are related'
+      description: 'Checks if users are related'
+      operationId: getRelatedTo
+      parameters:
+        -
+          name: userId
+          in: query
+          description: 'unique user identifier'
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /Relations/Remove:
+    post:
+      tags:
+        - Relations
+      summary: 'Removes the given relationship'
+      description: 'Removes the given relationship'
+      operationId: removeRelation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /Relations/Set:
+    post:
+      tags:
+        - Relations
+      summary: 'Set stage of relationship'
+      description: 'Set stage of relationship'
+      operationId: setRelation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+                stage:
+                  type: number
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /Roles/Add:
+    post:
+      tags:
+        - Roles
+      summary: 'Add new role to system'
+      description: 'Add new role to system'
+      operationId: addRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties: { created: { type: string }, id: { type: number }, name: { type: string } }
+                  type: object
+      security:
+        -
+          admin_header_token: []
+        -
+          admin_cookie_token: []
+  /Roles:
+    get:
+      tags:
+        - Roles
+      summary: 'Retrieves all roles'
+      description: 'Retrieves all roles'
+      operationId: getRoles
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties: { created: { type: string }, id: { type: number }, name: { type: string } }
+                  type: object
+      security:
+        -
+          admin_header_token: []
+        -
+          admin_cookie_token: []
+  '/Roles/UserRoles/{userId}':
+    get:
+      tags:
+        - Roles
+      summary: 'Retrieve user roles'
+      description: 'Retrieve user roles'
+      operationId: getUserRoles
+      parameters:
+        -
+          name: userId
+          in: path
+          description: 'unique user identifier'
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties: { created: { type: string }, id: { type: number }, name: { type: string } }
+                  type: object
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /Roles/UserRoles:
+    get:
+      tags:
+        - Roles
+      summary: 'Retrieve user roles'
+      description: 'Retrieve user roles'
+      operationId: getUserRoles
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties: { created: { type: string }, id: { type: number }, name: { type: string } }
+                  type: object
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /Roles/Remove:
+    post:
+      tags:
+        - Roles
+      summary: 'Remove role from system'
+      description: 'Remove role from system'
+      operationId: removeRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  created: { type: string }
+                  id: { type: number }
+                  name: { type: string }
+                type: object
+      security:
+        -
+          admin_header_token: []
+        -
+          admin_cookie_token: []
+  /Roles/RemoveUserRole:
+    post:
+      tags:
+        - Roles
+      summary: 'Removes role for given user'
+      description: 'Removes role for given user'
+      operationId: removeUserRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+                name:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+      security:
+        -
+          admin_header_token: []
+        -
+          admin_cookie_token: []
+  /Roles/RemoveUserRoles:
+    post:
+      tags:
+        - Roles
+      summary: 'Removes all roles for user'
+      description: 'Removes all roles for user'
+      operationId: removeUserRoles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+      security:
+        -
+          admin_header_token: []
+        -
+          admin_cookie_token: []
+  /Roles/SetUserRole:
+    post:
+      tags:
+        - Roles
+      summary: 'Assigns role to user'
+      description: 'Assigns role to user'
+      operationId: setUserRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+                name:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  created: { type: string }
+                  id: { type: number }
+                  name: { type: string }
+                type: object
+      security:
+        -
+          admin_header_token: []
+        -
+          admin_cookie_token: []
+  /Roles/UserInRole:
+    post:
+      tags:
+        - Roles
+      summary: 'Check if user is assigned a role'
+      description: 'Check if user is assigned a role'
+      operationId: userInRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+                name:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  '/Roles/UsersInRole/{RoleName}':
+    get:
+      tags:
+        - Roles
+      summary: 'Retrieve any users assigned to a role'
+      description: 'Retrieve any users assigned to a role'
+      operationId: usersInRole
+      parameters:
+        -
+          name: RoleName
+          in: path
+          description: 'Role name to search with'
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties: { email: { description: 'User''s email address', type: string }, emailConfirmed: { description: 'If user''s email address has been confirmed', type: boolean }, id: { description: 'User''s unique identifier', type: number }, joined: { description: 'Date and time the user joined', type: string }, lastActive: { description: 'Date and time the user was last active, if available', type: string }, lastLogin: { description: 'Date and time the user last logged in, if available', type: string } }
+                  type: object
+      security:
+        -
+          admin_header_token: []
+        -
+          admin_cookie_token: []
+  /Search/Users:
+    get:
+      tags:
+        - Search
+      summary: 'Search visible users'
+      description: 'Search users who are configured as visible in the system'
+      operationId: searchUsers
+      parameters:
+        -
+          name: query
+          in: query
+          description: 'text to search by'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties: { email: { type: string }, emailConfirmed: { type: boolean }, id: { type: number }, joined: { type: string }, lastLogin: { type: string }, displayName: { type: string }, birthday: { type: string }, realName: { type: string }, description: { type: string }, gender: { type: string } }
+                  type: object
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /Search/Users/Admin:
+    get:
+      tags:
+        - Search
+      summary: 'Search all users'
+      description: 'Search all users in the system'
+      operationId: searchUsersAdmin
+      parameters:
+        -
+          name: query
+          in: query
+          description: 'text to search by'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties: { email: { type: string }, emailConfirmed: { type: boolean }, id: { type: number }, joined: { type: string }, lastLogin: { type: string }, displayName: { type: string }, birthday: { type: string }, realName: { type: string }, description: { type: string }, gender: { type: string } }
+                  type: object
+      security:
+        -
+          admin_header_token: []
+        -
+          admin_cookie_token: []
+  /Settings:
+    get:
+      tags:
+        - Settings
+      summary: 'Retrieve''s a user''s settings'
+      description: 'Retrieve''s a user''s settings'
+      operationId: getSettings
+      parameters:
+        -
+          name: userId
+          in: query
+          description: 'optional user identifier'
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  htmlEmails: { type: boolean }
+                  playSounds: { type: boolean }
+                  userId: { type: number }
+                  visBirthday: { type: number }
+                  visDescription: { type: number }
+                  visEmail: { type: number }
+                  visGender: { type: number }
+                  visProfile: { type: number }
+                  visRealName: { type: number }
+                  visSearches: { type: number }
+                type: object
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+    post:
+      tags:
+        - Settings
+      summary: 'Update user settings'
+      description: 'Update user settings'
+      operationId: updateSettings
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: number
+                htmlEmail:
+                  type: boolean
+                playSounds:
+                  type: boolean
+                visBirthday:
+                  type: number
+                visDescription:
+                  type: number
+                visEmail:
+                  type: number
+                visGender:
+                  type: number
+                visProfile:
+                  type: number
+                visRealName:
+                  type: number
+                visSearches:
+                  type: number
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+      security:
+        -
+          header_token: []
+        -
+          cookie_token: []
+  /System/DashboardMetrics:
+    get:
+      tags:
+        - System
+      summary: 'Returns some basic metrics'
+      description: 'Returns basic metrics for an admin dashboard'
+      operationId: getDashboardMetrics
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  dau: { description: 'Daily Active Users', type: number }
+                  mau: { description: 'Monthly Active Users', type: number }
+                  tu: { description: 'Total Users', type: number }
+                  tvu: { description: 'Total Verified Users', type: number }
+                type: object
+      security:
+        -
+          admin_header_token: []
+        -
+          admin_cookie_token: []
+  /System/Version:
+    get:
+      tags:
+        - System
+      summary: 'Returns defined system version'
+      description: 'Returns system version as defined in the siteSettings file'
+      operationId: getVersion
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: 'Currently defined version number'
+                type: string
+  /Users:
+    get:
+      tags:
+        - Users
+      summary: 'Retrieves all users in system'
+      description: 'Retrieves all users in system'
+      operationId: getUsers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties: { email: { description: 'User''s email address', type: string }, emailConfirmed: { description: 'If user''s email address has been confirmed', type: boolean }, id: { description: 'User''s unique identifier', type: number }, joined: { description: 'Date and time the user joined', type: string }, lastActive: { description: 'Date and time the user was last active, if available', type: string }, lastLogin: { description: 'Date and time the user last logged in, if available', type: string } }
+                  type: object
+      security:
+        -
+          admin_header_token: []
+        -
+          admin_cookie_token: []
+  /Users/Columns:
+    get:
+      tags:
+        - Users
+      summary: 'Retrieves columns returned by '
+      description: 'Retrieves all users in system'
+      operationId: getUsersColumns
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties: { field: { type: string }, header: { type: string }, filter: { type: boolean }, sortable: { type: boolean }, display: { type: boolean } }
+                  type: object
+      security:
+        -
+          admin_header_token: []
+        -
+          admin_cookie_token: []
+components:
+  schemas:
+    StatusResponseData:
+      description: 'Basic response data structure for including a status code and message'
+      properties:
+        status:
+          description: 'Status code for response'
+          type: number
+        message:
+          description: 'Message for response'
+          type: string
+      type: object
+  parameters: {  }
+  securitySchemes:
+    header_token:
+      type: apiKey
+      name: header_token
+      in: header
+    cookie_token:
+      type: apiKey
+      name: cookie_token
+      in: cookie
+    admin_header_token:
+      type: apiKey
+      name: admin_header_token
+      in: header
+    admin_cookie_token:
+      type: apiKey
+      name: admin_cookie_token
+      in: cookie
+tags:
+  -
+    name: Account
+    description: 'User account related operation'
+  -
+    name: Profile
+    description: 'User profile operations'
+  -
+    name: Relations
+    description: 'User relation operations'
+  -
+    name: Roles
+    description: 'User role operations'
+  -
+    name: Search
+    description: 'Search operations'
+  -
+    name: Settings
+    description: 'Operations for user settings'
+  -
+    name: System
+    description: 'System-wide operations'
+  -
+    name: Users
+    description: 'Group operations for users'

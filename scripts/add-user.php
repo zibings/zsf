@@ -1,10 +1,7 @@
 <?php
 
-	error_reporting(E_ALL);
-	ini_set('display_errors', 'On');
-
 	const CORE_PATH = './';
-	require(CORE_PATH . 'inc/core.php');
+	require_once(CORE_PATH . 'inc/core.php');
 
 	use Stoic\Utilities\ConsoleHelper;
 	use Stoic\Utilities\ParameterHelper;
