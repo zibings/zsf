@@ -191,3 +191,6 @@ web/themes/
 web/config.json
 web/favicon.ico
 scripts/test.php
+
+# Docker
+docker/.env
