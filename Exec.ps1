@@ -82,14 +82,24 @@ function UpdateDocker([string] $ProjectName, [string] $WebContainer) {
 	Write-Host "Finished updating"
 }
 
-function StopDocker {
+function StopDocker([string] $ProjectName) {
 	Write-Host "Stopping docker container.. "
 
 	Push-Location docker
-	docker compose stop
+	docker compose -p $ProjectName stop
 	Pop-Location
 
 	Write-Host "Docker container stopped"
+}
+
+function DownDocker([string] $ProjectName) {
+  Write-Host "Removing docker container.. "
+
+  Push-Location docker
+  docker compose -p $ProjectName down
+  Pop-Location
+
+  Write-Host "Docker container removed"
 }
 
 Write-Host "Executing command on '$ProjectName' project: $Command"
@@ -99,7 +109,9 @@ if ($Command -eq "init") {
 } elseif ($Command -eq "update") {
 	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
 } elseif ($Command -eq "stop") {
-	StopDocker
+	StopDocker -ProjectName $ProjectName
+} elseif ($Command -eq "down") {
+  DownDocker -ProjectName $ProjectName
 } else {
 	$opts = "t"
 

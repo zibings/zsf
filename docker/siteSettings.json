@@ -34,18 +34,7 @@
 		"defaultFromAddress": "str",
 		"defaultFromName": "str",
 		"apiPath": "str",
-		"curlSecure": "bln",
-		"viteDevHost": "str",
-		"viteIsProd": "bln",
-		"idScanToken": "str",
-		"stripeSecret": "str",
-		"stripeWebhookSecret": "str",
-		"googleOauthToken": "str",
-		"googleClientId": "str",
-		"googleClientSecret": "str",
-		"googleDeveloperKey": "str",
-		"twilioId": "str",
-		"twilioToken": "str"
+		"curlSecure": "bln"
 	},
 	"settings": {
 		"configVersion": 5,

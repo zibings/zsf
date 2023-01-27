@@ -1,6 +1,6 @@
 {
     "require": {
-			"php": "^8",
+			"php": "^8.1",
 			"stoic/web": "^1.1",
       "phpmailer/phpmailer": "^6.2",
       "hybridauth/hybridauth": "*",
