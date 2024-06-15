@@ -97,17 +97,23 @@
 			foreach (array_keys($headers) as $header) {
 				if (strtolower($header) === 'authorization') {
 					$hasAuthHeader = true;
-					$authHeader    = $header;
+					$authHeader    = $headers[$header];
 
 					break;
 				}
 			}
 
 			if (!$hasAuthHeader) {
-				return $ret;
+				$cookies = $this->stoic->getRequest()->getCookies();
+
+				if (!$cookies->has(UserEvents::STR_COOKIE_TOKEN)) {
+					return $ret;
+				}
+
+				$authHeader = $cookies->getString(UserEvents::STR_COOKIE_TOKEN, '');
 			}
 
-			$token    = explode(':', base64_decode(str_replace('Bearer ', '', $headers[$authHeader])));
+			$token    = explode(':', base64_decode(str_replace('Bearer ', '', $authHeader)));
 			$session  = UserSession::fromToken($token[1], $this->db, $this->log);
 			$expiryDt = (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->sub(new \DateInterval('P1Y'));
 
