@@ -1290,7 +1290,7 @@
 				$confirmKey = $params->getString(self::STR_CONFIRM_KEY);
 				$login      = LoginKey::fromUserAndProvider($user->id, LoginKeyProviders::PASSWORD, $this->db, $this->log);
 
-				if (password_verify($params->getString(self::STR_OLD_KEY), PASSWORD_DEFAULT)) {
+				if (password_verify($params->getString(self::STR_OLD_KEY), $login->key)) {
 					if ($login->userId == $user->id && !empty($key) && $key === $confirmKey) {
 						$login->key = password_hash($key, PASSWORD_DEFAULT);
 
