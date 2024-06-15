@@ -247,7 +247,8 @@ BEGIN TRY
 				IGNORE_DUP_KEY = OFF,
 				ALLOW_ROW_LOCKS = ON,
 				ALLOW_PAGE_LOCKS = ON
-			) ON [PRIMARY]
+			) ON [PRIMARY],
+			CONSTRAINT [UQ_dbo.UserProfile_DisplayName] UNIQUE ([DisplayName])
 		) ON [PRIMARY];
 
 		ALTER TABLE [dbo].[UserProfile] WITH CHECK

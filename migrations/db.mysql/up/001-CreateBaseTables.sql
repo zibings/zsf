@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS `UserProfile` (
     `Description` NVARCHAR(4000) NULL,
     `Gender` TINYINT NULL,
     PRIMARY KEY (`UserID`),
+    UNIQUE (`DisplayName`),
     CONSTRAINT `FK_UserProfileUser` FOREIGN KEY (`UserID`) REFERENCES `User` (`ID`) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
