@@ -181,7 +181,6 @@ composer.lock
 vendor/
 node_modules/
 package-lock.json
-admin/
 web/assets/
 web/index.html
 web/data/
@@ -194,3 +193,9 @@ scripts/test.php
 
 # Docker
 docker/.env
+
+# UI Stuff
+ui/admin/.vscode/
+ui/admin/node_modules/
+ui/front/.vscode/
+ui/front/node_modules/
