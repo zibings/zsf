@@ -439,12 +439,12 @@
 		 * @return Response
 		 */
 		public function logout(Request $request, array $matches = null) : Response {
+			$params = null;
 			$ret    = $this->newResponse();
-			$params = $request->getInput();
 
-			if ($params->hasAll('userId', 'token')) {
+			try {
 				$this->processEvent($ret, 'doLogout', $request->getInput());
-			} else {
+			} catch (\Exception $ex) {
 				$authToken = $this->getUserAuthToken();
 
 				if (empty($authToken)) {
