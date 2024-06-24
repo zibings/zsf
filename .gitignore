@@ -5,6 +5,8 @@ assets/migrations/db/
 .scannerwork/
 .idea/
 .vs/
+web/web.config
+
 # User-specific files
 *.suo
 *.user
