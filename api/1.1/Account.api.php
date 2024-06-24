@@ -462,7 +462,11 @@
 			if ($evt->isBad()) {
 				$ret->setData($evt->getMessages()[0]);
 			} else {
-				$ret->setData($evt->getResults()[0][UserEvents::STR_DATA]);
+				$results = $evt->getResults()[0];
+
+				if (isset($results[UserEvents::STR_DATA])) {
+					$ret->setData($results[UserEvents::STR_DATA]);
+				}
 			}
 
 			return;
