@@ -181,6 +181,48 @@
 		}
 
 		/**
+		 * Attempts to confirm a user's email address, given a token for doing so.
+		 *
+		 * @OA\Post(
+		 *   path="/Account/Confirm",
+		 *   operationId="confirmUser",
+		 *   summary="Confirms a user's email address",
+		 *   description="Confirms a user's email address",
+		 *   tags={"Account"},
+		 *   @OA\RequestBody(
+		 *     @OA\JsonContent(
+		 *       type="object",
+		 *       @OA\Property(property="token", type="string")
+		 *     )
+		 *   ),
+		 *   @OA\Response(
+		 *     response="200",
+		 *     description="OK",
+		 *     @OA\JsonContent(type="string")
+		 *   )
+		 * )
+		 *
+		 * @param Request $request
+		 * @param array|null $matches
+		 * @throws \ReflectionException|\Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException
+		 * @return Response
+		 */
+		public function confirmUser(Request $request, array $matches = null) : Response {
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
+
+			if (!$params->has('token')) {
+				$ret->setAsError("Invalid parameters provided");
+
+				return $ret;
+			}
+
+			$this->processEvent($ret, 'doConfirm', $params);
+
+			return $ret;
+		}
+
+		/**
 		 * Attempts to create a user in the system, only callable by administrators.
 		 *
 		 * @OA\Post(
@@ -506,6 +548,7 @@
 		protected function registerEndpoints() : void {
 			$this->registerEndpoint('POST', '/^\/?Account\/CheckEmail\/?$/i',        'checkEmail',        null);
 			$this->registerEndpoint('POST', '/^\/?Account\/CheckToken\/?$/i',        'checkToken',        null);
+			$this->registerEndpoint('POST', '/^\/?Account\/Confirm\/?$/i',           'confirmUser',       false);
 			$this->registerEndpoint('POST', '/^\/?Account\/Create\/?$/i',            'createUser',        RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('POST', '/^\/?Account\/Delete\/?$/i',            'deleteUser',        true);
 			$this->registerEndpoint('POST', '/^\/?Account\/Login\/?$/i',             'login',             null);
