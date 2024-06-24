@@ -20,6 +20,7 @@
 	use Zibings\UserAuthHistory;
 	use Zibings\UserAuthHistoryLoginNode;
 	use Zibings\UserAuthHistoryLogoutNode;
+	use Zibings\UserEmailConfirmationNode;
 	use Zibings\UserEvents;
 	use Zibings\UserEventTypes;
 	use Zibings\UserRoles;
@@ -55,6 +56,8 @@
 			Logger $log = null,
 			protected UserEvents|null    $events    = null,
 			protected UserRoles|null     $userRoles = null) {
+			global $Settings;
+
 			parent::__construct($stoic, $db, $log);
 
 			if ($this->events === null) {
@@ -65,9 +68,13 @@
 				$this->userRoles = new UserRoles($this->db, $this->log);
 			}
 
+			$page = PageHelper::getPage('api/1.1/index.php');
+
 			// NOTE: Add UserEvent nodes here if needed
 			$this->events->linkToEvent(UserEventTypes::LOGIN, new UserAuthHistoryLoginNode($this->db, $this->log));
 			$this->events->linkToEvent(UserEventTypes::LOGOUT, new UserAuthHistoryLogoutNode($this->db, $this->log));
+			$this->events->linkToEvent(UserEventTypes::CREATE, new UserEmailConfirmationNode($page, $Settings, $this->db, $this->log));
+			$this->events->linkToEvent(UserEventTypes::REGISTER, new UserEmailConfirmationNode($page, $Settings, $this->db, $this->log));
 
 			return;
 		}
