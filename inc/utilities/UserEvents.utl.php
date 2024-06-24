@@ -1088,7 +1088,6 @@
 		 * UserEventResetPasswordDispatch object. The following parameters are required:
 		 *
 		 * [
-		 *   'id'         => (int) 1,            # user identifier
 		 *   'key'        => (string) 'someKey', # new password
 		 *   'confirmKey' => (string) 'someKey', # confirmation of new password
 		 *   'token'      => (string) 'token'    # token to confirm this is authorized
@@ -1105,13 +1104,12 @@
 		public function doResetPassword(ParameterHelper $params) : ReturnHelper {
 			$ret = new ReturnHelper();
 
-			if (!$params->hasAll(self::STR_ID, self::STR_KEY, self::STR_CONFIRM_KEY, self::STR_TOKEN)) {
+			if (!$params->hasAll(self::STR_KEY, self::STR_CONFIRM_KEY, self::STR_TOKEN)) {
 				$this->assignError($ret, "Missing parameters for reset");
 
 				return $ret;
 			}
 
-			$id         = $params->getInt(self::STR_ID);
 			$key        = $params->getString(self::STR_KEY);
 			$token      = $params->getString(self::STR_TOKEN);
 			$confirmKey = $params->getString(self::STR_CONFIRM_KEY);
@@ -1122,7 +1120,15 @@
 				return $ret;
 			}
 
-			$user = User::fromId($id, $this->db, $this->log);
+			$token = explode(':', base64_decode($token));
+
+			if (count($token) !== 2) {
+				$this->assignError($ret, "Invalid reset token");
+
+				return $ret;
+			}
+
+			$user = User::fromId($token[0], $this->db, $this->log);
 
 			if ($user->id < 1) {
 				$this->assignError($ret, "Invalid account information");
@@ -1130,7 +1136,7 @@
 				return $ret;
 			}
 
-			$tok = UserToken::fromToken($token, $user->id, $this->db, $this->log);
+			$tok = UserToken::fromToken($token[1], $user->id, $this->db, $this->log);
 
 			if ($tok->id < 1) {
 				$this->assignError($ret, "Invalid token for reset");

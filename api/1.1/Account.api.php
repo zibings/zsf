@@ -620,8 +620,8 @@
 		 *     required=true,
 		 *     @OA\JsonContent(
 		 *       type="object",
-		 *       @OA\Property(property="userId",     type="number"),
-		 *       @OA\Property(property="key",        type="string")
+		 *       @OA\Property(property="key",   type="string"),
+		 *       @OA\Property(property="token", type="string"),
 		 *     )
 		 *   ),
 		 *   @OA\Response(
@@ -640,7 +640,6 @@
 			$params = $request->getInput();
 
 			$this->processEvent($ret, 'doResetPassword', new ParameterHelper([
-				'id'         => $params->getInt('userId', 0),
 				'key'        => $params->getString('key', ''),
 				'confirmKey' => $params->getString('key', ''),
 				'token'      => $params->getString('token', '')
