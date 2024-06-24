@@ -439,8 +439,27 @@
 		 * @return Response
 		 */
 		public function logout(Request $request, array $matches = null) : Response {
-			$ret = $this->newResponse();
-			$this->processEvent($ret, 'doLogout', $request->getInput());
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
+
+			if ($params->hasAll('userId', 'token')) {
+				$this->processEvent($ret, 'doLogout', $request->getInput());
+			} else {
+				$authToken = $this->getUserAuthToken();
+
+				if (empty($authToken)) {
+					$ret->setAsError("Invalid token provided");
+
+					return $ret;
+				}
+
+				$tokenParts = explode(':', base64_decode(str_replace('Bearer ', '', $authToken)));
+
+				$this->processEvent($ret, 'doLogout', new ParameterHelper([
+					'userId' => $tokenParts[0],
+					'token'  => $tokenParts[1]
+				]));
+			}
 
 			return $ret;
 		}
