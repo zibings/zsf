@@ -6,6 +6,7 @@ assets/migrations/db/
 .idea/
 .vs/
 web/web.config
+web/email-preview.php
 
 # User-specific files
 *.suo
