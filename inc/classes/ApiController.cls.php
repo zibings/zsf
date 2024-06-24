@@ -89,10 +89,34 @@
 		 * @return User
 		 */
 		protected function getUser() : User {
+			$authHeader = $this->getUserAuthToken();
+			$ret        = new User($this->db, $this->log);
+
+			if (empty($authHeader)) {
+				return $ret;
+			}
+
+			$token    = explode(':', base64_decode(str_replace('Bearer ', '', $authHeader)));
+			$session  = UserSession::fromToken($token[1], $this->db, $this->log);
+			$expiryDt = (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->sub(new \DateInterval('P1Y'));
+
+			if ($session->id < 1 || $session->created < $expiryDt) {
+				return $ret;
+			}
+
+			return User::fromId($session->userId, $this->db, $this->log);
+		}
+
+		/**
+		 * Attempts to retrieve the Authorization token from the user's request.
+		 *
+		 * @return string
+		 */
+		protected function getUserAuthToken() : string {
 			$authHeader    = "";
+			$ret           = "";
 			$hasAuthHeader = false;
 			$headers       = getallheaders();
-			$ret           = new User($this->db, $this->log);
 
 			foreach (array_keys($headers) as $header) {
 				if (strtolower($header) === 'authorization') {
@@ -113,15 +137,31 @@
 				$authHeader = $cookies->getString(UserEvents::STR_COOKIE_TOKEN, '');
 			}
 
+			return $authHeader;
+		}
+
+		/**
+		 * Attempts to hydrate a UserSession object from the authorization token in the request.
+		 *
+		 * @throws \Exception
+		 * @return UserSession
+		 */
+		protected function getUserSession() : UserSession {
+			$authHeader = $this->getUserAuthToken();
+
+			if (empty($authHeader)) {
+				return new UserSession($this->db, $this->log);
+			}
+
 			$token    = explode(':', base64_decode(str_replace('Bearer ', '', $authHeader)));
 			$session  = UserSession::fromToken($token[1], $this->db, $this->log);
 			$expiryDt = (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->sub(new \DateInterval('P1Y'));
 
 			if ($session->id < 1 || $session->created < $expiryDt) {
-				return $ret;
+				return new UserSession($this->db, $this->log);
 			}
 
-			return User::fromId($session->userId, $this->db, $this->log);
+			return $session;
 		}
 
 		/**
