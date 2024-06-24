@@ -44,7 +44,9 @@
 		 * @return void
 		 */
 		public function process(mixed $sender, DispatchBase &$dispatch) : void {
-			if (!($dispatch instanceof UserEventCreateDispatch) && !($dispatch instanceof UserEventRegisterDispatch)) {
+			if (!($dispatch instanceof UserEventCreateDispatch) &&
+				!($dispatch instanceof UserEventRegisterDispatch) &&
+				!($dispatch instanceof UserEventUpdateDispatch)) {
 				return;
 			}
 

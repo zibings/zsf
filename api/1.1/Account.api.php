@@ -74,6 +74,7 @@
 			$this->events->linkToEvent(UserEventTypes::LOGIN, new UserAuthHistoryLoginNode($this->db, $this->log));
 			$this->events->linkToEvent(UserEventTypes::LOGOUT, new UserAuthHistoryLogoutNode($this->db, $this->log));
 			$this->events->linkToEvent(UserEventTypes::CREATE, new UserEmailConfirmationNode($page, $Settings, $this->db, $this->log));
+			$this->events->linkToEvent(UserEventTypes::UPDATE, new UserEmailConfirmationNode($page, $Settings, $this->db, $this->log));
 			$this->events->linkToEvent(UserEventTypes::REGISTER, new UserEmailConfirmationNode($page, $Settings, $this->db, $this->log));
 
 			return;
@@ -756,21 +757,19 @@
 				return $ret;
 			}
 
-			$userEvents = new UserEvents($this->db, $this->log);
-
 			$postData = [
 				'id'             => $userId,
 				'actor'          => $user->id,
 				'email'          => $params->getString('email'),
 				'confirmEmail'   => $params->getString('email'),
-				'emailConfirmed' => true,
+				'emailConfirmed' => false,
 				'key'            => $params->getString('password'),
 				'confirmKey'     => $params->getString('password'),
 				'oldKey'         => $params->getString('oldPassword'),
 				'provider'       => LoginKeyProviders::PASSWORD
 			];
 
-			$update = $userEvents->doUpdate(new ParameterHelper($postData));
+			$update = $this->events->doUpdate(new ParameterHelper($postData));
 
 			if ($update->isBad()) {
 				if ($update->hasMessages()) {
