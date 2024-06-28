@@ -21,7 +21,7 @@ console.log(authStore);
 nav {
 	font-size: 12px;
 	display: flex;
-	place-items: center;
+	justify-content: center;
 	margin-top: 100px;
 }
 
