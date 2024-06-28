@@ -10,10 +10,10 @@ console.log(authStore);
 
 <template>
 	<nav>
-		<RouterLink to="home">Home</RouterLink>
-		<RouterLink to="login">Login</RouterLink>
-		<RouterLink to="register">Register</RouterLink>
-		<RouterLink to="profile" v-if="authStore.isLoggedIn.value">Profile</RouterLink>
+		<RouterLink to="/">Home</RouterLink>
+		<RouterLink to="/login">Login</RouterLink>
+		<RouterLink to="/register">Register</RouterLink>
+		<RouterLink to="/profile" v-if="authStore.isLoggedIn.value">Profile</RouterLink>
 	</nav>
 </template>
 
