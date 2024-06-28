@@ -135,7 +135,6 @@
 		 *   @OA\RequestBody(
 		 *     @OA\JsonContent(
 		 *       type="object",
-		 *       @OA\Property(property="userId", type="number"),
 		 *       @OA\Property(property="token",  type="string")
 		 *     )
 		 *   ),
@@ -160,17 +159,32 @@
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
 
-			if (!$params->hasAll('userId', 'token')) {
+			if (!$params->has('token')) {
 				$ret->setAsError("Invalid parameters provided");
 
 				return $ret;
 			}
 
-			$userId      = $params->getInt('userId');
-			$userSession = UserSession::fromToken($params->getString('token'), $this->db, $this->log);
-			UserAuthHistory::createFromUserId($userId, AuthHistoryActions::TOKEN_CHECK, new ParameterHelper($_SERVER), "Token checked for user #{$userId}", $this->db, $this->log);
+			$token = $params->getString('token', '');
 
-			if ($userSession->userId != $userId) {
+			if (empty($token)) {
+				$ret->setAsError("Invalid token provided");
+
+				return $ret;
+			}
+
+			$token = explode(':', base64_decode($token));
+
+			if (count($token) != 2) {
+				$ret->setAsError("Invalid token provided");
+
+				return $ret;
+			}
+
+			$userSession = UserSession::fromToken($token[1], $this->db, $this->log);
+			UserAuthHistory::createFromUserId($token[0], AuthHistoryActions::TOKEN_CHECK, new ParameterHelper($_SERVER), "Token checked for user #{$token[0]}", $this->db, $this->log);
+
+			if ($userSession->userId != $token[0]) {
 				$ret->setAsError("Invalid session parameters");
 
 				return $ret;
