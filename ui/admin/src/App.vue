@@ -1,3 +1,9 @@
 <template>
-    <router-view />
+	<Suspense>
+		<router-view />
+	</Suspense>
 </template>
+
+<script setup></script>
+
+<style scoped></style>

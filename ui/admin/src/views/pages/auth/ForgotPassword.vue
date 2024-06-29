@@ -1,45 +1,39 @@
-<script setup>
-import { ref } from 'vue';
-import AppConfig from '@/layout/AppConfig.vue';
+<template>
+	<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+		<div class="flex flex-column align-items-center justify-content-center">
+			<!-- <img :src="logoUrl" alt="Sakai logo" class="mb-5 w-6rem flex-shrink-0" /> -->
+			<div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
+				<div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius: 53px">
+					<div class="text-center mb-5">
+						<div class="text-900 text-3xl font-medium mb-3">Reset Your Password</div>
+						<span class="text-600 font-medium">Fill in your email to continue</span>
+					</div>
 
-const backgroundImage = ref('url(/demo/images/pages/accessDenied-bg.jpg)');
-const backgroundStyle = ref({
-    background: backgroundImage.value
+					<div>
+						<form @submit.prevent="resetPwd">
+							<label for="email1" class="block text-900 text-xl font-medium mb-2">Email</label>
+							<InputText id="email1" type="email" placeholder="Email address" class="w-full mb-5" style="padding: 1rem" v-model="email" required />
+							<!-- md:w-30rem -->
+
+							<Button type="submit" label="Reset Password" class="w-full p-3 text-xl"></Button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script setup>
+import { useLayout } from "@/layout/composables/layout";
+import { ref, computed } from "vue";
+
+const { layoutConfig } = useLayout();
+const email = ref("");
+
+const logoUrl = computed(() => {
+	return `/layout/images/${layoutConfig.darkTheme.value ? "logo-white" : "logo-dark"}.svg`;
 });
 </script>
 
-<template>
-    <div class="h-screen flex w-full surface-ground">
-        <div class="flex flex-1 flex-column surface-ground align-items-center justify-content-center">
-            <div class="w-11 sm:w-30rem">
-                <div class="flex flex-column">
-                    <div style="height: 56px; width: 56px" class="bg-primary-50 border-circle flex align-items-center justify-content-center">
-                        <i class="pi pi-question text-primary text-4xl"></i>
-                    </div>
-                    <div class="mt-4">
-                        <h1 class="m-0 text-primary font-semibold text-4xl">Forgot password?</h1>
-                        <span class="block text-700 mt-2">Please enter your email address</span>
-                    </div>
-                </div>
-                <div class="flex flex-column gap-3 mt-6">
-                    <InputGroup>
-                        <InputGroupAddon>
-                            <i class="pi pi-at"></i>
-                        </InputGroupAddon>
-                        <InputText placeholder="Email" />
-                    </InputGroup>
-                    <InputGroup>
-                        <Button class="w-full" label="SUBMIT EMAIL"></Button>
-                    </InputGroup>
-                    <InputGroup>
-                        <Button class="w-full text-primary-500" text label="BACK TO LOGIN"></Button>
-                    </InputGroup>
-                </div>
-            </div>
-        </div>
-        <div :style="backgroundStyle" class="hidden lg:flex flex-1 align-items-center justify-content-center bg-cover">
-            <img src="/layout/images/logo/vector_logo.png" alt="" />
-        </div>
-    </div>
-    <AppConfig simple />
-</template>
+<style scoped lang="scss"></style>

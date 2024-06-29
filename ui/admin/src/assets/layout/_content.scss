@@ -1,8 +1,12 @@
-.layout-content-wrapper {
-    padding-top: 4rem;
+.layout-main-container {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	justify-content: space-between;
+	padding: 7rem 2rem 2rem 4rem;
+	transition: margin-left $transitionDuration;
+}
 
-    .layout-content {
-        min-height: calc(100vh - 13.5rem);
-        padding: 2rem;
-    }
+.layout-main {
+	flex: 1 1 auto;
 }

@@ -1,43 +1,43 @@
-<script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
-const backgroundImage = ref('url(/demo/images/pages/404-bg.jpg)');
-const backgroundStyle = ref({
-    background: backgroundImage.value
-});
-
-const navigateToDashboard = () => {
-    router.push('/');
-};
-</script>
-
 <template>
-    <div class="h-screen flex flex-column bg-cover" :style="backgroundStyle">
-        <div class="shadow-3 z-3 bg-indigo-600 p-3 flex justify-content-between flex-row align-items-center">
-            <div class="ml-3 flex" @click="navigateToDashboard">
-                <div>
-                    <img class="h-2rem" src="/layout/images/logo/logo2x.png" alt="" />
-                </div>
-            </div>
-            <div class="mr-3 flex">
-                <Button label="DASHBOARD" @click="navigateToDashboard" class="text-white" text></Button>
-            </div>
-        </div>
-
-        <div class="align-self-center mt-auto mb-auto">
-            <div class="text-center z-4 border-round-lg border-1 surface-border bg-white p-3 shadow-3 flex flex-column">
-                <div class="border-round-md mx-auto border-1 surface-border bg-bluegray-700 px-3 py-1">
-                    <h2 class="m-0 text-white">NOT FOUND</h2>
-                </div>
-                <div class="surface-200 p-3 mb-5 shadow-2 border-round-md mt-3 px-6">
-                    <img src="/demo/images/pages/404.png" class="w-full" alt="" />
-                </div>
-                <div class="text-color-secondary pb-6">Requested resource is not available.</div>
-                <Button label="GO BACK TO DASHBOARD" @click="navigateToDashboard" text></Button>
-            </div>
-        </div>
-    </div>
+	<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+		<div class="flex flex-column align-items-center justify-content-center">
+			<img src="/demo/images/notfound/logo-blue.svg" alt="Sakai logo" class="mb-5 w-6rem flex-shrink-0" />
+			<div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, rgba(33, 150, 243, 0.4) 10%, rgba(33, 150, 243, 0) 30%)">
+				<div class="w-full surface-card py-8 px-5 sm:px-8 flex flex-column align-items-center" style="border-radius: 53px">
+					<span class="text-blue-500 font-bold text-3xl">404</span>
+					<h1 class="text-900 font-bold text-3xl lg:text-5xl mb-2">Not Found</h1>
+					<div class="text-600 mb-5">Requested resource is not available.</div>
+					<router-link to="/" class="w-full flex align-items-center py-5 border-300 border-bottom-1">
+						<span class="flex justify-content-center align-items-center bg-cyan-400 border-round" style="height: 3.5rem; width: 3.5rem">
+							<i class="text-50 pi pi-fw pi-table text-2xl"></i>
+						</span>
+						<span class="ml-4 flex flex-column">
+							<span class="text-900 lg:text-xl font-medium mb-0 block">Frequently Asked Questions</span>
+							<span class="text-600 lg:text-xl">Ultricies mi quis hendrerit dolor.</span>
+						</span>
+					</router-link>
+					<router-link to="/" class="w-full flex align-items-center py-5 border-300 border-bottom-1">
+						<span class="flex justify-content-center align-items-center bg-orange-400 border-round" style="height: 3.5rem; width: 3.5rem">
+							<i class="pi pi-fw pi-question-circle text-50 text-2xl"></i>
+						</span>
+						<span class="ml-4 flex flex-column">
+							<span class="text-900 lg:text-xl font-medium mb-0">Solution Center</span>
+							<span class="text-600 lg:text-xl">Phasellus faucibus scelerisque eleifend.</span>
+						</span>
+					</router-link>
+					<router-link to="/" class="w-full flex align-items-center mb-5 py-5 border-300 border-bottom-1">
+						<span class="flex justify-content-center align-items-center bg-indigo-400 border-round" style="height: 3.5rem; width: 3.5rem">
+							<i class="pi pi-fw pi-unlock text-50 text-2xl"></i>
+						</span>
+						<span class="ml-4 flex flex-column">
+							<span class="text-900 lg:text-xl font-medium mb-0">Permission Manager</span>
+							<span class="text-600 lg:text-xl">Accumsan in nisl nisi scelerisque</span>
+						</span>
+					</router-link>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
+
+<script setup></script>

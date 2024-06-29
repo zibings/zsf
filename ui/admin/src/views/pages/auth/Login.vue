@@ -1,50 +1,71 @@
-<script setup>
-import { ref } from 'vue';
-import AppConfig from '@/layout/AppConfig.vue';
+<template>
+	<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+		<div class="flex flex-column align-items-center justify-content-center">
+			<!-- <img :src="logoUrl" alt="Sakai logo" class="mb-5 w-6rem flex-shrink-0" /> -->
+			<div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
+				<div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius: 53px">
+					<div class="text-center mb-5">
+						<!-- <img src="/demo/images/login/avatar.png" alt="Image" height="50" class="mb-3" /> -->
+						<div class="text-900 text-3xl font-medium mb-3">Welcome, Isabel!</div>
+						<span class="text-600 font-medium">Sign in to continue</span>
+					</div>
 
-const backgroundImage = ref('url(/demo/images/pages/login-bg.jpg)');
-const backgroundStyle = ref({
-    background: backgroundImage.value
+					<div>
+						<form @submit.prevent="login">
+							<label for="email1" class="block text-900 text-xl font-medium mb-2">Email</label>
+							<InputText id="email1" type="email" placeholder="Email address" class="w-full md:w-30rem mb-5" style="padding: 1rem" v-model="email" required />
+
+							<label for="password1" class="block text-900 font-medium text-xl mb-2">Password</label>
+							<Password
+								id="password1"
+								v-model="password"
+								placeholder="Password"
+								class="w-full mb-3"
+								input-class="w-full"
+								:input-style="{ padding: '1rem' }"
+								:toggle-mask="true"
+								:feedback="false"
+								required
+							></Password>
+
+							<div class="flex align-items-center justify-content-between mb-5 gap-5">
+								<div class="flex align-items-center">
+									<Checkbox v-model="remember" input-id="rememberme" binary class="mr-2"></Checkbox>
+									<label for="rememberme">Remember me</label>
+								</div>
+								<router-link :to="{ name: 'forgotpass' }" class="text-primary font-medium"> Forgot password? </router-link>
+							</div>
+							<Button type="submit" label="Sign In" class="w-full p-3 text-xl"></Button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script setup>
+import { useLayout } from "@/layout/composables/layout";
+import { ref, computed } from "vue";
+
+const { layoutConfig } = useLayout();
+const email = ref("");
+const password = ref("");
+const remember = ref(false);
+
+const logoUrl = computed(() => {
+	return `/layout/images/${layoutConfig.darkTheme.value ? "logo-white" : "logo-dark"}.svg`;
 });
 </script>
 
-<template>
-    <div class="h-screen flex flex-column bg-cover" :style="backgroundStyle">
-        <div class="shadow-2 bg-indigo-500 z-5 p-3 flex justify-content-between flex-row align-items-center">
-            <div class="ml-3 flex" @click="$router.push('/')">
-                <div>
-                    <img class="h-2rem" src="/layout/images/logo/logo2x.png" alt="" />
-                </div>
-            </div>
-            <div class="mr-3 flex">
-                <Button @click="$router.push('/')" class="text-white" text plain>DASHBOARD</Button>
-            </div>
-        </div>
+<style scoped>
+.pi-eye {
+	transform: scale(1.6);
+	margin-right: 1rem;
+}
 
-        <div class="align-self-center mt-auto mb-auto">
-            <div class="text-center z-5 flex flex-column border-1 border-round-md surface-border surface-card px-3">
-                <div class="-mt-5 text-white bg-cyan-700 border-round-md mx-auto px-3 py-1 border-1 surface-border">
-                    <h2 class="m-0">LOGIN</h2>
-                </div>
-
-                <h4>Welcome</h4>
-
-                <div class="text-color-secondary mb-6 px-6">Please use the form to sign-in Ultima network</div>
-
-                <div class="w-full flex flex-column gap-3 px-3 pb-6">
-                    <IconField iconPosition="left">
-                        <InputIcon class="pi pi-envelope" />
-                        <InputText class="w-full" placeholder="E-mail" />
-                    </IconField>
-
-                    <IconField iconPosition="left">
-                        <InputIcon class="pi pi-key" />
-                        <InputText type="password" class="w-full" placeholder="Password" />
-                    </IconField>
-                    <Button @click="$router.push('/')" class="w-full my-3 px-3" label="LOGIN"></Button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <AppConfig simple />
-</template>
+.pi-eye-slash {
+	transform: scale(1.6);
+	margin-right: 1rem;
+}
+</style>

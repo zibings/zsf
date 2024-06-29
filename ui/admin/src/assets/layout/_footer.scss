@@ -1,7 +1,8 @@
 .layout-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.5rem;
-    background-color: var(--surface-card);
+	transition: margin-left $transitionDuration;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 1rem;
+	border-top: 1px solid var(--surface-border);
 }

@@ -1,10 +1,6 @@
 <template>
-    <div class="grid">
-        <div class="col-12">
-            <div class="card">
-                <h5>Empty Page</h5>
-                <p>Use this page to start from scratch and place your custom content.</p>
-            </div>
-        </div>
-    </div>
+	<Card class="card">
+		<template #title><h5>Empty Page</h5></template>
+		<template #content><p>Use this page to start from scratch and place your custom content.</p></template>
+	</Card>
 </template>

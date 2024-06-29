@@ -1,320 +1,531 @@
-<script setup>
-import { ref, onBeforeMount } from 'vue';
-import { usePrimeVue } from 'primevue/config';
-import { useLayout } from '@/layouts/composables/layout';
-
-const $primevue = usePrimeVue();
-
-defineExpose({
-    $primevue
-});
-
-const { changeColorScheme } = useLayout();
-const parallaxBody = ref(null);
-const collaboration = ref(null);
-const events = ref(null);
-const video = ref(null);
-const features = ref(null);
-
-onBeforeMount(() => {
-    changeColorScheme('dark');
-});
-
-const scrollBehavior = (el) => {
-    el.scrollIntoView({ behavior: 'smooth' });
-};
-
-const scrollToElement = ($element) => {
-    setTimeout(() => {
-        $element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-    }, 200);
-};
-const handleMouseEnter = (event) => {
-    event.target.style.background = 'linear-gradient(110.43deg, rgba(134,140,208,.5) 0.04%, rgba(255,87,89,.5) 100.11%)';
-};
-
-const handleMouseLeave = (event) => {
-    event.target.style.background = 'unset';
-};
-</script>
-
 <template>
-    <div class="surface-ground">
-        <div style="height: 68px; backdrop-filter: blur(17px)" class="flex justify-content-between align-items-center z-3 px-5 bg-black-alpha-40 top-0 w-full fixed">
-            <div>
-                <img :draggable="false" src="/layout/images/logo/logo.png" alt="" />
-            </div>
+	<div class="surface-0 flex justify-content-center">
+		<div id="home" class="landing-wrapper overflow-hidden">
+			<div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 flex align-items-center justify-content-between relative lg:static mb-3">
+				<a class="flex align-items-center" href="#">
+					<img :src="logoUrl" alt="Sakai Logo" height="50" class="mr-0 lg:mr-2" /><span class="text-900 font-medium text-2xl line-height-3 mr-8">SAKAI</span>
+				</a>
+				<a
+					class="cursor-pointer block lg:hidden text-700 p-ripple"
+					v-ripple
+					v-styleclass="{ selector: '@next', enterClass: 'hidden', leaveToClass: 'hidden', hideOnOutsideClick: true }"
+				>
+					<i class="pi pi-bars text-4xl"></i>
+				</a>
+				<div class="align-items-center surface-0 flex-grow-1 justify-content-between hidden lg:flex absolute lg:static w-full left-0 px-6 lg:px-0 z-2" style="top: 120px">
+					<ul class="list-none p-0 m-0 flex lg:align-items-center select-none flex-column lg:flex-row cursor-pointer">
+						<li>
+							<a @click="smoothScroll('#hero')" class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple" v-ripple>
+								<span>Home</span>
+							</a>
+						</li>
+						<li>
+							<a @click="smoothScroll('#features')" class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple" v-ripple>
+								<span>Features</span>
+							</a>
+						</li>
+						<li>
+							<a @click="smoothScroll('#highlights')" class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple" v-ripple>
+								<span>Highlights</span>
+							</a>
+						</li>
+						<li>
+							<a @click="smoothScroll('#pricing')" class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple" v-ripple>
+								<span>Pricing</span>
+							</a>
+						</li>
+					</ul>
+					<div class="flex justify-content-between lg:block border-top-1 lg:border-top-none surface-border py-3 lg:py-0 mt-3 lg:mt-0">
+						<Button label="Login" class="p-button-text p-button-rounded border-none font-light line-height-2 text-blue-500"></Button>
+						<Button label="Register" class="p-button-rounded border-none ml-5 font-light text-white line-height-2 bg-blue-500"></Button>
+					</div>
+				</div>
+			</div>
 
-            <a v-ripple class="p-ripple cursor-pointer block lg:hidden text-white" v-styleclass="{ selector: '@next', hideOnOutsideClick: true, enterClass: 'hidden', leaveToClass: 'hidden' }">
-                <i class="pi pi-bars text-4xl"></i>
-            </a>
+			<div
+				id="hero"
+				class="flex flex-column pt-4 px-4 lg:px-8 overflow-hidden"
+				style="
+					background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)),
+						radial-gradient(77.36% 256.97% at 77.36% 57.52%, rgb(238, 239, 175) 0%, rgb(195, 227, 250) 100%);
+					clip-path: ellipse(150% 87% at 93% 13%);
+				"
+			>
+				<div class="mx-4 md:mx-8 mt-0 md:mt-4">
+					<h1 class="text-6xl font-bold text-gray-900 line-height-2"><span class="font-light block">Eu sem integer</span>eget magna fermentum</h1>
+					<p class="font-normal text-2xl line-height-3 md:mt-3 text-gray-700">Sed blandit libero volutpat sed cras. Fames ac turpis egestas integer. Placerat in egestas erat...</p>
+					<Button label="Get Started" class="p-button-rounded text-xl border-none mt-5 bg-blue-500 font-normal text-white line-height-3 px-3"></Button>
+				</div>
+				<div class="flex justify-content-center md:justify-content-end">
+					<img src="/demo/images/landing/screen-1.png" alt="Hero Image" class="w-9 md:w-auto" />
+				</div>
+			</div>
 
-            <div id="menu" class="align-items-center flex-grow-1 hidden lg:flex absolute lg:static w-full lg:px-0 z-3 shadow-2 lg:shadow-none fadein" style="top: 68px; right: 0%">
-                <ul class="list-none p-3 lg:p-0 m-0 ml-auto flex lg:align-items-center select-none flex-column lg:flex-row cursor-pointer surface-0 lg:bg-transparent">
-                    <li>
-                        <a class="flex m-0 md:ml-5 px-0 py-3 text-900 line-height-3" v-styleclass="{ selector: '#menu', enterClass: 'hidden', leaveToClass: 'hidden' }">
-                            <span>HOME</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="flex m-0 md:ml-5 px-0 py-3 text-900 line-height-3" @click="scrollToElement(features)" v-styleclass="{ selector: '#menu', enterClass: 'hidden', leaveToClass: 'hidden' }">
-                            <span>FEATURES</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="flex m-0 md:ml-5 px-0 py-3 text-900 line-height-3" @click="scrollToElement(collaboration)" v-styleclass="{ selector: '#menu', enterClass: 'hidden', leaveToClass: 'hidden' }">
-                            <span>COLLABORATION</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="flex m-0 md:ml-5 px-0 py-3 text-900 line-height-3" @click="scrollToElement(events)" v-styleclass="{ selector: '#menu', enterClass: 'hidden', leaveToClass: 'hidden' }">
-                            <span>EVENTS</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="flex m-0 md:ml-5 px-0 py-3 text-900 line-height-3" @click="scrollToElement(video)" v-styleclass="{ selector: '#menu', enterClass: 'hidden', leaveToClass: 'hidden' }">
-                            <span>VIDEO</span>
-                        </a>
-                    </li>
-                    <li>
-                        <Button label="LET'S TRY" class="surface-900 text-0 m-0 mt-3 md:mt-0 md:ml-5"></Button>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="h-screen">
-            <div style="perspective: 101px" class="h-screen overflow-x-hidden overflow-y-auto absolute top-0 left-0 right-0 bottom-0">
-                <div class="hidden lg:block absolute top-0 right-0 bottom-0 left-0 parallax__layer__0">
-                    <img :draggable="false" src="/demo/images/landing/layer-0-opt.jpg" class="w-full h-full block absolute bottom-0" />
-                </div>
-                <div class="hidden lg:block absolute top-0 right-0 bottom-0 left-0 parallax__layer__1">
-                    <img :draggable="false" src="/demo/images/landing/layer-1-opt.png" class="w-full block absolute bottom-0" />
-                </div>
+			<div id="features" class="py-4 px-4 lg:px-8 mt-5 mx-0 lg:mx-8">
+				<div class="grid justify-content-center">
+					<div class="col-12 text-center mt-8 mb-4">
+						<h2 class="text-900 font-normal mb-2">Marvelous Features</h2>
+						<span class="text-600 text-2xl">Placerat in egestas erat...</span>
+					</div>
 
-                <div class="hidden lg:flex absolute right-0 bottom-0 left-0 parallax__layer__3 justify-content-center" style="top: 27%">
-                    <div>
-                        <h1 class="m-0 -mb-4 text-4xl text-white">LET'S</h1>
-                        <h1 class="m-0 text-white" style="font-size: 15rem">EXPLORE</h1>
-                        <div class="flex -mt-4 justify-content-end">
-                            <h1 class="m-0 text-white text-4xl">TO ULTIMA</h1>
-                        </div>
-                    </div>
-                </div>
-                <div class="hidden lg:block absolute top-0 right-0 bottom-0 left-0 parallax__layer__2">
-                    <img :draggable="false" src="/demo/images/landing/layer-2-opt.png" class="w-full block absolute bottom-0" />
-                </div>
+					<div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 lg:pb-5 mt-4 lg:mt-0">
+						<div
+							style="
+								height: 160px;
+								padding: 2px;
+								border-radius: 10px;
+								background: linear-gradient(90deg, rgba(253, 228, 165, 0.2), rgba(187, 199, 205, 0.2)), linear-gradient(180deg, rgba(253, 228, 165, 0.2), rgba(187, 199, 205, 0.2));
+							"
+						>
+							<div class="p-3 surface-card h-full" style="border-radius: 8px">
+								<div class="flex align-items-center justify-content-center bg-yellow-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
+									<i class="pi pi-fw pi-users text-2xl text-yellow-700"></i>
+								</div>
+								<h5 class="mb-2 text-900">Easy to Use</h5>
+								<span class="text-600">Posuere morbi leo urna molestie.</span>
+							</div>
+						</div>
+					</div>
 
-                <div class="absolute flex justify-content-center align-items-center w-full h-full parallax__layer__3" style="top: 112px">
-                    <Button
-                        label="GET STARTED"
-                        @click="scrollBehavior(features)"
-                        style="backdrop-filter: blur(7px)"
-                        class="text-900 bg-white-alpha-20 text-lg px-5 py-3 font-semibold hover:bg-white hover:text-0 border-round-xl border-white-alpha-30 border-1"
-                        text
-                    ></Button>
-                </div>
+					<div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 lg:pb-5 mt-4 lg:mt-0">
+						<div
+							style="
+								height: 160px;
+								padding: 2px;
+								border-radius: 10px;
+								background: linear-gradient(90deg, rgba(145, 226, 237, 0.2), rgba(251, 199, 145, 0.2)), linear-gradient(180deg, rgba(253, 228, 165, 0.2), rgba(172, 180, 223, 0.2));
+							"
+						>
+							<div class="p-3 surface-card h-full" style="border-radius: 8px">
+								<div class="flex align-items-center justify-content-center bg-cyan-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
+									<i class="pi pi-fw pi-palette text-2xl text-cyan-700"></i>
+								</div>
+								<h5 class="mb-2 text-900">Fresh Design</h5>
+								<span class="text-600">Semper risus in hendrerit.</span>
+							</div>
+						</div>
+					</div>
 
-                <div class="block lg:hidden h-28rem bg-center bg-no-repeat bg-cover" style="top: 68px; background: url(/demo/images/landing/landing-hero-image.jpg)">
-                    <div class="flex justify-content-center align-items-center h-full">
-                        <div class="flex flex-column">
-                            <h1 class="m-0 text-base text-white">LET'S</h1>
-                            <h1 class="m-0 text-white">EXPLORE</h1>
-                            <div class="flex justify-content-end">
-                                <h1 class="m-0 text-white text-sm">TO ULTIMA</h1>
-                            </div>
-                            <div class="flex justify-content-center mt-2">
-                                <Button
-                                    label="GET STARTED"
-                                    @click="scrollBehavior(parallaxBody)"
-                                    style="backdrop-filter: blur(7px)"
-                                    class="text-900 text-xs bg-white-alpha-20 font-semibold hover:bg-white hover:text-0 border-white-alpha-30 border-1"
-                                    text
-                                ></Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div ref="parallaxBody" class="lg:top-100 block absolute left-0 right-0 h-full z-2">
-                    <div>
-                        <div class="grid grid-nogutter p-2 lg:p-5" style="background-color: #000">
-                            <div class="col-6 lg:col-3 flex align-items-center justify-content-center gap-3">
-                                <img :draggable="false" src="/demo/images/landing/landing-logo1.png" alt="" />
-                            </div>
-                            <div class="col-6 lg:col-3 flex align-items-center justify-content-center gap-3">
-                                <img :draggable="false" src="/demo/images/landing/landing-logo2.png" alt="" />
-                            </div>
-                            <div class="col-6 lg:col-3 flex align-items-center justify-content-center gap-3">
-                                <img :draggable="false" src="/demo/images/landing/landing-logo3.png" alt="" />
-                            </div>
-                            <div class="col-6 lg:col-3 flex align-items-center justify-content-center gap-3">
-                                <img :draggable="false" src="/demo/images/landing/landing-logo4.png" alt="" />
-                            </div>
-                        </div>
-                    </div>
-                    <div ref="features" class="pt-5" style="background-color: #000">
-                        <div ref="parallaxBody" class="flex flex-column align-items-center gap-3">
-                            <div class="surface-500 text-white text-sm p-2 border-round-lg">FEATURES</div>
-                            <span class="text-white text-2xl uppercase">All you need is the Ultima.</span>
-                            <h1 class="m-0 text-6xl" style="background: linear-gradient(110.43deg, #868cd0 0.04%, #ff5759 100.11%); background-clip: text; -webkit-background-clip: text; color: transparent">ULTIMA</h1>
-                        </div>
-                        <div class="flex flex-column align-items-center">
-                            <div class="grid pt-6 p-4" style="max-width: 1200px">
-                                <div class="col-6 lg:col-4">
-                                    <div @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" class="flex justify-content-center flex-column gap-3 border-1 border-50 border-round-2xl p-5 cursor-pointer h-full">
-                                        <i class="pi pi-palette text-4xl text-white"></i>
-                                        <span class="font-semibold text-white">Creative Design</span>
-                                        <span class="text-white">Unleash your brand's full potential with our creative design services.</span>
-                                        <span class="text-primary-300 font-medium flex align-items-center">Learn more <i class="pi pi-arrow-right ml-2"></i></span>
-                                    </div>
-                                </div>
-                                <div class="col-6 lg:col-4">
-                                    <div @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" class="flex justify-content-center flex-column gap-3 border-1 border-50 border-round-2xl p-5 cursor-pointer h-full">
-                                        <i class="pi pi-mobile text-4xl text-white"></i>
-                                        <span class="font-semibold text-white">Responsive Design</span>
-                                        <span class="text-white">Make sure your website looks great and functions seamlessly on any device with responsive design.</span>
-                                        <span class="text-primary-300 font-medium flex align-items-center">Learn more <i class="pi pi-arrow-right ml-2"></i></span>
-                                    </div>
-                                </div>
-                                <div class="col-6 lg:col-4">
-                                    <div @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" class="flex justify-content-center flex-column gap-3 border-1 border-50 border-round-2xl p-5 cursor-pointer h-full">
-                                        <i class="pi pi-sync text-4xl text-white"></i>
-                                        <span class="font-semibold text-white">Cross Browser Support</span>
-                                        <span class="text-white">Don't let browser compatibility hold you back. Our cross browser support ensures your website works perfectly on all browsers.</span>
-                                        <span class="text-primary-300 font-medium flex align-items-center">Learn more <i class="pi pi-arrow-right ml-2"></i></span>
-                                    </div>
-                                </div>
-                                <div class="col-6 lg:col-4">
-                                    <div @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" class="flex justify-content-center flex-column gap-3 border-1 border-50 border-round-2xl p-5 cursor-pointer h-full">
-                                        <i class="pi pi-th-large text-4xl text-white"></i>
-                                        <span class="font-semibold text-white">Well Organized</span>
-                                        <span class="text-white">Our well-organized approach guarantees a smooth design process from start to finish.</span>
-                                        <span class="text-primary-300 font-medium flex align-items-center">Learn more <i class="pi pi-arrow-right ml-2"></i></span>
-                                    </div>
-                                </div>
-                                <div class="col-6 lg:col-4">
-                                    <div @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" class="flex justify-content-center flex-column gap-3 border-1 border-50 border-round-2xl text-white p-5 cursor-pointer h-full">
-                                        <i class="pi pi-code text-4xl text-white"></i>
-                                        <span class="font-semibold text-white">Easy to Product</span>
-                                        <span class="text-white">We make product creation easy with straightforward and intuitive processes.</span>
-                                        <span class="text-primary-300 font-medium flex align-items-center">Learn more <i class="pi pi-arrow-right ml-2"></i></span>
-                                    </div>
-                                </div>
-                                <div class="col-6 lg:col-4">
-                                    <div @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" class="flex justify-content-center flex-column gap-3 border-1 border-50 border-round-2xl text-white p-5 cursor-pointer h-full">
-                                        <i class="pi pi-box text-4xl"></i>
-                                        <span class="font-semibold">Top Notch Quality</span>
-                                        <span>Expect top notch quality in all of our work, delivering exceptional results every time.</span>
-                                        <span class="text-primary-300 font-medium flex align-items-center">Learn more <i class="pi pi-arrow-right ml-2"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div ref="collaboration" style="max-width: 1200px" class="flex flex-column lg:flex-row gap-8 mt-6 py-6 px-4 w-full">
-                                <div class="flex flex-column align-items-end justify-content-center">
-                                    <div class="surface-50 text-white text-sm p-2 border-round-lg mb-4">PLAY AS A TEAM</div>
-                                    <div>
-                                        <h1 class="m-0 text-6xl font-bold text-right" style="background: linear-gradient(110.43deg, #868cd0 0.04%, #ff5759 100.11%); background-clip: text; -webkit-background-clip: text; color: transparent">
-                                            COLLABORATION
-                                        </h1>
-                                        <p class="text-white text-right mt-3">
-                                            The Earth is a very small stage in a vast cosmic arena. Think of the rivers of blood spilled by all those generals and emperors so that, in glory and triumph, they could become the momentary masters of a
-                                            fraction of a dot.
-                                        </p>
-                                    </div>
-                                </div>
-                                <img :draggable="false" src="/demo/images/landing/collaboration-image.png" alt="" />
-                            </div>
-                            <div ref="events" style="max-width: 1200px" class="flex flex-column lg:flex-row gap-8 mt-6 py-6 px-4 w-full">
-                                <img :draggable="false" src="/demo/images/landing/easyfollow-image.png" alt="" />
-                                <div class="flex flex-column align-items-start justify-content-center">
-                                    <div class="surface-50 text-white text-sm p-2 border-round-lg mb-4">EVENTS</div>
-                                    <div>
-                                        <h1 class="m-0 text-6xl font-bold" style="background: linear-gradient(110.43deg, #868cd0 0.04%, #ff5759 100.11%); background-clip: text; -webkit-background-clip: text; color: transparent">EASY FOLLOW</h1>
-                                        <p class="text-white mt-2">
-                                            It has been said that astronomy is a humbling and character-building experience. There is perhaps no better demonstration of the folly of human conceits than this distant image of our tiny world.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div ref="video" style="max-width: 1200px" class="flex gap-4 mt-6 py-6 flex-column align-items-center w-full">
-                                <div class="surface-50 text-white text-sm p-2 border-round-lg">VIDEO</div>
-                                <h1 class="m-0 text-6xl font-bold" style="background: linear-gradient(110.43deg, #868cd0 0.04%, #ff5759 100.11%); background-clip: text; -webkit-background-clip: text; color: transparent">SHOWREELS</h1>
-                                <div class="mt-3 relative">
-                                    <iframe class="border-none border-round-lg z-3 max-w-full" width="600" height="400" src="https://www.youtube.com/embed/tgbNymZ7vqY"> </iframe>
-                                    <div class="absolute z-0" style="top: -50px; left: -50px"><img :draggable="false" class="opacity-40" src="/demo/images/landing/landing-ellipse.png" alt="" /></div>
-                                    <div class="absolute z-0" style="bottom: -50px; right: -50px; filter: blur(4px)"><img :draggable="false" class="opacity-40" src="/demo/images/landing/landing-ellipse2.png" alt="" /></div>
-                                    <div class="absolute z-0" style="bottom: -50px; right: 10px; filter: blur(4px)"><img :draggable="false" class="opacity-40" src="/demo/images/landing/landing-ellipse2.png" alt="" /></div>
-                                </div>
-                            </div>
-                            <div class="py-6 px-4 mt-6 w-full flex justify-content-center">
-                                <div
-                                    class="p-5 flex flex-column gap-3 align-items-start justify-content-between lg:flex-row lg:align-items-center border-round-2xl w-full"
-                                    style="background: linear-gradient(110.43deg, #868cd0 0.04%, #ff5759 100.11%); max-width: 1200px"
-                                >
-                                    <div class="flex flex-column gap-2">
-                                        <h1 class="m-0 text-white font-bold text-2xl">NEWSLETTER</h1>
-                                        <p class="m-0 text-white">Sign up for our newsletter and stay up-to-date on the latest features and updates for our platform.</p>
-                                    </div>
-                                    <div class="flex align-items-center gap-2">
-                                        <InputText placeholder="Email Address" class="bg-transparent border-white border-round-md" />
-                                        <Button class="text-white border-1 border-white border-round-md h-full" text label="JOIN"></Button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="w-full px-4" style="max-width: 1200px">
-                                <div class="grid gap-3 lg:gap-0 lg:grid-nogutter pb-6">
-                                    <div class="col-12 lg:col-3">
-                                        <div class="w-full text-white flex flex-column gap-3">
-                                            <h1 class="m-0 font-medium text-sm text-500">CONTACT US</h1>
-                                            <div class="flex gap-5">
-                                                <a href="#"><i class="pi pi-github text-white text-2xl"></i></a>
-                                                <a href="#"><i class="pi pi-twitter text-white text-2xl"></i></a>
-                                                <a href="#"><i class="pi pi-linkedin text-white text-2xl"></i></a>
-                                            </div>
-                                            <p class="m-0 text-base lg:text-sm">
-                                                (415) 931-1624 794 Mcallister <br />
-                                                St San Francisco, 94102
-                                            </p>
-                                            <span class="text-base lg:text-sm">©Copyright 202X</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 lg:col-3">
-                                        <div class="w-full text-white flex flex-column gap-3">
-                                            <h1 class="m-0 font-medium text-sm text-500">ABOUT US</h1>
-                                            <a href="#"><span class="text-base lg:text-sm block text-white">Our Values</span></a>
-                                            <a href="#"><span class="text-base lg:text-sm block text-white">Our Team</span></a>
-                                            <a href="#"><span class="text-base lg:text-sm block text-white">Our History</span></a>
-                                            <a href="#"><span class="text-base lg:text-sm block text-white">Career & Join Us</span></a>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 lg:col-3">
-                                        <div class="w-full text-white flex flex-column gap-3">
-                                            <h1 class="m-0 font-medium text-sm text-500">SITE MAP</h1>
-                                            <a href="#"><span class="text-base lg:text-sm block text-white">Dashboard</span></a>
-                                            <a href="#"><span class="text-base lg:text-sm block text-white">CRUD</span></a>
-                                            <a href="#"><span class="text-base lg:text-sm block text-white">Invoice</span></a>
-                                            <a href="#"><span class="text-base lg:text-sm block text-white">Help </span></a>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 lg:col-3">
-                                        <div class="w-full text-white flex flex-column gap-3">
-                                            <h1 class="m-0 font-medium text-sm text-500">CALENDAR</h1>
-                                            <a href="#"><span class="text-base lg:text-sm block text-white">Widgets</span></a>
-                                            <a href="#"><span class="text-base lg:text-sm block text-white">Documentation</span></a>
-                                            <a href="#"><span class="text-base lg:text-sm block text-white">Buy Now</span></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+					<div class="col-12 md:col-12 lg:col-4 p-0 lg:pb-5 mt-4 lg:mt-0">
+						<div
+							style="
+								height: 160px;
+								padding: 2px;
+								border-radius: 10px;
+								background: linear-gradient(90deg, rgba(145, 226, 237, 0.2), rgba(172, 180, 223, 0.2)), linear-gradient(180deg, rgba(172, 180, 223, 0.2), rgba(246, 158, 188, 0.2));
+							"
+						>
+							<div class="p-3 surface-card h-full" style="border-radius: 8px">
+								<div class="flex align-items-center justify-content-center bg-indigo-200" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
+									<i class="pi pi-fw pi-map text-2xl text-indigo-700"></i>
+								</div>
+								<h5 class="mb-2 text-900">Well Documented</h5>
+								<span class="text-600">Non arcu risus quis varius quam quisque.</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 lg:pb-5 mt-4 lg:mt-0">
+						<div
+							style="
+								height: 160px;
+								padding: 2px;
+								border-radius: 10px;
+								background: linear-gradient(90deg, rgba(187, 199, 205, 0.2), rgba(251, 199, 145, 0.2)), linear-gradient(180deg, rgba(253, 228, 165, 0.2), rgba(145, 210, 204, 0.2));
+							"
+						>
+							<div class="p-3 surface-card h-full" style="border-radius: 8px">
+								<div class="flex align-items-center justify-content-center bg-bluegray-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
+									<i class="pi pi-fw pi-id-card text-2xl text-bluegray-700"></i>
+								</div>
+								<h5 class="mb-2 text-900">Responsive Layout</h5>
+								<span class="text-600">Nulla malesuada pellentesque elit.</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 lg:pb-5 mt-4 lg:mt-0">
+						<div
+							style="
+								height: 160px;
+								padding: 2px;
+								border-radius: 10px;
+								background: linear-gradient(90deg, rgba(187, 199, 205, 0.2), rgba(246, 158, 188, 0.2)), linear-gradient(180deg, rgba(145, 226, 237, 0.2), rgba(160, 210, 250, 0.2));
+							"
+						>
+							<div class="p-3 surface-card h-full" style="border-radius: 8px">
+								<div class="flex align-items-center justify-content-center bg-orange-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
+									<i class="pi pi-fw pi-star text-2xl text-orange-700"></i>
+								</div>
+								<h5 class="mb-2 text-900">Clean Code</h5>
+								<span class="text-600">Condimentum lacinia quis vel eros.</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-12 md:col-12 lg:col-4 p-0 lg:pb-5 mt-4 lg:mt-0">
+						<div
+							style="
+								height: 160px;
+								padding: 2px;
+								border-radius: 10px;
+								background: linear-gradient(90deg, rgba(251, 199, 145, 0.2), rgba(246, 158, 188, 0.2)), linear-gradient(180deg, rgba(172, 180, 223, 0.2), rgba(212, 162, 221, 0.2));
+							"
+						>
+							<div class="p-3 surface-card h-full" style="border-radius: 8px">
+								<div class="flex align-items-center justify-content-center bg-pink-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
+									<i class="pi pi-fw pi-moon text-2xl text-pink-700"></i>
+								</div>
+								<h5 class="mb-2 text-900">Dark Mode</h5>
+								<span class="text-600">Convallis tellus id interdum velit laoreet.</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 mt-4 lg:mt-0">
+						<div
+							style="
+								height: 160px;
+								padding: 2px;
+								border-radius: 10px;
+								background: linear-gradient(90deg, rgba(145, 210, 204, 0.2), rgba(160, 210, 250, 0.2)), linear-gradient(180deg, rgba(187, 199, 205, 0.2), rgba(145, 210, 204, 0.2));
+							"
+						>
+							<div class="p-3 surface-card h-full" style="border-radius: 8px">
+								<div class="flex align-items-center justify-content-center bg-teal-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
+									<i class="pi pi-fw pi-shopping-cart text-2xl text-teal-700"></i>
+								</div>
+								<h5 class="mb-2 text-900">Ready to Use</h5>
+								<span class="text-600">Mauris sit amet massa vitae.</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 mt-4 lg:mt-0">
+						<div
+							style="
+								height: 160px;
+								padding: 2px;
+								border-radius: 10px;
+								background: linear-gradient(90deg, rgba(145, 210, 204, 0.2), rgba(212, 162, 221, 0.2)), linear-gradient(180deg, rgba(251, 199, 145, 0.2), rgba(160, 210, 250, 0.2));
+							"
+						>
+							<div class="p-3 surface-card h-full" style="border-radius: 8px">
+								<div class="flex align-items-center justify-content-center bg-blue-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
+									<i class="pi pi-fw pi-globe text-2xl text-blue-700"></i>
+								</div>
+								<h5 class="mb-2 text-900">Modern Practices</h5>
+								<span class="text-600">Elementum nibh tellus molestie nunc non.</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-12 md:col-12 lg:col-4 p-0 lg-4 mt-4 lg:mt-0">
+						<div
+							style="
+								height: 160px;
+								padding: 2px;
+								border-radius: 10px;
+								background: linear-gradient(90deg, rgba(160, 210, 250, 0.2), rgba(212, 162, 221, 0.2)), linear-gradient(180deg, rgba(246, 158, 188, 0.2), rgba(212, 162, 221, 0.2));
+							"
+						>
+							<div class="p-3 surface-card h-full" style="border-radius: 8px">
+								<div class="flex align-items-center justify-content-center bg-purple-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
+									<i class="pi pi-fw pi-eye text-2xl text-purple-700"></i>
+								</div>
+								<h5 class="mb-2 text-900">Privacy</h5>
+								<span class="text-600">Neque egestas congue quisque.</span>
+							</div>
+						</div>
+					</div>
+
+					<div
+						class="col-12 mt-8 mb-8 p-2 md:p-8"
+						style="
+							border-radius: 20px;
+							background: linear-gradient(0deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #efe1af 0%, #c3dcfa 100%);
+						"
+					>
+						<div class="flex flex-column justify-content-center align-items-center text-center px-3 py-3 md:py-0">
+							<h3 class="text-gray-900 mb-2">Joséphine Miller</h3>
+							<span class="text-gray-600 text-2xl">Peak Interactive</span>
+							<p class="text-gray-900 sm:line-height-2 md:line-height-4 text-2xl mt-4" style="max-width: 800px">
+								“Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+								culpa qui officia deserunt mollit anim id est laborum.”
+							</p>
+							<img src="/demo/images/landing/peak-logo.svg" class="mt-4" alt="Company logo" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="highlights" class="py-4 px-4 lg:px-8 mx-0 my-6 lg:mx-8">
+				<div class="text-center">
+					<h2 class="text-900 font-normal mb-2">Powerful Everywhere</h2>
+					<span class="text-600 text-2xl">Amet consectetur adipiscing elit...</span>
+				</div>
+
+				<div class="grid mt-8 pb-2 md:pb-8">
+					<div class="flex justify-content-center col-12 lg:col-6 bg-purple-100 p-0 flex-order-1 lg:flex-order-0" style="border-radius: 8px">
+						<img src="/demo/images/landing/mockup.svg" class="w-11" alt="mockup mobile" />
+					</div>
+
+					<div class="col-12 lg:col-6 my-auto flex flex-column lg:align-items-end text-center lg:text-right">
+						<div
+							class="flex align-items-center justify-content-center bg-purple-200 align-self-center lg:align-self-end"
+							style="width: 4.2rem; height: 4.2rem; border-radius: 10px"
+						>
+							<i class="pi pi-fw pi-mobile text-5xl text-purple-700"></i>
+						</div>
+						<h2 class="line-height-1 text-900 text-4xl font-normal">Congue Quisque Egestas</h2>
+						<span class="text-700 text-2xl line-height-3 ml-0 md:ml-2" style="max-width: 650px"
+							>Lectus arcu bibendum at varius vel pharetra vel turpis nunc. Eget aliquet nibh praesent tristique magna sit amet purus gravida. Sit amet mattis vulputate enim nulla
+							aliquet.</span
+						>
+					</div>
+				</div>
+
+				<div class="grid my-8 pt-2 md:pt-8">
+					<div class="col-12 lg:col-6 my-auto flex flex-column text-center lg:text-left lg:align-items-start">
+						<div
+							class="flex align-items-center justify-content-center bg-yellow-200 align-self-center lg:align-self-start"
+							style="width: 4.2rem; height: 4.2rem; border-radius: 10px"
+						>
+							<i class="pi pi-fw pi-desktop text-5xl text-yellow-700"></i>
+						</div>
+						<h2 class="line-height-1 text-900 text-4xl font-normal">Celerisque Eu Ultrices</h2>
+						<span class="text-700 text-2xl line-height-3 mr-0 md:mr-2" style="max-width: 650px"
+							>Adipiscing commodo elit at imperdiet dui. Viverra nibh cras pulvinar mattis nunc sed blandit libero. Suspendisse in est ante in. Mauris pharetra et ultrices neque
+							ornare aenean euismod elementum nisi.</span
+						>
+					</div>
+
+					<div class="flex justify-content-end flex-order-1 sm:flex-order-2 col-12 lg:col-6 bg-yellow-100 p-0" style="border-radius: 8px">
+						<img src="/demo/images/landing/mockup-desktop.svg" class="w-11" alt="mockup" />
+					</div>
+				</div>
+			</div>
+
+			<div id="pricing" class="py-4 px-4 lg:px-8 my-2 md:my-4">
+				<div class="text-center">
+					<h2 class="text-900 font-normal mb-2">Matchless Pricing</h2>
+					<span class="text-600 text-2xl">Amet consectetur adipiscing elit...</span>
+				</div>
+
+				<div class="grid justify-content-between mt-8 md:mt-0">
+					<div class="col-12 lg:col-4 p-0 md:p-3">
+						<div
+							class="p-3 flex flex-column border-200 pricing-card cursor-pointer border-2 hover:border-primary transition-duration-300 transition-all"
+							style="border-radius: 10px"
+						>
+							<h3 class="text-900 text-center my-5">Free</h3>
+							<img src="/demo/images/landing/free.svg" class="w-10 h-10 mx-auto" alt="free" />
+							<div class="my-5 text-center">
+								<span class="text-5xl font-bold mr-2 text-900">$0</span>
+								<span class="text-600">per month</span>
+								<Button label="Get Started" class="block mx-auto mt-4 p-button-rounded border-none ml-3 font-light line-height-2 bg-blue-500 text-white"></Button>
+							</div>
+							<Divider class="w-full bg-surface-200"></Divider>
+							<ul class="my-5 list-none p-0 flex text-900 flex-column">
+								<li class="py-2">
+									<i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
+									<span class="text-xl line-height-3">Responsive Layout</span>
+								</li>
+								<li class="py-2">
+									<i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
+									<span class="text-xl line-height-3">Unlimited Push Messages</span>
+								</li>
+								<li class="py-2">
+									<i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
+									<span class="text-xl line-height-3">50 Support Ticket</span>
+								</li>
+								<li class="py-2">
+									<i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
+									<span class="text-xl line-height-3">Free Shipping</span>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="col-12 lg:col-4 p-0 md:p-3 mt-4 md:mt-0">
+						<div
+							class="p-3 flex flex-column border-200 pricing-card cursor-pointer border-2 hover:border-primary transition-duration-300 transition-all"
+							style="border-radius: 10px"
+						>
+							<h3 class="text-900 text-center my-5">Startup</h3>
+							<img src="/demo/images/landing/startup.svg" class="w-10 h-10 mx-auto" alt="startup" />
+							<div class="my-5 text-center">
+								<span class="text-5xl font-bold mr-2 text-900">$1</span>
+								<span class="text-600">per month</span>
+								<Button label="Try Free" class="block mx-auto mt-4 p-button-rounded border-none ml-3 font-light line-height-2 bg-blue-500 text-white"></Button>
+							</div>
+							<Divider class="w-full bg-surface-200"></Divider>
+							<ul class="my-5 list-none p-0 flex text-900 flex-column">
+								<li class="py-2">
+									<i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
+									<span class="text-xl line-height-3">Responsive Layout</span>
+								</li>
+								<li class="py-2">
+									<i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
+									<span class="text-xl line-height-3">Unlimited Push Messages</span>
+								</li>
+								<li class="py-2">
+									<i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
+									<span class="text-xl line-height-3">50 Support Ticket</span>
+								</li>
+								<li class="py-2">
+									<i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
+									<span class="text-xl line-height-3">Free Shipping</span>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="col-12 lg:col-4 p-0 md:p-3 mt-4 md:mt-0">
+						<div
+							class="p-3 flex flex-column border-200 pricing-card cursor-pointer border-2 hover:border-primary transition-duration-300 transition-all"
+							style="border-radius: 10px"
+						>
+							<h3 class="text-900 text-center my-5">Enterprise</h3>
+							<img src="/demo/images/landing/enterprise.svg" class="w-10 h-10 mx-auto" alt="enterprise" />
+							<div class="my-5 text-center">
+								<span class="text-5xl font-bold mr-2 text-900">$999</span>
+								<span class="text-600">per month</span>
+								<Button label="Get a Quote" class="block mx-auto mt-4 p-button-rounded border-none ml-3 font-light line-height-2 bg-blue-500 text-white"></Button>
+							</div>
+							<Divider class="w-full bg-surface-200"></Divider>
+							<ul class="my-5 list-none p-0 flex text-900 flex-column">
+								<li class="py-2">
+									<i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
+									<span class="text-xl line-height-3">Responsive Layout</span>
+								</li>
+								<li class="py-2">
+									<i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
+									<span class="text-xl line-height-3">Unlimited Push Messages</span>
+								</li>
+								<li class="py-2">
+									<i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
+									<span class="text-xl line-height-3">50 Support Ticket</span>
+								</li>
+								<li class="py-2">
+									<i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
+									<span class="text-xl line-height-3">Free Shipping</span>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="py-4 px-4 mx-0 mt-8 lg:mx-8">
+				<div class="grid justify-content-between">
+					<div class="col-12 md:col-2" style="margin-top: -1.5rem">
+						<a @click="smoothScroll('#home')" class="flex flex-wrap align-items-center justify-content-center md:justify-content-start md:mb-0 mb-3 cursor-pointer">
+							<img :src="logoUrl" alt="footer sections" width="50" height="50" class="mr-2" />
+							<h4 class="font-medium text-3xl text-900">SAKAI</h4>
+						</a>
+					</div>
+
+					<div class="col-12 md:col-10 lg:col-7">
+						<div class="grid text-center md:text-left">
+							<div class="col-12 md:col-3">
+								<h4 class="font-medium text-2xl line-height-3 mb-3 text-900">Company</h4>
+								<a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">About Us</a>
+								<a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">News</a>
+								<a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Investor Relations</a>
+								<a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Careers</a>
+								<a class="line-height-3 text-xl block cursor-pointer text-700">Media Kit</a>
+							</div>
+
+							<div class="col-12 md:col-3 mt-4 md:mt-0">
+								<h4 class="font-medium text-2xl line-height-3 mb-3 text-900">Resources</h4>
+								<a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Get Started</a>
+								<a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Learn</a>
+								<a class="line-height-3 text-xl block cursor-pointer text-700">Case Studies</a>
+							</div>
+
+							<div class="col-12 md:col-3 mt-4 md:mt-0">
+								<h4 class="font-medium text-2xl line-height-3 mb-3 text-900">Community</h4>
+								<a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Discord</a>
+								<a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Events<img src="/demo/images/landing/new-badge.svg" class="ml-2" /></a>
+								<a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">FAQ</a>
+								<a class="line-height-3 text-xl block cursor-pointer text-700">Blog</a>
+							</div>
+
+							<div class="col-12 md:col-3 mt-4 md:mt-0">
+								<h4 class="font-medium text-2xl line-height-3 mb-3 text-900">Legal</h4>
+								<a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Brand Policy</a>
+								<a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Privacy Policy</a>
+								<a class="line-height-3 text-xl block cursor-pointer text-700">Terms of Service</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
-<style scoped>
-::placeholder {
-    color: #fff;
+<script setup>
+import { useLayout } from "@/layout/composables/layout";
+import { computed } from "vue";
+
+const { layoutConfig } = useLayout();
+
+const smoothScroll = (id) => {
+	document.querySelector(id).scrollIntoView({
+		behavior: "smooth",
+	});
+};
+
+const logoUrl = computed(() => {
+	return `layout/images/${layoutConfig.darkTheme.value ? "logo-white" : "logo-dark"}.svg`;
+});
+</script>
+
+<!-- <style scoped>
+#hero {
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #eeefaf 0%, #c3e3fa 100%);
+    height: 700px;
+    overflow: hidden;
 }
-</style>
+
+@media screen and (min-width: 768px) {
+    #hero {
+        -webkit-clip-path: ellipse(150% 87% at 93% 13%);
+        clip-path: ellipse(150% 87% at 93% 13%);
+        height: 530px;
+    }
+}
+
+@media screen and (min-width: 1300px) {
+    #hero > img {
+        position: absolute;
+    }
+
+    #hero > div > p {
+        max-width: 450px;
+    }
+}
+
+@media screen and (max-width: 1300px) {
+    #hero {
+        height: 600px;
+    }
+
+    #hero > img {
+        position: static;
+        transform: scale(1);
+        margin-left: auto;
+    }
+
+    #hero > div {
+        width: 100%;
+    }
+
+    #hero > div > p {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+</style> -->
