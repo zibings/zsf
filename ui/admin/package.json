@@ -14,7 +14,17 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+		"@fullcalendar/core": "^6.1.8",
+		"@fullcalendar/daygrid": "^6.1.8",
+		"@fullcalendar/interaction": "^6.1.8",
+		"@fullcalendar/timegrid": "^6.1.8",
+		"@fullcalendar/vue3": "^6.1.8",
     "pinia": "^2.1.7",
+		"chart.js": "^4.3.0",
+		"primeflex": "^3.3.1",
+		"primeicons": "^7.0.0",
+		"primevue": "^3.49.1",
+		"quill": "^2.0.2",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
@@ -37,7 +47,8 @@
     "vite": "^5.2.8",
     "vite-plugin-vue-devtools": "^7.0.25",
     "vitest": "^1.4.0",
-    "vue-tsc": "^2.0.11"
+    "vue-tsc": "^2.0.11",
+		"sass": "^1.62.1"
   },
   "packageManager": "pnpm@9.4.0+sha512.f549b8a52c9d2b8536762f99c0722205efc5af913e77835dbccc3b0b0b2ca9e7dc8022b78062c17291c48e88749c70ce88eb5a74f1fa8c4bf5e18bb46c8bd83a"
 }

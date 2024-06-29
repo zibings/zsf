@@ -1,0 +1,76 @@
+.p-multiselect {
+    .p-multiselect-label,
+    .p-multiselect-trigger {
+        background-image: none;
+        background: transparent;
+    }
+
+    .p-multiselect-label {
+        border: 0 none;
+    }
+
+    &:not(.p-disabled).p-focus {
+        box-shadow: inset 0 0 0 1px $inputFocusBorderColor,
+            inset 0 0 0 1px $inputFocusBorderColor,
+            inset 0 0 0 1px $inputFocusBorderColor,
+            inset 0 0 0 1px $inputFocusBorderColor;
+    }
+
+    &.p-variant-filled {
+        @include filled-input-wrapper();
+
+        .p-multiselect-label {
+            &:hover {
+                background-image: none;
+                background: transparent;
+            }
+        }
+
+        &.p-invalid {
+            @include invalid-filled-input-wrapper();
+        }
+    }
+}
+
+.p-multiselect-panel {
+    .p-multiselect-items {
+        .p-multiselect-item {
+            .p-ink {
+                background-color: rgba($primaryColor, 0.16);
+            }
+
+            &:focus {
+                background: $emphasis-lower;
+
+                &.p-highlight {
+                    background: rgba($primaryColor, 0.24);
+                }
+            }
+        }
+    }
+
+    .p-multiselect-close {
+        &:focus {
+            background: $emphasis-lower;
+        }
+    }
+}
+
+.p-float-label {
+    .p-multiselect-label {
+        .p-multiselect-token {
+            padding: 0.25rem 1rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+    }
+}
+
+.p-multiselect.p-invalid {
+    &:not(.p-disabled).p-focus {
+        box-shadow: inset 0 0 0 1px $inputErrorBorderColor,
+            inset 0 0 0 1px $inputErrorBorderColor,
+            inset 0 0 0 1px $inputErrorBorderColor,
+            inset 0 0 0 1px $inputErrorBorderColor;
+    }
+}
