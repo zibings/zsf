@@ -1,8 +1,3 @@
-<script setup lang="ts">
-import { RouterView } from 'vue-router';
-import SampleNav from "@/components/SampleNav.vue";
-</script>
-
 <template>
 	<main>
 		<RouterView />
@@ -10,6 +5,11 @@ import SampleNav from "@/components/SampleNav.vue";
 		<SampleNav />
 	</main>
 </template>
+
+<script setup lang="ts">
+import { RouterView } from "vue-router";
+import SampleNav from "components/SampleNav.vue";
+</script>
 
 <style scoped>
 header {

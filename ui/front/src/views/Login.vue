@@ -1,23 +1,3 @@
-<script setup lang="ts">
-import {ref} from 'vue';
-import router from "@/router";
-import Button from "primevue/button";
-import {useAuthStore} from "@/stores/auth";
-import InputText from "primevue/inputtext";
-import FloatLabel from "primevue/floatlabel";
-
-const email = ref('');
-const password = ref('');
-const authStore = useAuthStore();
-
-const doLogIn = () => {
-	authStore.logIn(email.value, password.value);
-	router.push("/profile");
-
-	return;
-};
-</script>
-
 <template>
 	<h1>Log In</h1>
 
@@ -35,6 +15,26 @@ const doLogIn = () => {
 		<Button label="Log In" @click="doLogIn" />
 	</form>
 </template>
+
+<script setup>
+import router from "@/router";
+import { useAuthStore } from "@/stores/auth";
+import Button from "primevue/button";
+import FloatLabel from "primevue/floatlabel";
+import InputText from "primevue/inputtext";
+import { ref } from "vue";
+
+const email = ref("");
+const password = ref("");
+const authStore = useAuthStore();
+
+const doLogIn = () => {
+	authStore.logIn(email.value, password.value);
+	router.push("/profile");
+
+	return;
+};
+</script>
 
 <style scoped>
 form {

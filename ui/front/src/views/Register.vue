@@ -1,21 +1,3 @@
-<script setup lang="ts">
-import {ref} from "vue";
-import Button from "primevue/button";
-import InputText from "primevue/inputtext";
-import FloatLabel from "primevue/floatlabel";
-import ToggleSwitch from "primevue/toggleswitch";
-
-const email = ref("");
-const password = ref("");
-const agreesToTos = ref(false);
-
-const agreeToTerms = () => {
-	agreesToTos.value = !agreesToTos.value;
-
-	return;
-};
-</script>
-
 <template>
 	<h1>Register</h1>
 
@@ -38,6 +20,24 @@ const agreeToTerms = () => {
 		<Button label="Register" />
 	</form>
 </template>
+
+<script setup>
+import { ref } from "vue";
+import Button from "primevue/button";
+import InputText from "primevue/inputtext";
+import FloatLabel from "primevue/floatlabel";
+import ToggleSwitch from "primevue/toggleswitch";
+
+const email = ref("");
+const password = ref("");
+const agreesToTos = ref(false);
+
+const agreeToTerms = () => {
+	agreesToTos.value = !agreesToTos.value;
+
+	return;
+};
+</script>
 
 <style scoped>
 form {

@@ -1,6 +1,14 @@
-<script setup lang="ts">
+<template>
+	<h1>Profile</h1>
+
+	<div>
+		<a href="#" @click="doLogOut">Log Out</a>
+	</div>
+</template>
+
+<script setup>
 import router from "@/router";
-import {useAuthStore} from "@/stores/auth";
+import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
 
@@ -12,14 +20,6 @@ const doLogOut = () => {
 	return;
 };
 </script>
-
-<template>
-	<h1>Profile</h1>
-
-	<div>
-		<a href="#" @click="doLogOut">Log Out</a>
-	</div>
-</template>
 
 <style scoped>
 div {
