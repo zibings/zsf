@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import { FileService } from '@/service/FileService';
 
 const metrics = ref([]);
 const files = ref([]);
@@ -15,10 +14,6 @@ const menuItems = ref([
 const menuRef = ref(null);
 const fileUploaderRef = ref(null);
 const uploadFiles = ref([]);
-const fileService = new FileService();
-fileService.getFiles().then((data) => (files.value = data));
-fileService.getMetrics().then((data) => (metrics.value = data));
-fileService.getFoldersLarge().then((data) => (folders.value = data));
 
 const documentStyle = getComputedStyle(document.documentElement);
 const textColor = documentStyle.getPropertyValue('--text-color');

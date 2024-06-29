@@ -1,6 +1,4 @@
 <script setup>
-import { ProductService } from '@/service/ProductService';
-import { PhotoService } from '@/service/PhotoService';
 import { ref, onMounted } from 'vue';
 
 const products = ref([]);
@@ -41,13 +39,6 @@ const carouselResponsiveOptions = ref([
     }
 ]);
 
-const productService = new ProductService();
-const photoService = new PhotoService();
-
-onMounted(() => {
-    productService.getProductsSmall().then((data) => (products.value = data));
-    photoService.getImages().then((data) => (images.value = data));
-});
 const getBadgeSeverity = (status) => {
     const stockStatus = {
         OUTOFSTOCK: 'danger',

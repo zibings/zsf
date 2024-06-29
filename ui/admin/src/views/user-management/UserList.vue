@@ -1,20 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { CustomerService } from '@/service/CustomerService';
 import { FilterMatchMode } from 'primevue/api';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
 const tableRef = ref(null);
-const curtomerService = new CustomerService();
 const customers = ref([]);
 const filterTable = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-});
-
-onMounted(async () => {
-    customers.value = await curtomerService.getCustomersLarge();
 });
 
 const formatDate = (value) => {

@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { EventService } from '@/service/EventService';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -48,13 +47,6 @@ const options = ref({
 });
 
 const events = ref(null);
-const eventService = ref(new EventService());
-
-const getEvents = async () => {
-    const response = eventService.value.getEvents();
-
-    return response;
-};
 
 const onEventClick = (e) => {
     clickedEvent = e.event;

@@ -1,9 +1,7 @@
 <script setup>
 import { ref, watch, computed, onMounted } from 'vue';
-import { ProductService } from '@/service/ProductService';
 import { useLayout } from '@/layouts/composables/layout';
 
-const productService = new ProductService();
 const products = ref(null);
 const { layoutConfig } = useLayout();
 
@@ -502,8 +500,6 @@ const containerClassesPrimary = computed(() => {
 });
 
 onMounted(async () => {
-    const data = await productService.getProducts();
-    products.value = data;
     refreshChart();
     storeInterval.value = setInterval(() => {
         requestAnimationFrame(() => {

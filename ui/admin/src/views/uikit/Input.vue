@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { CountryService } from '@/service/CountryService';
 
 const floatValue = ref(null);
 const autoValue = ref(null);
@@ -52,11 +51,6 @@ const selectButtonValue2 = ref(null);
 const selectButtonValues2 = ref([{ name: 'Option 1' }, { name: 'Option 2' }, { name: 'Option 3' }]);
 const knobValue = ref(50);
 const inputGroupValue = ref(false);
-const countryService = new CountryService();
-
-onMounted(() => {
-    countryService.getCountries().then((data) => (autoValue.value = data));
-});
 
 const searchCountry = (event) => {
     setTimeout(() => {

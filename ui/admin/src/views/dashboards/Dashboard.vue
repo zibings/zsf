@@ -1,9 +1,7 @@
 <script setup>
 import { ref, watch, onMounted, nextTick } from 'vue';
-import { ProductService } from '@/service/ProductService';
 import { useLayout } from '@/layouts/composables/layout';
 
-const productService = new ProductService();
 const products = ref(null);
 const { layoutConfig } = useLayout();
 const chatInput = ref('');
@@ -289,8 +287,6 @@ const ordersChart = ref({
 });
 
 onMounted(async () => {
-    const data = await productService.getProducts();
-    products.value = data;
     refreshChart();
 });
 

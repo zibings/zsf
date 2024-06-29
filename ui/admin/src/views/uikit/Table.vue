@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onBeforeMount, reactive } from 'vue';
 import { FilterMatchMode, FilterOperator } from 'primevue/api';
-import { CustomerService } from '@/service/CustomerService';
-import { ProductService } from '@/service/ProductService';
 
 const customer1 = ref(null);
 const customer2 = ref(null);
@@ -26,9 +24,6 @@ const representatives = reactive([
     { name: 'Stephen Shaw', image: 'stephenshaw.png' },
     { name: 'XuXue Feng', image: 'xuxuefeng.png' }
 ]);
-
-const customerService = new CustomerService();
-const productService = new ProductService();
 
 const getBadgeSeverity = (inventoryStatus) => {
     switch (inventoryStatus.toLowerCase()) {
@@ -62,14 +57,6 @@ const getSeverity = (status) => {
 };
 
 onBeforeMount(() => {
-    productService.getProductsWithOrdersSmall().then((data) => (products.value = data));
-    customerService.getCustomersLarge().then((data) => {
-        customer1.value = data;
-        loading1.value = false;
-        customer1.value.forEach((customer) => (customer.date = new Date(customer.date)));
-    });
-    customerService.getCustomersLarge().then((data) => (customer2.value = data));
-    customerService.getCustomersMedium().then((data) => (customer3.value = data));
     loading2.value = false;
 
     initFilters1();

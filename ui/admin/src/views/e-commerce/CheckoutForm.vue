@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { CountryService } from '@/service/CountryService';
 
 const value = ref('');
 const quantities = ref([1, 1, 1]);
@@ -8,11 +7,6 @@ const checked = ref(true);
 const checked2 = ref(true);
 const selectedCountry = ref(null);
 const countries = ref([]);
-const countryService = new CountryService();
-
-onMounted(() => {
-    countryService.getCountries().then((data) => (countries.value = data));
-});
 </script>
 
 <template>

@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { ProductService } from '@/service/ProductService';
 
 const picklistValue = ref([
     [
@@ -36,12 +35,6 @@ const sortOptions = ref([
     { label: 'Price High to Low', value: '!price' },
     { label: 'Price Low to High', value: 'price' }
 ]);
-
-const productService = new ProductService();
-
-onMounted(() => {
-    productService.getProductsSmall().then((data) => (dataviewValue.value = data));
-});
 
 const onSortChange = (event) => {
     const value = event.value.value;

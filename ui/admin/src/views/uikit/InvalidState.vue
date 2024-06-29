@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { CountryService } from '@/service/CountryService';
 
 const countries = ref(null);
 const filteredCountries = ref(null);
@@ -21,13 +20,6 @@ const cities = ref([
     { name: 'Istanbul', code: 'IST' },
     { name: 'Paris', code: 'PRS' }
 ]);
-const countryService = new CountryService();
-
-onMounted(() => {
-    countryService.getCountries().then((data) => {
-        countries.value = data;
-    });
-});
 
 const searchCountry = (event) => {
     setTimeout(() => {

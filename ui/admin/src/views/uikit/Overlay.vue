@@ -1,5 +1,4 @@
 <script setup>
-import { ProductService } from '@/service/ProductService';
 import { ref, onMounted } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from 'primevue/useconfirm';
@@ -17,13 +16,8 @@ const op = ref(null);
 const op2 = ref(null);
 const popup = ref(null);
 
-const productService = new ProductService();
 const toast = useToast();
 const confirmPopup = useConfirm();
-
-onMounted(() => {
-    productService.getProductsSmall().then((data) => (products.value = data));
-});
 
 const open = () => {
     display.value = true;

@@ -1,7 +1,6 @@
 <script setup>
 import { FilterMatchMode } from 'primevue/api';
 import { ref, onMounted, onBeforeMount } from 'vue';
-import { ProductService } from '@/service/ProductService';
 import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
@@ -21,8 +20,6 @@ const statuses = ref([
     { label: 'OUTOFSTOCK', value: 'outofstock' }
 ]);
 
-const productService = new ProductService();
-
 const getBadgeSeverity = (inventoryStatus) => {
     switch (inventoryStatus.toLowerCase()) {
         case 'instock':
@@ -38,9 +35,6 @@ const getBadgeSeverity = (inventoryStatus) => {
 
 onBeforeMount(() => {
     initFilters();
-});
-onMounted(() => {
-    productService.getProducts().then((data) => (products.value = data));
 });
 const formatCurrency = (value) => {
     return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
