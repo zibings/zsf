@@ -116,11 +116,11 @@ const focusSearchInput = () => {
                     />
                 </svg>
             </router-link>
-            <a v-ripple ref="menuButton" class="p-ripple layout-menu-button" @click="onMenuButtonClick()">
+            <a ref="menuButton" class="p-ripple layout-menu-button" @click="onMenuButtonClick()">
                 <i class="pi pi-chevron-right"></i>
             </a>
 
-            <a v-ripple ref="mobileMenuButton" class="p-ripple layout-topbar-mobile-button" @click="onMobileTopbarMenuButtonClick()">
+            <a ref="mobileMenuButton" class="p-ripple layout-topbar-mobile-button" @click="onMobileTopbarMenuButtonClick()">
                 <i class="pi pi-ellipsis-v"></i>
             </a>
         </div>
@@ -135,7 +135,6 @@ const focusSearchInput = () => {
                         <a
                             v-styleclass="{ selector: '@next', enterClass: 'hidden', enterActiveClass: 'px-scalein', leaveToClass: 'hidden', leaveActiveClass: 'px-fadeout', hideOnOutsideClick: true }"
                             class="p-ripple"
-                            v-ripple
                             @click="focusSearchInput()"
                         >
                             <i class="pi pi-search"></i>
@@ -148,7 +147,7 @@ const focusSearchInput = () => {
                         </div>
                     </li>
                     <li>
-                        <a v-styleclass="{ selector: '@next', enterClass: 'hidden', enterActiveClass: 'px-scalein', leaveToClass: 'hidden', leaveActiveClass: 'px-fadeout', hideOnOutsideClick: true }" class="p-ripple" v-ripple>
+                        <a v-styleclass="{ selector: '@next', enterClass: 'hidden', enterActiveClass: 'px-scalein', leaveToClass: 'hidden', leaveActiveClass: 'px-fadeout', hideOnOutsideClick: true }" class="p-ripple">
                             <i class="pi pi-bell" v-badge.warning></i>
                         </a>
                         <div class="hidden">
@@ -208,7 +207,7 @@ const focusSearchInput = () => {
                         </div>
                     </li>
                     <li>
-                        <a v-styleclass="{ selector: '@next', enterClass: 'hidden', enterActiveClass: 'px-scalein', leaveToClass: 'hidden', leaveActiveClass: 'px-fadeout', hideOnOutsideClick: true }" class="p-ripple" v-ripple>
+                        <a v-styleclass="{ selector: '@next', enterClass: 'hidden', enterActiveClass: 'px-scalein', leaveToClass: 'hidden', leaveActiveClass: 'px-fadeout', hideOnOutsideClick: true }" class="p-ripple">
                             <i class="pi pi-table"></i>
                         </a>
                         <div class="hidden">
@@ -241,31 +240,31 @@ const focusSearchInput = () => {
                         </div>
                     </li>
                     <li>
-                        <a v-styleclass="{ selector: '@next', enterClass: 'hidden', enterActiveClass: 'px-scalein', leaveToClass: 'hidden', leaveActiveClass: 'px-fadeout', hideOnOutsideClick: true }" class="p-ripple" v-ripple>
+                        <a v-styleclass="{ selector: '@next', enterClass: 'hidden', enterActiveClass: 'px-scalein', leaveToClass: 'hidden', leaveActiveClass: 'px-fadeout', hideOnOutsideClick: true }" class="p-ripple">
                             <img src="/layout/images/avatar/amyelsner.png" alt="avatar" class="w-2rem h-2rem" />
                         </a>
                         <div class="hidden">
                             <ul class="list-none p-0 m-0">
                                 <li>
-                                    <a class="p-ripple cursor-pointer flex align-items-center py-2 hover:surface-hover transition-duration-150 transition-all px-3 py-2" v-ripple>
+                                    <a class="p-ripple cursor-pointer flex align-items-center py-2 hover:surface-hover transition-duration-150 transition-all px-3 py-2">
                                         <i class="pi pi-cog mr-2"></i>
                                         <span>Settings</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="p-ripple cursor-pointer flex align-items-center py-2 hover:surface-hover transition-duration-150 transition-all px-3 py-2" v-ripple>
+                                    <a class="p-ripple cursor-pointer flex align-items-center py-2 hover:surface-hover transition-duration-150 transition-all px-3 py-2">
                                         <i class="pi pi-file-o mr-2"></i>
                                         <span>Terms of Usage</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="p-ripple cursor-pointer flex align-items-center py-2 hover:surface-hover transition-duration-150 transition-all px-3 py-2" v-ripple>
+                                    <a class="p-ripple cursor-pointer flex align-items-center py-2 hover:surface-hover transition-duration-150 transition-all px-3 py-2">
                                         <i class="pi pi-compass mr-2"></i>
                                         <span>Support</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="p-ripple cursor-pointer flex align-items-center py-2 hover:surface-hover transition-duration-150 transition-all px-3 py-2" v-ripple>
+                                    <a class="p-ripple cursor-pointer flex align-items-center py-2 hover:surface-hover transition-duration-150 transition-all px-3 py-2">
                                         <i class="pi pi-power-off mr-2"></i>
                                         <span>Logout</span>
                                     </a>
@@ -274,7 +273,7 @@ const focusSearchInput = () => {
                         </div>
                     </li>
                     <li>
-                        <a @click="onRightMenuButtonClick()" class="p-ripple" v-ripple>
+                        <a @click="onRightMenuButtonClick()" class="p-ripple">
                             <i class="pi pi-arrow-left"></i>
                         </a>
                     </li>

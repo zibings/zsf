@@ -1,4 +1,4 @@
-import {toRefs, ref, computed} from 'vue';
+import {toRefs, reactive, computed} from 'vue';
 
 export interface LayoutConfig {
 	menuMode: string;
@@ -10,7 +10,7 @@ export interface LayoutConfig {
 	menuProfilePosition: string;
 }
 
-const layoutConfig = ref<LayoutConfig>({
+const layoutConfig = reactive<LayoutConfig>({
 	menuMode: 'slim',
 	colorScheme: 'light',
 	componentTheme: 'indigo',
@@ -35,7 +35,7 @@ export interface LayoutState {
 	menuProfileActive: boolean;
 }
 
-const layoutState = ref<LayoutState>({
+const layoutState = reactive<LayoutState>({
 	staticMenuDesktopInactive: false,
 	overlayMenuActive: false,
 	configSidebarVisible: false,
@@ -52,7 +52,7 @@ const layoutState = ref<LayoutState>({
 
 export function useLayout() {
 	const onMenuProfileToggle = () => {
-		layoutState.value.menuProfileActive = !layoutState.value.menuProfileActive;
+		layoutState.menuProfileActive = !layoutState.menuProfileActive;
 
 		return;
 	};
@@ -93,14 +93,14 @@ export function useLayout() {
 	const changeColorScheme = (colorScheme: string) => {
 		const themeLink = document.getElementById('theme-link');
 		const themeLinkHref = themeLink?.getAttribute('href');
-		const currentColorScheme = `theme-${layoutConfig.value.colorScheme}`;
+		const currentColorScheme = `theme-${layoutConfig.colorScheme}`;
 		const newColorScheme = `theme-${colorScheme}`;
 		const newHref = themeLinkHref?.replace(currentColorScheme, newColorScheme);
 
 		if (themeLink && newHref) {
 			replaceLink(themeLink, newHref, () => {
-				layoutConfig.value.colorScheme = colorScheme;
-				layoutConfig.value.menuTheme = colorScheme;
+				layoutConfig.colorScheme = colorScheme;
+				layoutConfig.menuTheme = colorScheme;
 
 				return;
 			});
@@ -110,71 +110,71 @@ export function useLayout() {
 	};
 
 	const setScale = (scale: number) => {
-		layoutConfig.value.scale = scale;
+		layoutConfig.scale = scale;
 
 		return;
 	};
 
 	const setActiveMenuItem = (menuItem: string) => {
-		layoutState.value.activeMenuItem = menuItem;
+		layoutState.activeMenuItem = menuItem;
 
 		return;
 	};
 
 	const onMenuToggle = () => {
-		if (layoutConfig.value.menuMode === 'overlay') {
-			layoutState.value.overlayMenuActive = !layoutState.value.overlayMenuActive;
+		if (layoutConfig.menuMode === 'overlay') {
+			layoutState.overlayMenuActive = !layoutState.overlayMenuActive;
 		}
 
 		if (window.innerWidth > 991) {
-			layoutState.value.staticMenuDesktopInactive = !layoutState.value.staticMenuDesktopInactive;
+			layoutState.staticMenuDesktopInactive = !layoutState.staticMenuDesktopInactive;
 		} else {
-			layoutState.value.staticMenuMobileActive = !layoutState.value.staticMenuMobileActive;
+			layoutState.staticMenuMobileActive = !layoutState.staticMenuMobileActive;
 		}
 
 		return;
 	};
 
 	const onTopbarMenuToggle = () => {
-		layoutState.value.topbarMenuActive = !layoutState.value.topbarMenuActive;
+		layoutState.topbarMenuActive = !layoutState.topbarMenuActive;
 
 		return;
 	};
 
 	const openRightSidebar = () => {
-		layoutState.value.rightMenuActive = true;
+		layoutState.rightMenuActive = true;
 
 		return;
 	};
 
 	const onProfileSidebarToggle = () => {
-		layoutState.value.rightMenuActive = !layoutState.value.rightMenuActive;
+		layoutState.rightMenuActive = !layoutState.rightMenuActive;
 
 		return;
 	};
 
 	const onConfigSidebarToggle = () => {
-		layoutState.value.configSidebarVisible = !layoutState.value.configSidebarVisible;
+		layoutState.configSidebarVisible = !layoutState.configSidebarVisible;
 
 		return;
 	};
 
 	const isSidebarActive = computed(() => (
-		layoutState.value.overlayMenuActive ||
-		layoutState.value.staticMenuMobileActive ||
-		layoutState.value.overlaySubmenuActive));
+		layoutState.overlayMenuActive ||
+		layoutState.staticMenuMobileActive ||
+		layoutState.overlaySubmenuActive));
 
-	const isDarkTheme = computed(() => layoutConfig.value.colorScheme === 'dark');
+	const isDarkTheme = computed(() => layoutConfig.colorScheme === 'dark');
 
 	const isDesktop = computed(() => window.innerWidth > 991);
 
-	const isSlim = computed(() => layoutConfig.value.menuMode === 'slim');
+	const isSlim = computed(() => layoutConfig.menuMode === 'slim');
 
-	const isSlimPlus = computed(() => layoutConfig.value.menuMode === 'slim-plus');
+	const isSlimPlus = computed(() => layoutConfig.menuMode === 'slim-plus');
 
-	const isHorizontal = computed(() => layoutConfig.value.menuMode === 'horizontal');
+	const isHorizontal = computed(() => layoutConfig.menuMode === 'horizontal');
 
-	const isOverlay = computed(() => layoutConfig.value.menuMode === 'overlay');
+	const isOverlay = computed(() => layoutConfig.menuMode === 'overlay');
 
 	return {
 		layoutConfig: toRefs(layoutConfig),
