@@ -6,6 +6,17 @@ export const useAuthStore = defineStore("auth", {
 		isLoggedIn: false,
 	}),
 	actions: {
+		logIn(email: string, password: string) {
+			// TODO: Call API here, for reasons
+			this.setApiToken('token');
+
+			return;
+		},
+		logOut() {
+			this.clearApiToken();
+
+			return;
+		},
 		setApiToken(token: string) {
 			this.apiToken = token;
 			this.isLoggedIn = true;

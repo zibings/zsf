@@ -1,10 +1,21 @@
 <script setup lang="ts">
-import FloatLabel from "primevue/floatlabel";
-import InputText from "primevue/inputtext";
+import {ref} from 'vue';
+import router from "@/router";
 import Button from "primevue/button";
-import { ref } from 'vue';
+import {useAuthStore} from "@/stores/auth";
+import InputText from "primevue/inputtext";
+import FloatLabel from "primevue/floatlabel";
 
 const email = ref('');
+const password = ref('');
+const authStore = useAuthStore();
+
+const doLogIn = () => {
+	authStore.logIn(email.value, password.value);
+	router.push("/profile");
+
+	return;
+};
 </script>
 
 <template>
@@ -17,20 +28,15 @@ const email = ref('');
 		</FloatLabel>
 
 		<FloatLabel>
-			<InputText type="password" id="login-password" label="Password" />
+			<InputText v-model="password" type="password" id="login-password" label="Password" />
 			<label for="login-password">Password</label>
 		</FloatLabel>
 
-		<Button label="Log In" />
+		<Button label="Log In" @click="doLogIn" />
 	</form>
 </template>
 
 <style scoped>
-h1 {
-	text-align: center;
-	margin-bottom: 25px;
-}
-
 form {
 	display: flex;
 	flex-direction: column;
