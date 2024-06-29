@@ -90,7 +90,7 @@ onMounted(() => {
 
 			await setPasswordMeter();
 		},
-		{ debounce: 350, maxWait: 1000 },
+		{ debounce: 350, maxWait: 1000 }
 	);
 });
 
