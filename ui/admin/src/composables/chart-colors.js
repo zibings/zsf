@@ -30,7 +30,7 @@ export function lineChart() {
 			setColorOptions();
 			applyTheme();
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	function applyTheme() {
@@ -81,7 +81,7 @@ export function barChart() {
 			setColorOptions();
 			applyTheme();
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	function applyTheme() {
@@ -139,7 +139,7 @@ export function pieChart() {
 			setColorOptions();
 			applyTheme();
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	function applyTheme() {
@@ -165,7 +165,7 @@ export function polarChart() {
 			setColorOptions();
 			applyTheme();
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	function applyTheme() {
@@ -197,7 +197,7 @@ export function radarChart() {
 			setColorOptions();
 			applyTheme();
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	function applyTheme() {

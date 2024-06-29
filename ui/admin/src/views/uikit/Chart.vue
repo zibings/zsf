@@ -172,6 +172,6 @@ watch(
 	() => {
 		setChart();
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 </script>
