@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onBeforeMount, watch, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
-import { useLayout } from '@/layout/composables/layout';
+import { useLayout } from '@/layouts/composables/layout';
 import { DomHandler } from 'primevue/utils';
 
 const route = useRoute();

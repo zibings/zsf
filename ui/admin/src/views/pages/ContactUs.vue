@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { useLayout } from '@/layout/composables/layout';
+import { useLayout } from '@/layouts/composables/layout';
 
 const { layoutConfig } = useLayout();
 

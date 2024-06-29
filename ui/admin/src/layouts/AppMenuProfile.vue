@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue';
-import { useLayout } from '@/layout/composables/layout';
+import { useLayout } from '@/layouts/composables/layout';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();

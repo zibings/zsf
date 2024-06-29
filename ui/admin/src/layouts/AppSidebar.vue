@@ -1,6 +1,6 @@
 <script setup>
 import AppMenu from './AppMenu.vue';
-import { useLayout } from '@/layout/composables/layout';
+import { useLayout } from '@/layouts/composables/layout';
 import AppMenuProfile from './AppMenuProfile.vue';
 
 const { layoutState, layoutConfig } = useLayout();

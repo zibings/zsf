@@ -31,7 +31,7 @@
         </p>
 
         <pre class="app-code"><code>&lt;script setup&gt;
-import &#123; useLayout &#125; from '@/layout/composables/layout';
+import &#123; useLayout &#125; from '@/layouts/composables/layout';
 
 const &#123; layoutConfig &#125; = useLayout();
 layoutConfig.menuMode.value = 'slim';

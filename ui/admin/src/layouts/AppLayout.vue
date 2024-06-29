@@ -7,7 +7,7 @@ import AppConfig from './AppConfig.vue';
 import AppRightMenu from './AppRightMenu.vue';
 import AppBreadCrumb from './AppBreadcrumb.vue';
 import AppFooter from './AppFooter.vue';
-import { useLayout } from '@/layout/composables/layout';
+import { useLayout } from '@/layouts/composables/layout';
 
 const $primevue = usePrimeVue();
 const { layoutConfig, layoutState, isSidebarActive } = useLayout();
