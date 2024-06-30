@@ -35,7 +35,7 @@ import "@/assets/styles.scss";
 
 import { createHead } from "@vueuse/head";
 import { createPinia } from "pinia";
-import { apiCreate } from "@/boot/axios.js";
+import { createApi } from "@/composables/useApi.js";
 import { configParse } from "@/boot/config.js";
 import { useLayout } from "@/layout/composables/layout";
 import { toggleDarkMode } from "@/composables/toggleDarkMode.js";
@@ -87,7 +87,7 @@ fetch(import.meta.env.BASE_URL + "config.json")
 		app.provide("$toast", app.config.globalProperties.$toast);
 		app.provide("$primevue", app.config.globalProperties.$primevue);
 
-		app.config.globalProperties.$api = apiCreate(app.config.globalProperties.$admConfig.api.baseUrl, app.config.globalProperties.$admConfig.api.headers);
+		app.config.globalProperties.$api = createApi(app.config.globalProperties.$admConfig.api.baseUrl);
 		app.provide("$api", app.config.globalProperties.$api);
 
 		app.directive("tooltip", Tooltip);
