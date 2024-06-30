@@ -506,9 +506,9 @@
 			$params = null;
 			$ret    = $this->newResponse();
 
-			try {
-				$this->processEvent($ret, 'doLogout', $request->getInput());
-			} catch (\Exception $ex) {
+			$this->processEvent($ret, 'doLogout', $request->getInput());
+
+			if ($ret->getStatus()->is(HttpStatusCodes::INTERNAL_SERVER_ERROR)) {
 				$authToken = $this->getUserAuthToken();
 
 				if (empty($authToken)) {
