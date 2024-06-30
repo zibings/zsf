@@ -12,6 +12,8 @@
 
 					<div>
 						<form @submit.prevent="login">
+							<p class="error-message" v-if="errorMessage.length > 0">{{ errorMessage }}</p>
+
 							<label for="email1" class="block text-900 text-xl font-medium mb-2">Email</label>
 							<InputText id="email1" type="email" placeholder="Email address" class="w-full md:w-30rem mb-5" style="padding: 1rem" v-model="email" required />
 
@@ -26,16 +28,13 @@
 								:toggle-mask="true"
 								:feedback="false"
 								required
-							></Password>
+							/>
 
 							<div class="flex align-items-center justify-content-between mb-5 gap-5">
-								<div class="flex align-items-center">
-									<Checkbox v-model="remember" input-id="rememberme" binary class="mr-2"></Checkbox>
-									<label for="rememberme">Remember me</label>
-								</div>
 								<router-link :to="{ name: 'forgotpass' }" class="text-primary font-medium"> Forgot password? </router-link>
 							</div>
-							<Button type="submit" label="Sign In" class="w-full p-3 text-xl"></Button>
+
+							<Button type="submit" label="Sign In" class="w-full p-3 text-xl" @click="doLogIn"></Button>
 						</form>
 					</div>
 				</div>
@@ -45,17 +44,37 @@
 </template>
 
 <script setup>
-import { useLayout } from "@/layout/composables/layout";
-import { ref, computed } from "vue";
+import { ref } from "vue";
+import { useRouter } from 'vue-router';
+import { useApi } from '@/composables/useApi.js';
 
-const { layoutConfig } = useLayout();
+const router = useRouter();
 const email = ref("");
 const password = ref("");
-const remember = ref(false);
+const errorMessage = ref("");
 
-const logoUrl = computed(() => {
-	return `/layout/images/${layoutConfig.darkTheme.value ? "logo-white" : "logo-dark"}.svg`;
-});
+const doLogIn = async () => {
+	try {
+		const res = await useApi().post('/1.1/Account/Login', {
+			email: email.value,
+			key: password.value,
+			provider: 1
+		});
+
+		if (res.status === 200) {
+			localStorage.setItem('authToken', res.data.bearer);
+
+			router.push({ name: 'dashboard' });
+		} else {
+			errorMessage.value = res.data;
+		}
+	} catch (error) {
+		console.log(error);
+		errorMessage.value = error.response.data;
+	}
+
+	return;
+};
 </script>
 
 <style scoped>
@@ -67,5 +86,12 @@ const logoUrl = computed(() => {
 .pi-eye-slash {
 	transform: scale(1.6);
 	margin-right: 1rem;
+}
+
+.error-message {
+	color: red;
+	font-size: 1.2rem;
+	margin-bottom: 1rem;
+	font-style: italic;
 }
 </style>

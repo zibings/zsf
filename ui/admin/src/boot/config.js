@@ -1,5 +1,5 @@
 export function configParse(conf) {
-	let config = conf ?? {};
+	const config = conf ?? {};
 
 	// Options defaults for $admConfig
 	config.api = config.api ?? {};

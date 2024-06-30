@@ -15,5 +15,6 @@ export function useApi() {
 	if (!api) {
 		createApi();
 	}
+
 	return api;
 }
