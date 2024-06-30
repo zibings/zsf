@@ -124,6 +124,41 @@
 		}
 
 		/**
+		 * Checks if the current session is valid.
+		 *
+		 * @OA\Get(
+		 *   path="/Account/CheckSession",
+		 *   operationId="checkSession",
+		 *   summary="Check if the current session is valid",
+		 *   description="Check if the current session is valid",
+		 *   tags={"Account"},
+		 *   @OA\Response(
+		 *     response="200",
+		 *     description="OK",
+		 *     @OA\JsonContent(type="string")
+		 *   )
+		 * )
+		 *
+		 * @param Request $request the current request which routed to the endpoint.
+		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \ReflectionException
+		 * @return Response
+		 */
+		public function checkSession(Request $request, array $matches = null) : Response {
+			$ret = $this->newResponse();
+
+			if ($this->getUserSession()->id < 1) {
+				$ret->setAsError("Invalid session");
+
+				return $ret;
+			}
+
+			$ret->setData("Session is valid");
+
+			return $ret;
+		}
+
+		/**
 		 * Checks if the given token is valid for the given user identifier.
 		 *
 		 * @OA\Post(
@@ -562,6 +597,7 @@
 		 */
 		protected function registerEndpoints() : void {
 			$this->registerEndpoint('POST', '/^\/?Account\/CheckEmail\/?$/i',        'checkEmail',        null);
+			$this->registerEndpoint('GET',  '/^\/?Account\/CheckSession\/?$/i',      'checkSession',      true);
 			$this->registerEndpoint('POST', '/^\/?Account\/CheckToken\/?$/i',        'checkToken',        null);
 			$this->registerEndpoint('POST', '/^\/?Account\/Confirm\/?$/i',           'confirmUser',       false);
 			$this->registerEndpoint('POST', '/^\/?Account\/Create\/?$/i',            'createUser',        RoleStrings::ADMINISTRATOR);
