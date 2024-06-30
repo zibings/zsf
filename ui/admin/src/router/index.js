@@ -97,7 +97,7 @@ router.beforeEach(async (to, from, next) => {
 		return;
 	}
 
-	if ((to.name === "login" || to.name === "forgotpass") && authStore.loggedIn) {
+	if (to.meta.noAuth && authStore.loggedIn) {
 		next({ name: "dashboard" });
 
 		return;
