@@ -6,10 +6,8 @@ export const useAuthStore = defineStore("auth", () => {
 	const loggedIn = ref(false);
 
 	async function getLoggedIn() {
-		const token = localStorage.getItem("authToken");
-
 		try {
-			useApi().post("/1.1/Account/CheckToken", { token }).then(res => {
+			useApi().post("/1.1/Account/CheckSession").then(res => {
 				if (res.status === 200) {
 					loggedIn.value = true;
 
