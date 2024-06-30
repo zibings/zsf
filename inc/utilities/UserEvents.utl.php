@@ -841,10 +841,12 @@
 				$_SESSION[self::STR_SESSION_TOKEN]  = $session->token;
 			}
 
+			$bearerToken = base64_encode("{$user->id}:{$session->token}");
+
 			if (STOIC_API_AUTH_COOKIE) {
 				$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
 
-				setcookie(self::STR_COOKIE_TOKEN, $session->token, time() + 31536000, '/', '', $secure, true);
+				setcookie(self::STR_COOKIE_TOKEN, $bearerToken, time() + 31536000, '/', '', $secure, true);
 			}
 
 			$ret->makeGood();
@@ -853,7 +855,7 @@
 				self::STR_DATA      => [
 					self::STR_USERID => $user->id,
 					self::STR_TOKEN  => $session->token,
-					self::STR_BEARER => base64_encode("{$user->id}:{$session->token}")
+					self::STR_BEARER => $bearerToken
 				]
 			]);
 

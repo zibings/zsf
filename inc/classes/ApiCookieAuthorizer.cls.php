@@ -48,8 +48,8 @@
 			$cookies = $sender->getRequest()->getCookies();
 
 			if ($cookies->has(UserEvents::STR_COOKIE_TOKEN)) {
-				$token    = $cookies->getString(UserEvents::STR_COOKIE_TOKEN, '');
-				$session  = UserSession::fromToken($token, $sender->getDb(), $sender->getLog());
+				$token    = explode(':', base64_decode($cookies->getString(UserEvents::STR_COOKIE_TOKEN, '')));
+				$session  = UserSession::fromToken($token[1], $sender->getDb(), $sender->getLog());
 
 				if (isSessionValidForRoles($session, $roles, $sender->getDb(), $sender->getLog())) {
 					$dispatch->authorize();

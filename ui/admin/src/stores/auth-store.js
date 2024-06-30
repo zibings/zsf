@@ -9,26 +9,24 @@ export const useAuthStore = defineStore("auth", () => {
 
 	async function getLoggedIn() {
 		try {
-			useApi().get("/1.1/Account/CheckSession").then(res => {
-				if (res.status === 200) {
-					loggedIn.value = true;
+			const res = await useApi().get("/1.1/Account/CheckSession");
 
-					return;
-				}
-
-				if (generalStore.environment === "development") {
-					document.cookie = "zsf_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-				}
+			if (res.status === 200) {
+				loggedIn.value = true;
 
 				return;
-			});
-		} catch (error) {
-			loggedIn.value = false;
+			}
 
 			if (generalStore.environment === "development") {
-				document.cookie = "zsf_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+				console.log(res);
+			}
+		} catch (error) {
+			if (generalStore.environment === "development") {
+				console.log(error);
 			}
 		}
+
+		loggedIn.value = false;
 
 		return;
 	}
