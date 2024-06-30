@@ -841,29 +841,21 @@
 				$_SESSION[self::STR_SESSION_TOKEN]  = $session->token;
 			}
 
-			$ret->makeGood();
-
-			if (!STOIC_API_AUTH_COOKIE) {
-				$ret->addResult([
-					self::STR_HTTP_CODE => HttpStatusCodes::OK,
-					self::STR_DATA      => [
-						self::STR_USERID => $user->id,
-						self::STR_TOKEN  => $session->token,
-						self::STR_BEARER => base64_encode("{$user->id}:{$session->token}")
-					]
-				]);
-			} else {
+			if (STOIC_API_AUTH_COOKIE) {
 				$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
 
 				setcookie(self::STR_COOKIE_TOKEN, $session->token, time() + 31536000, '/', '', $secure, true);
-
-				$ret->addResult([
-					self::STR_HTTP_CODE => HttpStatusCodes::OK,
-					self::STR_DATA      => [
-						self::STR_USERID => $user->id
-					]
-				]);
 			}
+
+			$ret->makeGood();
+			$ret->addResult([
+				self::STR_HTTP_CODE => HttpStatusCodes::OK,
+				self::STR_DATA      => [
+					self::STR_USERID => $user->id,
+					self::STR_TOKEN  => $session->token,
+					self::STR_BEARER => base64_encode("{$user->id}:{$session->token}")
+				]
+			]);
 
 			$this->touchEvent(UserEventTypes::LOGIN, new UserEventLoginDispatch($user, $session->token, $this->db, $this->log));
 

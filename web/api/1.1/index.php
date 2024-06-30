@@ -19,8 +19,10 @@
 	$node = new Zibings\ApiBearerAuthorizer();
 	$Api->linkAuthorizationNode($node);
 
-	$node = new Zibings\ApiCookieAuthorizer();
-	$Api->linkAuthorizationNode($node);
+	if (STOIC_API_AUTH_COOKIE) {
+		$node = new Zibings\ApiCookieAuthorizer();
+		$Api->linkAuthorizationNode($node);
+	}
 
 	$endpoints = [];
 	$loadedFiles = $Api->loadFilesByExtension('~/api/1.1', '.api.php');

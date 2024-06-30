@@ -62,8 +62,6 @@ const doLogIn = async () => {
 		});
 
 		if (res.status === 200) {
-			localStorage.setItem('authToken', res.data.bearer);
-
 			router.push({ name: 'dashboard' });
 		} else {
 			errorMessage.value = res.data;

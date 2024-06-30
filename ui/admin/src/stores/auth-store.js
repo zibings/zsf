@@ -7,7 +7,7 @@ export const useAuthStore = defineStore("auth", () => {
 
 	async function getLoggedIn() {
 		try {
-			useApi().post("/1.1/Account/CheckSession").then(res => {
+			useApi().get("/1.1/Account/CheckSession").then(res => {
 				if (res.status === 200) {
 					loggedIn.value = true;
 
