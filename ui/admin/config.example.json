@@ -6,6 +6,8 @@
 	"darkTheme": "arya-blue",
 	"lightTheme": "saga-blue",
 
+	"environment": "development",
+
 	"api": {
 		"useApi": false,
 		"baseUrl": "/",

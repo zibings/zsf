@@ -12,6 +12,7 @@ export function configParse(conf) {
 	config.displayNames.title = config.displayNames?.title ?? "Admin";
 	config.displayNames.header = config.displayNames?.header ?? "ADMIN";
 
+	config.environment = config.environment ?? "development";
 	config.ripple = config.ripple ?? false;
 	config.menuMode = config.menuMode ?? "static";
 	config.inputStyle = config.inputStyle ?? "outlined";

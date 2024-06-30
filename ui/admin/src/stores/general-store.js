@@ -12,6 +12,7 @@ export const useGeneralStore = defineStore("general", {
 		ripple: false,
 		menuMode: "static",
 		inputStyle: "outlined",
+		environment: "development",
 		api: {
 			baseUrl: null,
 			headers: {},

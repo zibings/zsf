@@ -1,9 +1,11 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useApi } from '@/composables/useApi.js';
+import { useGeneralStore } from '@/stores/general-store.js';
 
 export const useAuthStore = defineStore("auth", () => {
 	const loggedIn = ref(false);
+	const generalStore = useGeneralStore();
 
 	async function getLoggedIn() {
 		try {
@@ -14,13 +16,18 @@ export const useAuthStore = defineStore("auth", () => {
 					return;
 				}
 
-				localStorage.removeItem("authToken");
+				if (generalStore.environment === "development") {
+					document.cookie = "zsf_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+				}
 
 				return;
 			});
 		} catch (error) {
 			loggedIn.value = false;
-			localStorage.removeItem("authToken");
+
+			if (generalStore.environment === "development") {
+				document.cookie = "zsf_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+			}
 		}
 
 		return;

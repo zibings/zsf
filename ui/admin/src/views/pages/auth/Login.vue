@@ -47,8 +47,11 @@
 import { ref } from "vue";
 import { useRouter } from 'vue-router';
 import { useApi } from '@/composables/useApi.js';
+import { useGeneralStore } from '@/stores/general-store.js';
 
 const router = useRouter();
+const generalStore = useGeneralStore();
+
 const email = ref("");
 const password = ref("");
 const errorMessage = ref("");
@@ -62,6 +65,10 @@ const doLogIn = async () => {
 		});
 
 		if (res.status === 200) {
+			if (generalStore.environment === 'development') {
+				document.cookie = `zsf_token=${res.data.bearer}; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT`;
+			}
+
 			router.push({ name: 'dashboard' });
 		} else {
 			errorMessage.value = res.data;
