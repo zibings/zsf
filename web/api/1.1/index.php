@@ -16,15 +16,11 @@
 	
 	$Api = Stoic::getInstance(STOIC_CORE_PATH);
 
-	$authorizer = null;
+	$node = new Zibings\ApiBearerAuthorizer();
+	$Api->linkAuthorizationNode($node);
 
-	if (STOIC_API_AUTH_COOKIE) {
-		$authorizer = new Zibings\ApiCookieAuthorizer();
-	} else {
-		$authorizer = new Zibings\ApiBearerAuthorizer();
-	}
-
-	$Api->linkAuthorizationNode($authorizer);
+	$node = new Zibings\ApiCookieAuthorizer();
+	$Api->linkAuthorizationNode($node);
 
 	$endpoints = [];
 	$loadedFiles = $Api->loadFilesByExtension('~/api/1.1', '.api.php');
