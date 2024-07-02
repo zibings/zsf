@@ -21,10 +21,24 @@
 				<i class="pi pi-calendar"></i>
 				<span>Calendar</span>
 			</button>
-			<button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
+			<button @click="toggleProfileMenu" class="p-link layout-topbar-button" type="button" aria-haspopup="true" aria-controls="profile-menu">
 				<i class="pi pi-user"></i>
 				<span>Profile</span>
 			</button>
+			<Menu ref="profileMenu" id="profile-menu" :model="profileMenuItems" :popup="true">
+				<template #item="{ item, props }">
+					<router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+						<a v-ripple :href="href" v-bind="props.action" @click="navigate">
+							<span :class="item.icon" />
+							<span class="ml-2">{{ item.label }}</span>
+						</a>
+					</router-link>
+					<a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">
+						<span :class="item.icon" />
+						<span class="ml-2">{{ item.label }}</span>
+					</a>
+				</template>
+			</Menu>
 			<button @click="onSettingsClick()" class="p-link layout-topbar-button">
 				<i class="pi pi-cog"></i>
 				<span>Settings</span>
@@ -36,12 +50,15 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watchEffect, inject } from "vue";
 import { useLayout } from "@/layout/composables/layout";
-// import { useRouter } from "vue-router";
 import { toggleDarkMode } from "@/composables/toggleDarkMode";
 import { useGeneralStore } from "@/stores/general-store";
 import ThemeToggle from "@/components/switch/ThemeToggle.vue";
+import { useAuthStore } from '@/stores/auth-store.js';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const $toggleDark = inject("$toggleDark");
+const authStore = useAuthStore();
 const generalStore = useGeneralStore();
 const { layoutConfig, onMenuToggle } = useLayout();
 
@@ -52,6 +69,25 @@ watchEffect(async () => {
 
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
+const profileMenu = ref();
+const profileMenuItems = ref([
+	{
+		label: "Profile Settings",
+		icon: 'pi pi-cog',
+		route: '/users/1'
+	},
+	{
+		label: 'Logout',
+		icon: 'pi pi-sign-out',
+		command: () => {
+			authStore.logOut();
+
+			router.push('/auth/login');
+
+			return;
+		}
+	}
+]);
 // const router = useRouter();
 
 onMounted(() => {
@@ -102,6 +138,11 @@ const isOutsideClicked = (event) => {
 	const topbarEl = document.querySelector(".layout-topbar-menu-button");
 
 	return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
+};
+const toggleProfileMenu = event => {
+	profileMenu.value.toggle(event);
+
+	return;
 };
 </script>
 

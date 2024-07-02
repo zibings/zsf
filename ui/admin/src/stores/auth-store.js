@@ -31,5 +31,23 @@ export const useAuthStore = defineStore("auth", () => {
 		return;
 	}
 
-	return { loggedIn, getLoggedIn };
+	async function logOut() {
+		try {
+			const res = await useApi().post('/1.1/Account/Logout');
+
+			if (res.status === 200) {
+				loggedIn.value = false;
+
+				return;
+			}
+		} catch (error) {
+			if (generalStore.environment === "development") {
+				console.log(error);
+			}
+		}
+
+		return;
+	}
+
+	return { loggedIn, getLoggedIn, logOut };
 });
