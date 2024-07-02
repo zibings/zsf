@@ -5,7 +5,9 @@ assets/migrations/db/
 .scannerwork/
 .idea/
 .vs/
+tpl/index/
 web/admin/
+web/index.php
 web/web.config
 web/email-preview.php
 
