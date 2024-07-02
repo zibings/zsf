@@ -4,14 +4,15 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "vite",
+		"dev": "vite --host",
 		"build": "run-p type-check \"build-only {@}\" --",
 		"preview": "vite preview",
 		"test:unit": "vitest",
 		"build-only": "vite build",
 		"type-check": "vue-tsc --build --force",
 		"lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-		"format": "prettier --write src/"
+		"format": "prettier --write src/",
+		"zsf": "cross-env APP_TARGET=../../web vite build"
 	},
 	"dependencies": {
 		"@primevue/themes": "4.0.0-rc.3",
