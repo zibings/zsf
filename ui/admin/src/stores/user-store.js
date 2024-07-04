@@ -1,8 +1,7 @@
-import { deepCopy } from "@/composables/deepCopy";
-import axios from "axios";
 import { defineStore } from "pinia";
+import { useApi } from '@/composables/useApi.js';
+import { deepCopy } from "@/composables/deepCopy";
 import { useGeneralStore } from "./general-store";
-// import OpenAPIClientAxios from "openapi-client-axios";
 
 const generalStore = useGeneralStore();
 
@@ -125,20 +124,22 @@ export const useUserStore = defineStore("user", {
 		async fetchColumns() {
 			if (!generalStore.api.useApi) {
 				this.columns = columns;
+
 				return;
 			}
 
-			await axios.get(generalStore.api.fetchColumns).then((response) => {
+			await useApi().get(generalStore.api.fetchColumns).then((response) => {
 				this.columns = response.data;
 			});
 		},
 		async fetchUsers() {
 			if (!generalStore.api.useApi) {
 				this.users = users;
+
 				return;
 			}
 
-			await axios.get(generalStore.api.fetchUsers).then((response) => {
+			await useApi().get(generalStore.api.fetchUsers).then((response) => {
 				this.users = response.data;
 			});
 		},
@@ -156,6 +157,7 @@ export const useUserStore = defineStore("user", {
 			if (this.users.length <= 0) {
 				await this.fetchUsers();
 			}
+
 			this.currentUser = deepCopy(this.users.find((user) => user.id === id));
 		},
 		async saveUser(user) {

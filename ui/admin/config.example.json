@@ -14,9 +14,9 @@
 		"headers": {},
 		"openApiUrl": "",
 
-		"fetchColumns": "/Users/GetAll/Columns",
-		"fetchUsers": "/Users/GetAll",
-		"fetchCurrentUser": "/api/1/Account?id="
+		"fetchColumns": "/1.1/Users/Columns",
+		"fetchUsers": "/1.1/Users",
+		"fetchCurrentUser": "/1.1/Account"
 	},
 
 	"displayNames": {
