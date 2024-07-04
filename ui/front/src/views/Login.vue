@@ -17,20 +17,33 @@
 </template>
 
 <script setup>
-import router from "@/router";
-import { useAuthStore } from "@/stores/auth";
-import Button from "primevue/button";
-import FloatLabel from "primevue/floatlabel";
-import InputText from "primevue/inputtext";
 import { ref } from "vue";
+import router from "@/router";
+import Button from "primevue/button";
+import InputText from "primevue/inputtext";
+import { useAuthStore } from "@/stores/auth";
+import FloatLabel from "primevue/floatlabel";
+import { useApi } from 'composables/useApi.js';
+
+const api = useApi();
 
 const email = ref("");
 const password = ref("");
 const authStore = useAuthStore();
 
 const doLogIn = () => {
-	authStore.logIn(email.value, password.value);
-	router.push("/profile");
+	//router.push("/profile");
+	api.post("/1.1/Account/Login", {
+		email: email.value,
+		key: password.value,
+		provider: 1
+	}).then(res => res.json()).then(data => {
+		
+
+		return;
+	}).catch(error => {
+		console.log(error);
+	});
 
 	return;
 };

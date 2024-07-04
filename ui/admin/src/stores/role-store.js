@@ -4,16 +4,17 @@ import { useApi } from '@/composables/useApi.js';
 
 export const useRoleStore = defineStore('role', () => {
 	const roles = ref([]);
+	const api = useApi();
 
 	async function getRoles() {
 		try {
-			useApi().get('/1.1/Roles').then(res => {
-				if (res.status === 200) {
-					roles.value = res.data;
+			const roles = await api.get('/1.1/Roles');
 
-					return;
-				}
-			});
+			if (roles.status === 200) {
+				roles.value = roles.data;
+
+				return;
+			}
 		} catch (error) {
 			console.error(error);
 		}
@@ -23,11 +24,11 @@ export const useRoleStore = defineStore('role', () => {
 
 	async function userInRole(roleName) {
 		try {
-			useApi().get('/1.1/Roles/UserInRole', { name: roleName }).then(res => {
-				if (res.status === 200) {
-					return res.data;
-				}
-			});
+			const res = await api.get('/1.1/Roles/UserInRole', { name: roleName });
+
+			if (res.status === 200) {
+				return res.data;
+			}
 		} catch (error) {
 			console.error(error);
 		}
@@ -35,5 +36,19 @@ export const useRoleStore = defineStore('role', () => {
 		return false;
 	}
 
-	return { roles, getRoles, userInRole };
+	async function getUserRoles() {
+		try {
+			const roles = await api.get("/1.1/Roles/UserRoles");
+
+			if (roles.status === 200) {
+				return roles.data;
+			}
+		} catch (error) {
+			console.error(error);
+		}
+
+		return [];
+	}
+
+	return { roles, getRoles, userInRole, getUserRoles };
 });
