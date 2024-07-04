@@ -48,18 +48,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watchEffect, inject } from "vue";
-import { useLayout } from "@/layout/composables/layout";
-import { toggleDarkMode } from "@/composables/toggleDarkMode";
-import { useGeneralStore } from "@/stores/general-store";
-import ThemeToggle from "@/components/switch/ThemeToggle.vue";
-import { useAuthStore } from '@/stores/auth-store.js';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth-store.js';
+import { useLayout } from "@/layout/composables/layout";
+import { useGeneralStore } from "@/stores/general-store";
+import { toggleDarkMode } from "@/composables/toggleDarkMode";
+import ThemeToggle from "@/components/switch/ThemeToggle.vue";
+import { ref, computed, onMounted, onBeforeUnmount, watchEffect, inject } from "vue";
 
 const router = useRouter();
-const $toggleDark = inject("$toggleDark");
 const authStore = useAuthStore();
 const generalStore = useGeneralStore();
+const $toggleDark = inject("$toggleDark");
 const { layoutConfig, onMenuToggle } = useLayout();
 
 watchEffect(async () => {

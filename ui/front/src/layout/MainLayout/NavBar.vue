@@ -25,19 +25,27 @@ if (authStore.isLoggedIn) {
 	items.value = [
 		{
 			label: 'About',
-			icon: 'pi pi-home',
-			route: '/'
-		},
-		{
-			label: 'Features',
-			icon: 'pi pi-star',
 			command: () => router.push({ name: 'home' })
 		},
 		{
+			label: 'Features',
+			command: () => router.push({ name: 'home' })
+		},
+		{
+			label: 'Profile',
+			command: () => router.push({ name: 'profile' })
+		},
+		{
 			label: 'Contact',
-			icon: 'pi pi-envelope',
 			url: 'https://vuejs.org',
 			target: '_blank'
+		},
+		{
+			label: 'Log Out',
+			command: () => {
+				authStore.logOut();
+				router.push({ name: 'login' });
+			}
 		}
 	];
 } else {
@@ -45,12 +53,12 @@ if (authStore.isLoggedIn) {
 		{
 			label: 'Login',
 			icon: 'pi pi-lock',
-			route: '/login'
+			command: () => router.push({ name: 'login' })
 		},
 		{
 			label: 'Register',
 			icon: 'pi pi-user',
-			route: { name: 'register' }
+			command: () => router.push({ name: 'register' })
 		}
 	];
 }
