@@ -9,9 +9,9 @@ export const useAuthStore = defineStore("auth", () => {
 
 	async function getLoggedIn() {
 		try {
-			const res = await useApi().get("/1.1/Account/CheckSession");
+			const res = await useApi().post("/1.1/Roles/UserInRole", { name: "Administrator" });
 
-			if (res.status === 200) {
+			if (res.status === 200 && res.data) {
 				loggedIn.value = true;
 
 				return;

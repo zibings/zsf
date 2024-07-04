@@ -47,28 +47,42 @@
 import { ref } from "vue";
 import { useRouter } from 'vue-router';
 import { useApi } from '@/composables/useApi.js';
+import { useAuthStore } from '@/stores/auth-store.js';
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const email = ref("");
 const password = ref("");
 const errorMessage = ref("");
 
 const doLogIn = async () => {
+	const api = useApi();
+
 	try {
-		const res = await useApi().post('/1.1/Account/Login', {
+		const res = await api.post('/1.1/Account/Login', {
 			email: email.value,
 			key: password.value,
 			provider: 1
 		});
 
 		if (res.status === 200) {
-			router.push({ name: 'dashboard' });
+			const axsRes = await api.post('/1.1/Roles/UserInRole', {
+				name: 'Administrator'
+			});
+
+			if (axsRes.status === 200 && axsRes.data) {
+				router.push({ name: 'dashboard' });
+			} else {
+				authStore.logOut();
+				errorMessage.value = "Account cannot access this section";
+			}
 		} else {
 			errorMessage.value = res.data;
 		}
 	} catch (error) {
 		console.log(error);
+		authStore.logOut();
 		errorMessage.value = error.response.data;
 	}
 
