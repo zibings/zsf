@@ -37,6 +37,7 @@ export const useAuthStore = defineStore("auth", () => {
 
 			if (res.status === 200) {
 				loggedIn.value = false;
+				generalStore.currentUser.userId = 0;
 
 				return;
 			}

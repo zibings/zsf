@@ -48,9 +48,11 @@ import { ref } from "vue";
 import { useRouter } from 'vue-router';
 import { useApi } from '@/composables/useApi.js';
 import { useAuthStore } from '@/stores/auth-store.js';
+import { useGeneralStore } from '@/stores/general-store.js';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const generalStore = useGeneralStore();
 
 const email = ref("");
 const password = ref("");
@@ -72,6 +74,8 @@ const doLogIn = async () => {
 			});
 
 			if (axsRes.status === 200 && axsRes.data) {
+				generalStore.currentUser.userId = res.data.userId;
+
 				router.push({ name: 'dashboard' });
 			} else {
 				authStore.logOut();

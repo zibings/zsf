@@ -2,7 +2,7 @@
 	<div class="layout-topbar">
 		<router-link to="/" class="layout-topbar-logo">
 			<!-- <img :src="logoUrl" alt="logo" /> -->
-			<span>{{ generalStore.displayNames.header }}</span>
+			<span>{{ generalStore.displayNames.header }} ({{ generalStore.currentUser.userId }})</span>
 		</router-link>
 
 		<button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">

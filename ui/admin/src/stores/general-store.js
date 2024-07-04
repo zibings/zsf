@@ -22,6 +22,9 @@ export const useGeneralStore = defineStore("general", {
 			title: "",
 			header: "",
 		},
+		currentUser: {
+			userId: 0,
+		},
 		menu: [],
 	}),
 	actions: {},
