@@ -74,14 +74,13 @@ const profileMenuItems = ref([
 	{
 		label: "Profile Settings",
 		icon: 'pi pi-cog',
-		route: '/users/1'
+		route: `/users/${generalStore.currentUser.userId}`
 	},
 	{
 		label: 'Logout',
 		icon: 'pi pi-sign-out',
-		command: () => {
-			authStore.logOut();
-
+		command: async () => {
+			await authStore.logOut();
 			router.push('/auth/login');
 
 			return;
