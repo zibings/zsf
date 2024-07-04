@@ -72,6 +72,23 @@ PROJECT_NAME=$($ProjectName)
 	docker exec -t $WebContainer vendor/bin/stoic-migrate up
 
 	Write-Host "Docker container initialized"
+
+  Write-Host "Starting admin UI.. " -NoNewline
+
+  Push-Location ./ui/admin
+  pnpm install
+  Start-Job -Name ZsfUiAdmin -ScriptBlock { Invoke-Expression "pnpm dev" }
+  Pop-Location
+
+  Write-Host "DONE"
+  Write-Host "Starting front UI.. " -NoNewline
+
+  Push-Location ./ui/front
+  pnpm install
+  Start-Job -Name ZsfUiFront -ScriptBlock { Invoke-Expression "pnpm dev" }
+  Pop-Location
+
+  Write-Host "DONE"
 }
 
 function UpdateDocker([string] $ProjectName, [string] $WebContainer) {
@@ -90,6 +107,16 @@ function StopDocker([string] $ProjectName) {
 	Pop-Location
 
 	Write-Host "Docker container stopped"
+  Write-Host "Stopping admin UI.. " -NoNewline
+
+  Stop-Job -Name ZsfUiAdmin
+
+  Write-Host "DONE"
+  Write-Host "Stopping front UI.. " -NoNewline
+
+  Stop-Job -Name ZsfUiFront
+
+  Write-Host "DONE"
 }
 
 function DownDocker([string] $ProjectName) {
