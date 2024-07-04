@@ -12,8 +12,16 @@ export default router;
 router.beforeEach(async (to, from, next) => {
 	const authStore = useAuthStore();
 
+	await authStore.getLoggedIn();
+
 	if (to.meta.requiresAuth && !authStore.isLoggedIn) {
 		next({ name: "login" });
+
+		return;
+	}
+
+	if (authStore.isLoggedIn && !to.meta.requiresAuth) {
+		next({ name: 'profile' });
 
 		return;
 	}
