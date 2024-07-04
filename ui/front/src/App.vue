@@ -4,7 +4,6 @@
 
 <script setup lang="ts">
 import { RouterView } from "vue-router";
-import SampleNav from "components/SampleNav.vue";
 </script>
 
 <style scoped>

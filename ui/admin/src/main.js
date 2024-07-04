@@ -28,23 +28,23 @@ import Ripple from "primevue/ripple";
 import StyleClass from "primevue/styleclass";
 import Textarea from "primevue/textarea";
 import Toast from "primevue/toast";
-import ToastService from "primevue/toastservice";
-import Tooltip from "primevue/tooltip";
 
 import "@/assets/styles.scss";
 
-import { createHead } from "@vueuse/head";
 import { createPinia } from "pinia";
-import { createApi } from "@/composables/useApi.js";
+import Tooltip from "primevue/tooltip";
+import { createHead } from "@vueuse/head";
 import { configParse } from "@/boot/config.js";
+import ToastService from "primevue/toastservice";
+import { useDark, useToggle } from "@vueuse/core";
+import { createApi } from "@/composables/useApi.js";
 import { useLayout } from "@/layout/composables/layout";
-import { toggleDarkMode } from "@/composables/toggleDarkMode.js";
 import { useGeneralStore } from "@/stores/general-store.js";
-import { useDark, useStorage, useToggle } from "@vueuse/core";
+import { toggleDarkMode } from "@/composables/toggleDarkMode.js";
 
 const pinia = createPinia();
-const generalStore = useGeneralStore(pinia);
 const { layoutConfig } = useLayout();
+const generalStore = useGeneralStore(pinia);
 
 fetch(import.meta.env.BASE_URL + "config.json")
 	.then((response) => response.json())

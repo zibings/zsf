@@ -16,6 +16,8 @@
 	},
 	"dependencies": {
 		"@primevue/themes": "4.0.0-rc.3",
+		"axios": "^1.7.2",
+		"chart.js": "^4.4.3",
 		"pinia": "^2.1.7",
 		"primevue": "4.0.0-rc.3",
 		"vue": "^3.4.31",

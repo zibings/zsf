@@ -1,0 +1,9 @@
+// working example, copy to /public/config.json to use
+{
+	"environment": "development",
+
+	"api": {
+		"useApi": false,
+		"baseUrl": "/"
+	}
+}
