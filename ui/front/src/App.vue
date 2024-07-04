@@ -1,9 +1,5 @@
 <template>
-	<main>
-		<RouterView />
-
-		<SampleNav />
-	</main>
+	<RouterView />
 </template>
 
 <script setup lang="ts">
