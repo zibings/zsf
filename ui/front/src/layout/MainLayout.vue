@@ -5,6 +5,8 @@
 		<main>
 			<h1>Howdy, Partner</h1>
 		</main>
+
+		<router-view />
 	</div>
 </template>
 
