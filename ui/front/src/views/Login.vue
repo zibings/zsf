@@ -20,15 +20,17 @@
 
 <script setup>
 import { ref } from "vue";
-import router from "@/router";
+import { useRouter } from "vue-router";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
-import { useAuthStore } from 'stores/auth';
-import { useApi } from 'composables/useApi';
 import FloatLabel from "primevue/floatlabel";
-import { useToast } from 'primevue/usetoast';
-import { useGeneralStore } from 'stores/general';
+import { useToast } from "primevue/usetoast";
 
+import { useAuthStore } from "stores/auth";
+import { useApi } from "composables/useApi";
+import { useGeneralStore } from "stores/general";
+
+const router = useRouter();
 const api = useApi();
 const toast = useToast();
 
@@ -38,31 +40,34 @@ const authStore = useAuthStore();
 const generalStore = useGeneralStore();
 
 const doLogIn = () => {
-	api.post("/1.1/Account/Login", {
-		email: email.value,
-		key: password.value,
-		provider: 1
-	}).then(data => {
-		if (generalStore.environment === 'development') {
-			console.log(data);
-		}
+	api
+		.post("/1.1/Account/Login", {
+			email: email.value,
+			key: password.value,
+			provider: 1,
+		})
+		.then((data) => {
+			if (generalStore.environment === "development") {
+				console.log(data);
+			}
 
-		authStore.isLoggedIn = true;
-		generalStore.currentUser.userId = data.data.userId;
+			authStore.isLoggedIn = true;
+			generalStore.currentUser.userId = data.data.userId;
 
-		router.push("/profile");
+			router.push({ name: "profile" });
 
-		return;
-	}).catch(error => {
-		console.log(error);
+			return;
+		})
+		.catch((error) => {
+			console.log(error);
 
-		toast.add({
-			severity: 'error',
-			summary: 'Error',
-			detail: error.response.data,
-			life: 5000
+			toast.add({
+				severity: "error",
+				summary: "Error",
+				detail: error.response.data,
+				life: 5000,
+			});
 		});
-	});
 
 	return;
 };

@@ -7,15 +7,16 @@
 </template>
 
 <script setup>
-import router from "@/router";
-import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "stores/auth";
 
+const router = useRouter();
 const authStore = useAuthStore();
 
 const doLogOut = () => {
 	authStore.logOut();
 
-	router.push("/login");
+	router.push({ name: "login" });
 
 	return;
 };
