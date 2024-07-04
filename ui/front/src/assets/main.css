@@ -5,6 +5,10 @@
 	font-weight: normal;
 }
 
+#app main {
+	margin-top: 10px;
+}
+
 a,
 .green {
 	text-decoration: none;
