@@ -41,6 +41,17 @@ const userStore = useUserStore();
 const generalStore = useGeneralStore();
 
 const doLogIn = () => {
+	if (email.value.length < 3 || password.value.length < 3) {
+		toast.add({
+			severity: "error",
+			summary: "Error",
+			detail: "You must enter credentials to log in",
+			life: 5000,
+		});
+
+		return;
+	}
+
 	api
 		.post("/1.1/Account/Login", {
 			email: email.value,
