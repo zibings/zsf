@@ -26,7 +26,7 @@ import InputText from "primevue/inputtext";
 import FloatLabel from "primevue/floatlabel";
 import { useToast } from "primevue/usetoast";
 
-import { useAuthStore } from "stores/auth";
+import { useUserStore } from 'stores/user';
 import { useApi } from "composables/useApi";
 import { useGeneralStore } from "stores/general";
 
@@ -36,7 +36,8 @@ const toast = useToast();
 
 const email = ref("");
 const password = ref("");
-const authStore = useAuthStore();
+
+const userStore = useUserStore();
 const generalStore = useGeneralStore();
 
 const doLogIn = () => {
@@ -51,8 +52,7 @@ const doLogIn = () => {
 				console.log(data);
 			}
 
-			authStore.isLoggedIn = true;
-			generalStore.currentUser.userId = data.data.userId;
+			userStore.logIn();
 
 			router.push({ name: "profile" });
 

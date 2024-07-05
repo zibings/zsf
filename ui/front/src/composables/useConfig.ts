@@ -8,7 +8,8 @@ interface SiteConfig {
 	api: ApiConfig;
 }
 
-export function parseConfig(conf: any): SiteConfig {
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+export function useConfig(conf: any): SiteConfig {
 	return {
 		environment: conf.environment ?? 'development',
 		api: {

@@ -3,10 +3,8 @@
 		<NavBar />
 
 		<main>
-			<h1>Howdy, Partner</h1>
+			<router-view />
 		</main>
-
-		<router-view />
 	</div>
 </template>
 

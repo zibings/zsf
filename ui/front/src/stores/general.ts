@@ -4,12 +4,8 @@ export const useGeneralStore = defineStore("general", {
 	state: () => ({
 		api: {
 			useApi: false,
-			baseUrl: "/"
-		},
-		currentUser: {
-			userId: 0,
+			baseUrl: "/",
 		},
 		environment: "development",
 	}),
-	actions: {}
 });

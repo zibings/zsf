@@ -1,9 +1,17 @@
 import './assets/main.css';
 
 import { createPinia } from 'pinia';
+import { createApp, reactive } from 'vue';
+import { createApi } from 'composables/useApi';
+import { useGeneralStore } from 'stores/general';
+import { useConfig } from 'composables/useConfig';
+import useAuthGuard from 'composables/useAuthGuard';
+
+import App from './App.vue';
+import router from './router';
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
-import { createApp, reactive } from 'vue';
+
 import ToastService from "primevue/toastservice";
 import DialogService from "primevue/dialogservice";
 import ConfirmationService from "primevue/confirmationservice";
@@ -32,19 +40,13 @@ import Toast from "primevue/toast";
 import ToggleSwitch from 'primevue/toggleswitch';
 import Tooltip from 'primevue/tooltip';
 
-import App from './App.vue';
-import router from './router';
-import { createApi } from 'composables/useApi';
-import { parseConfig } from 'composables/config';
-import { useGeneralStore } from 'stores/general';
-
 const pinia = createPinia();
 const generalStore = useGeneralStore(pinia);
 
 fetch(`${import.meta.env.BASE_URL}config.json`)
 	.then(res => res.json())
 	.then(async (config) => {
-		const conf = parseConfig(config);
+		const conf = useConfig(config);
 		await generalStore.$patch(conf);
 
 		const app = createApp(App);
@@ -58,6 +60,8 @@ fetch(`${import.meta.env.BASE_URL}config.json`)
 				preset: Aura
 			}
 		});
+
+		useAuthGuard(router);
 
 		app.use(ConfirmationService);
 		app.use(ToastService);
