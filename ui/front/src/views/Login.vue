@@ -2,7 +2,7 @@
 	<h1>Log In</h1>
 
 	<form>
-		<Toast />
+		<Toast position="top-center" />
 
 		<FloatLabel>
 			<InputText v-model="email" type="text" id="login-email" label="Email" />
