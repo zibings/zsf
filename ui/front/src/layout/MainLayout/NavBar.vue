@@ -22,13 +22,15 @@ const userStore = useUserStore();
 
 const publicItems = ref<MenuItem[]>([
 	{
+		label: 'Home',
+		command: () => router.push({ name: 'home' })
+	},
+	{
 		label: 'Login',
-		icon: 'pi pi-lock',
 		command: () => router.push({ name: 'login' })
 	},
 	{
 		label: 'Register',
-		icon: 'pi pi-user',
 		command: () => router.push({ name: 'register' })
 	}
 ]);
