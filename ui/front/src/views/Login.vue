@@ -20,8 +20,8 @@
 
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import Button from "primevue/button";
+import { useRouter } from "vue-router";
 import InputText from "primevue/inputtext";
 import FloatLabel from "primevue/floatlabel";
 import { useToast } from "primevue/usetoast";
@@ -30,9 +30,9 @@ import { useUserStore } from 'stores/user';
 import { useApi } from "composables/useApi";
 import { useGeneralStore } from "stores/general";
 
-const router = useRouter();
 const api = useApi();
 const toast = useToast();
+const router = useRouter();
 
 const email = ref("");
 const password = ref("");
@@ -46,13 +46,15 @@ const doLogIn = () => {
 			email: email.value,
 			key: password.value,
 			provider: 1,
+		}, {
+			withCredentials: false
 		})
-		.then((data) => {
+		.then(res => {
 			if (generalStore.environment === "development") {
-				console.log(data);
+				console.log(res);
 			}
 
-			userStore.logIn();
+			userStore.logIn(res.data.userId);
 
 			router.push({ name: "profile" });
 

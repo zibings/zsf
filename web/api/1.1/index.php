@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 'on');
 
 	const STOIC_CORE_PATH = '../../../';
 	require_once(STOIC_CORE_PATH . 'inc/core.php');

@@ -599,7 +599,7 @@
 			$this->registerEndpoint('POST', '/^\/?Account\/CheckEmail\/?$/i',        'checkEmail',        null);
 			$this->registerEndpoint('GET',  '/^\/?Account\/CheckSession\/?$/i',      'checkSession',      true);
 			$this->registerEndpoint('POST', '/^\/?Account\/CheckToken\/?$/i',        'checkToken',        null);
-			$this->registerEndpoint('POST', '/^\/?Account\/Confirm\/?$/i',           'confirmUser',       false);
+			$this->registerEndpoint('POST', '/^\/?Account\/Confirm\/?$/i',           'confirmUser',       null);
 			$this->registerEndpoint('POST', '/^\/?Account\/Create\/?$/i',            'createUser',        RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('POST', '/^\/?Account\/Delete\/?$/i',            'deleteUser',        true);
 			$this->registerEndpoint('POST', '/^\/?Account\/Login\/?$/i',             'login',             null);
