@@ -21,10 +21,11 @@ const routes = [
 				component: () => import("views/Register.vue"),
 			},
 			{
-				path: "/confirmEmail",
-				name: "confirmEmail",
+				path: "/ConfirmEmail/:token",
+				name: "ConfirmEmail",
 				meta: { requiresAuth: false },
-				component: () => import("views/ConfirmEmail.vue")
+				component: () => import("views/ConfirmEmail.vue"),
+				props: true
 			},
 			{
 				path: "/profile",

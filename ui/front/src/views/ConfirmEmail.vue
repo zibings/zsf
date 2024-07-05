@@ -2,12 +2,16 @@
 	<h1>Confirming Your Email</h1>
 
 	<div>
-		{{ router.currentRoute.value.query.token }}
+		{{ props.token }}
 	</div>
 </template>
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
+
+const props = defineProps<{
+	token: string
+}>();
 
 const router = useRouter();
 </script>
