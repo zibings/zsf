@@ -328,7 +328,7 @@
 				$sql .= "FROM [dbo].[User] as [u] ";
 				$sql .= "INNER JOIN [dbo].[UserProfile] as [p] ON [p].[UserID] = [u].[ID] ";
 				$sql .= "INNER JOIN [dbo].[UserVisibilities] as [v] ON [v].[UserID] = [u].[ID] ";
-				$sql .= "WHERE ([u].[Email] LIKE :query1 OR [p].[DisplayName] LIKE :query2)";
+				$sql .= "WHERE ([u].[Email] LIKE :query1 OR [p].[DisplayName] LIKE :query2 OR [p].[RealName] LIKE :query3 OR [p].[Description] LIKE :query4)";
 
 				if ($respectVisibilities) {
 					$sql .= " AND [v].[Searches] > 0";
@@ -340,7 +340,7 @@
 				$sql .= "FROM `User` as `u` ";
 				$sql .= "INNER JOIN `UserProfile` as `p` ON `p`.`UserID` = `u`.`ID` ";
 				$sql .= "INNER JOIN `UserVisibilities` as `v` ON `v`.`UserID` = `u`.`ID` ";
-				$sql .= "WHERE (`u`.`Email` LIKE :query1 OR `p`.`DisplayName` LIKE :query2)";
+				$sql .= "WHERE (`u`.`Email` LIKE :query1 OR `p`.`DisplayName` LIKE :query2 OR `p`.`RealName` LIKE :query3 OR `p`.`Description` LIKE :query4)";
 
 				if ($respectVisibilities) {
 					$sql .= " AND `v`.`Searches` > 0";
@@ -351,12 +351,16 @@
 				$stmt = $this->db->prepare($sql);
 				$stmt->bindValue(':query1', "%{$query}%");
 				$stmt->bindValue(':query2', "%{$query}%");
+				$stmt->bindValue(':query3', "%{$query}%");
+				$stmt->bindValue(':query4', "%{$query}%");
 
-				if ($stmt->execute()) {
+				if ($stmt->execute() && $stmt->rowCount() > 0) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 						$ret[] = UserSearchData::fromArray($row);
 					}
 				}
+
+				return;
 			}, "Failed to search users");
 
 			$this->log->addAppender(new LogFileAppender(new FileHelper(STOIC_CORE_PATH), '~/logs/user-repo.log'));

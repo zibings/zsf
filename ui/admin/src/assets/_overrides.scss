@@ -1,0 +1,61 @@
+// Suggested location to add your overrides so that migration would be easy by just updating the SASS folder in the future
+
+$borderRadius: 2px;
+
+:root {
+	--chart-green: #00bb7e;
+	--chart-indigo: #2f4860;
+}
+
+.card,
+.p-card {
+	background-color: var(--surface-card);
+	padding: 1.5rem;
+	color: var(--surface-900);
+	margin-bottom: 1rem;
+	border-radius: $borderRadius;
+	box-shadow:
+		0px 3px 5px rgba(0, 0, 0, 0.02),
+		0px 0px 2px rgba(0, 0, 0, 0.05),
+		0px 1px 4px rgba(0, 0, 0, 0.08) !important;
+
+	&.card-w-title {
+		padding-bottom: 2rem;
+	}
+
+	.p-card-content {
+		padding: 0;
+	}
+	.p-card-body {
+		padding: 0;
+	}
+}
+
+// Menu scrollbar override
+.layout-sidebar {
+	scrollbar-color: var(--primary-color) transparent;
+	scrollbar-width: thin;
+
+	&::-webkit-scrollbar {
+		width: 0.25rem;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: var(--primary-color);
+		border-radius: 0.25rem;
+	}
+}
+
+a {
+	text-decoration: none;
+	color: var(--primary-color);
+}
+
+.layout-menu {
+	a {
+		&.router-link-exact-active {
+			font-weight: 700;
+			color: var(--primary-color);
+		}
+	}
+}

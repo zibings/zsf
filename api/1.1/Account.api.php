@@ -20,6 +20,7 @@
 	use Zibings\UserAuthHistory;
 	use Zibings\UserAuthHistoryLoginNode;
 	use Zibings\UserAuthHistoryLogoutNode;
+	use Zibings\UserEmailConfirmationNode;
 	use Zibings\UserEvents;
 	use Zibings\UserEventTypes;
 	use Zibings\UserRoles;
@@ -55,6 +56,8 @@
 			Logger $log = null,
 			protected UserEvents|null    $events    = null,
 			protected UserRoles|null     $userRoles = null) {
+			global $Settings;
+
 			parent::__construct($stoic, $db, $log);
 
 			if ($this->events === null) {
@@ -65,9 +68,14 @@
 				$this->userRoles = new UserRoles($this->db, $this->log);
 			}
 
+			$page = PageHelper::getPage('api/1.1/index.php');
+
 			// NOTE: Add UserEvent nodes here if needed
 			$this->events->linkToEvent(UserEventTypes::LOGIN, new UserAuthHistoryLoginNode($this->db, $this->log));
 			$this->events->linkToEvent(UserEventTypes::LOGOUT, new UserAuthHistoryLogoutNode($this->db, $this->log));
+			$this->events->linkToEvent(UserEventTypes::CREATE, new UserEmailConfirmationNode($page, $Settings, $this->db, $this->log));
+			$this->events->linkToEvent(UserEventTypes::UPDATE, new UserEmailConfirmationNode($page, $Settings, $this->db, $this->log));
+			$this->events->linkToEvent(UserEventTypes::REGISTER, new UserEmailConfirmationNode($page, $Settings, $this->db, $this->log));
 
 			return;
 		}
@@ -116,6 +124,41 @@
 		}
 
 		/**
+		 * Checks if the current session is valid.
+		 *
+		 * @OA\Get(
+		 *   path="/Account/CheckSession",
+		 *   operationId="checkSession",
+		 *   summary="Check if the current session is valid",
+		 *   description="Check if the current session is valid",
+		 *   tags={"Account"},
+		 *   @OA\Response(
+		 *     response="200",
+		 *     description="OK",
+		 *     @OA\JsonContent(type="string")
+		 *   )
+		 * )
+		 *
+		 * @param Request $request the current request which routed to the endpoint.
+		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \ReflectionException
+		 * @return Response
+		 */
+		public function checkSession(Request $request, array $matches = null) : Response {
+			$ret = $this->newResponse();
+
+			if ($this->getUserSession()->id < 1) {
+				$ret->setAsError("Invalid session");
+
+				return $ret;
+			}
+
+			$ret->setData("Session is valid");
+
+			return $ret;
+		}
+
+		/**
 		 * Checks if the given token is valid for the given user identifier.
 		 *
 		 * @OA\Post(
@@ -127,7 +170,6 @@
 		 *   @OA\RequestBody(
 		 *     @OA\JsonContent(
 		 *       type="object",
-		 *       @OA\Property(property="userId", type="number"),
 		 *       @OA\Property(property="token",  type="string")
 		 *     )
 		 *   ),
@@ -152,23 +194,80 @@
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
 
-			if (!$params->hasAll('userId', 'token')) {
+			if (!$params->has('token')) {
 				$ret->setAsError("Invalid parameters provided");
 
 				return $ret;
 			}
 
-			$userId      = $params->getInt('userId');
-			$userSession = UserSession::fromToken($params->getString('token'), $this->db, $this->log);
-			UserAuthHistory::createFromUserId($userId, AuthHistoryActions::TOKEN_CHECK, new ParameterHelper($_SERVER), "Token checked for user #{$userId}", $this->db, $this->log);
+			$token = $params->getString('token', '');
 
-			if ($userSession->userId != $userId) {
+			if (empty($token)) {
+				$ret->setAsError("Invalid token provided");
+
+				return $ret;
+			}
+
+			$token = explode(':', base64_decode($token));
+
+			if (count($token) != 2) {
+				$ret->setAsError("Invalid token provided");
+
+				return $ret;
+			}
+
+			$userSession = UserSession::fromToken($token[1], $this->db, $this->log);
+			UserAuthHistory::createFromUserId($token[0], AuthHistoryActions::TOKEN_CHECK, new ParameterHelper($_SERVER), "Token checked for user #{$token[0]}", $this->db, $this->log);
+
+			if ($userSession->userId != $token[0]) {
 				$ret->setAsError("Invalid session parameters");
 
 				return $ret;
 			}
 
 			$ret->setData("Token is valid");
+
+			return $ret;
+		}
+
+		/**
+		 * Attempts to confirm a user's email address, given a token for doing so.
+		 *
+		 * @OA\Post(
+		 *   path="/Account/Confirm",
+		 *   operationId="confirmUser",
+		 *   summary="Confirms a user's email address",
+		 *   description="Confirms a user's email address",
+		 *   tags={"Account"},
+		 *   @OA\RequestBody(
+		 *     @OA\JsonContent(
+		 *       type="object",
+		 *       @OA\Property(property="token", type="string")
+		 *     )
+		 *   ),
+		 *   @OA\Response(
+		 *     response="200",
+		 *     description="OK",
+		 *     @OA\JsonContent(type="string")
+		 *   )
+		 * )
+		 *
+		 * @param Request $request
+		 * @param array|null $matches
+		 * @throws \ReflectionException|\Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException
+		 * @return Response
+		 */
+		public function confirmUser(Request $request, array $matches = null) : Response {
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
+
+			if (!$params->has('token')) {
+				$ret->setAsError("Invalid parameters provided");
+
+				return $ret;
+			}
+
+			$this->processEvent($ret, 'doConfirm', $params);
 
 			return $ret;
 		}
@@ -439,8 +538,27 @@
 		 * @return Response
 		 */
 		public function logout(Request $request, array $matches = null) : Response {
-			$ret = $this->newResponse();
+			$params = null;
+			$ret    = $this->newResponse();
+
 			$this->processEvent($ret, 'doLogout', $request->getInput());
+
+			if ($ret->getStatus()->is(HttpStatusCodes::INTERNAL_SERVER_ERROR)) {
+				$authToken = $this->getUserAuthToken();
+
+				if (empty($authToken)) {
+					$ret->setAsError("Invalid token provided");
+
+					return $ret;
+				}
+
+				$tokenParts = explode(':', base64_decode(str_replace('Bearer ', '', $authToken)));
+
+				$this->processEvent($ret, 'doLogout', new ParameterHelper([
+					'userId' => $tokenParts[0],
+					'token'  => $tokenParts[1]
+				]));
+			}
 
 			return $ret;
 		}
@@ -462,7 +580,11 @@
 			if ($evt->isBad()) {
 				$ret->setData($evt->getMessages()[0]);
 			} else {
-				$ret->setData($evt->getResults()[0][UserEvents::STR_DATA]);
+				$results = $evt->getResults()[0];
+
+				if (isset($results[UserEvents::STR_DATA])) {
+					$ret->setData($results[UserEvents::STR_DATA]);
+				}
 			}
 
 			return;
@@ -475,7 +597,9 @@
 		 */
 		protected function registerEndpoints() : void {
 			$this->registerEndpoint('POST', '/^\/?Account\/CheckEmail\/?$/i',        'checkEmail',        null);
+			$this->registerEndpoint('GET',  '/^\/?Account\/CheckSession\/?$/i',      'checkSession',      true);
 			$this->registerEndpoint('POST', '/^\/?Account\/CheckToken\/?$/i',        'checkToken',        null);
+			$this->registerEndpoint('POST', '/^\/?Account\/Confirm\/?$/i',           'confirmUser',       null);
 			$this->registerEndpoint('POST', '/^\/?Account\/Create\/?$/i',            'createUser',        RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('POST', '/^\/?Account\/Delete\/?$/i',            'deleteUser',        true);
 			$this->registerEndpoint('POST', '/^\/?Account\/Login\/?$/i',             'login',             null);
@@ -547,8 +671,8 @@
 		 *     required=true,
 		 *     @OA\JsonContent(
 		 *       type="object",
-		 *       @OA\Property(property="userId",     type="number"),
-		 *       @OA\Property(property="key",        type="string")
+		 *       @OA\Property(property="key",   type="string"),
+		 *       @OA\Property(property="token", type="string"),
 		 *     )
 		 *   ),
 		 *   @OA\Response(
@@ -567,7 +691,6 @@
 			$params = $request->getInput();
 
 			$this->processEvent($ret, 'doResetPassword', new ParameterHelper([
-				'id'         => $params->getInt('userId', 0),
 				'key'        => $params->getString('key', ''),
 				'confirmKey' => $params->getString('key', ''),
 				'token'      => $params->getString('token', '')
@@ -684,21 +807,19 @@
 				return $ret;
 			}
 
-			$userEvents = new UserEvents($this->db, $this->log);
-
 			$postData = [
 				'id'             => $userId,
 				'actor'          => $user->id,
 				'email'          => $params->getString('email'),
 				'confirmEmail'   => $params->getString('email'),
-				'emailConfirmed' => true,
+				'emailConfirmed' => false,
 				'key'            => $params->getString('password'),
 				'confirmKey'     => $params->getString('password'),
 				'oldKey'         => $params->getString('oldPassword'),
 				'provider'       => LoginKeyProviders::PASSWORD
 			];
 
-			$update = $userEvents->doUpdate(new ParameterHelper($postData));
+			$update = $this->events->doUpdate(new ParameterHelper($postData));
 
 			if ($update->isBad()) {
 				if ($update->hasMessages()) {

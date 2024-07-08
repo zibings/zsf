@@ -199,14 +199,14 @@
 				return $ret;
 			}
 
-			$userVis    = UserVisibilities::fromUser($userId, $this->db, $this->log);
+			$userVis = UserVisibilities::fromUser($userId, $this->db, $this->log);
 
 			$postData = [
 				'id'             => $userId,
 				'actor'          => $user->id,
 				'settings'       => [
-					'htmlEmails'   => $params->has('htmlEmails'),
-					'playSounds'   => $params->has('playSounds')
+					'htmlEmails'   => $params->getBool('htmlEmails', false),
+					'playSounds'   => $params->getBool('playSounds', false)
 				],
 				'visibilities'   => [
 					'birthday'     => $params->getInt('visBirthday',    $userVis->birthday->getValue()),

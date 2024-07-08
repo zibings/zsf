@@ -14,17 +14,15 @@
 	 * @var \AndyM84\Config\ConfigContainer $Settings
 	 */
 	
-	$Api = Stoic::getInstance(STOIC_CORE_PATH);
+	$Api = Stoic::getInstance(STOIC_CORE_PATH, null, $Log);
 
-	$authorizer = null;
+	$node = new Zibings\ApiBearerAuthorizer();
+	$Api->linkAuthorizationNode($node);
 
 	if (STOIC_API_AUTH_COOKIE) {
-		$authorizer = new Zibings\ApiCookieAuthorizer();
-	} else {
-		$authorizer = new Zibings\ApiBearerAuthorizer();
+		$node = new Zibings\ApiCookieAuthorizer();
+		$Api->linkAuthorizationNode($node);
 	}
-
-	$Api->linkAuthorizationNode($authorizer);
 
 	$endpoints = [];
 	$loadedFiles = $Api->loadFilesByExtension('~/api/1.1', '.api.php');

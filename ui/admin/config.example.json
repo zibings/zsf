@@ -1,0 +1,96 @@
+// working example, copy to /public/config.json to use
+{
+	"theme": "arya-blue",
+	"darkMode": true,
+
+	"darkTheme": "arya-blue",
+	"lightTheme": "saga-blue",
+
+	"environment": "development",
+
+	"api": {
+		"useApi": false,
+		"baseUrl": "/",
+		"headers": {},
+		"openApiUrl": "",
+
+		"fetchColumns": "/1.1/Users/Columns",
+		"fetchUsers": "/1.1/Users",
+		"fetchCurrentUser": "/1.1/Account"
+	},
+
+	"displayNames": {
+		"title": "Admin",
+		"header": "ADMIN"
+	},
+
+	"menu": [
+		{
+			"label": "Home",
+			"items": [
+				{
+					"label": "Dashboard",
+					"icon": "pi pi-fw pi-home",
+					"to": { "name": "dashboard" }
+				},
+				{
+					"label": "Users",
+					"icon": "pi pi-fw pi-users",
+					"to": { "name": "users" }
+				},
+				{
+					"label": "User Edit",
+					"icon": "pi pi-fw pi-user-edit",
+					"to": { "name": "userEdit", "params": { "id": 1 } }
+				}
+			]
+		},
+		{
+			"label": "UI Components",
+			"icon": "pi pi-fw pi-sitemap",
+			"items": [
+				{
+					"label": "Chart",
+					"icon": "pi pi-fw pi-chart-bar",
+					"to": { "name": "charts" }
+				}
+			]
+		},
+		{
+			"label": "Pages",
+			"icon": "pi pi-fw pi-clone",
+			"items": [
+				{
+					"label": "Landing",
+					"icon": "pi pi-fw pi-globe",
+					"to": { "name": "landing" }
+				},
+				{
+					"label": "Login",
+					"icon": "pi pi-fw pi-sign-in",
+					"to": { "name": "login" }
+				},
+				{
+					"label": "Error",
+					"icon": "pi pi-fw pi-times-circle",
+					"to": { "name": "error" }
+				},
+				{
+					"label": "Not Found",
+					"icon": "pi pi-fw pi-exclamation-circle",
+					"to": { "name": "notfound" }
+				},
+				{
+					"label": "Access Denied",
+					"icon": "pi pi-fw pi-lock",
+					"to": { "name": "accessDenied" }
+				},
+				{
+					"label": "Empty",
+					"icon": "pi pi-fw pi-circle-off",
+					"to": { "name": "empty" }
+				}
+			]
+		}
+	]
+}

@@ -51,6 +51,57 @@
 		}
 
 		/**
+		 * Checks if a display name is available.
+		 *
+		 * @OA\Post(
+		 *   path="/Profile/CheckDisplayName",
+		 *   operationId="checkDisplayName",
+		 *   summary="Check if display name is available",
+		 *   description="Check if display name is available",
+		 *   tags={"Profile"},
+		 *   @OA\RequestBody(
+		 *     required=true,
+		 *     @OA\JsonContent(
+		 *       type="object",
+		 *       @OA\Property(property="displayName", type="string")
+		 *     )
+		 *   ),
+		 *   @OA\Response(
+		 *     response="200",
+		 *     description="OK",
+		 *     @OA\JsonContent(type="string")
+		 *   )
+		 * )
+		 *
+		 * @param Request $request The current request which routed to the endpoint.
+		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \ReflectionException|\Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException
+		 * @return Response
+		 */
+		public function checkDisplayName(Request $request, array $matches = null) : Response {
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
+
+			if (!$params->has('displayName')) {
+				$ret->setAsError("No display name provided");
+
+				return $ret;
+			}
+
+			$profile = UserProfile::fromDisplayName($params->getString('displayName', ''), $this->db, $this->log);
+
+			if ($profile->userId > 0) {
+				$ret->setData($this->newStatusResponseData(1, "Invalid display name, already in use"));
+
+				return $ret;
+			}
+
+			$ret->setData($this->newStatusResponseData(0, "Display name available"));
+
+			return $ret;
+		}
+
+		/**
 		 * Attempts to retrieve a user's profile information, only works for current user and administrators.
 		 *
 		 * @OA\Get(
@@ -113,8 +164,9 @@
 		 * @return void
 		 */
 		protected function registerEndpoints() : void {
-			$this->registerEndpoint('POST', '/^\/?Profile\/?$/i', 'update', true);
-			$this->registerEndpoint('GET',  '/^\/?Profile\/?$/i', 'get',    true);
+			$this->registerEndpoint('GET',  '/^\/?Profile\/CheckDisplayName\/?$/i', 'checkDisplayName', null);
+			$this->registerEndpoint('POST', '/^\/?Profile\/?$/i',                   'update',           true);
+			$this->registerEndpoint('GET',  '/^\/?Profile\/?$/i',                   'get',              true);
 
 			return;
 		}

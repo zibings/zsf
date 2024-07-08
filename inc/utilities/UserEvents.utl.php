@@ -306,14 +306,14 @@
 	 * @package Zibings
 	 */
 	class UserEventTypes extends EnumBase {
-		const CONFIRM       = 1;
-		const CREATE        = 2;
-		const DELETE        = 3;
-		const LOGIN         = 4;
-		const LOGOUT        = 5;
-		const REGISTER      = 6;
-		const RESETPASSWORD = 7;
-		const UPDATE        = 8;
+		const int CONFIRM       = 1;
+		const int CREATE        = 2;
+		const int DELETE        = 3;
+		const int LOGIN         = 4;
+		const int LOGOUT        = 5;
+		const int REGISTER      = 6;
+		const int RESETPASSWORD = 7;
+		const int UPDATE        = 8;
 	}
 
 	/**
@@ -322,34 +322,35 @@
 	 * @package Zibings
 	 */
 	class UserEvents extends StoicDbClass {
-		const STR_ACTOR          = 'actor';
-		const STR_BEARER         = 'bearer';
-		const STR_BIRTHDAY       = 'birthday';
-		const STR_CONFIRM_EMAIL  = 'confirmEmail';
-		const STR_CONFIRM_KEY    = 'confirmKey';
-		const STR_COOKIE_TOKEN   = 'zsf_token';
-		const STR_DATA           = 'data';
-		const STR_DESCRIPTION    = 'description';
-		const STR_DISPLAY_NAME   = 'displayName';
-		const STR_EMAIL          = 'email';
-		const STR_EMAILCONFIRMED = 'emailConfirmed';
-		const STR_GENDER         = 'gender';
-		const STR_HTML_EMAILS    = 'htmlEmails';
-		const STR_HTTP_CODE      = 'httpCode';
-		const STR_ID             = 'id';
-		const STR_KEY            = 'key';
-		const STR_OLD_KEY        = 'oldKey';
-		const STR_PLAY_SOUNDS    = 'playSounds';
-		const STR_PROFILE        = 'profile';
-		const STR_PROVIDER       = 'provider';
-		const STR_REAL_NAME      = 'realName';
-		const STR_SEARCHES       = 'searches';
-		const STR_SESSION_USERID = 'zUserID';
-		const STR_SESSION_TOKEN  = 'zToken';
-		const STR_SETTINGS       = 'settings';
-		const STR_TOKEN          = 'token';
-		const STR_USERID         = 'userId';
-		const STR_VISIBILITIES   = 'visibilities';
+		const string STR_ACTOR          = 'actor';
+		const string STR_BEARER         = 'bearer';
+		const string STR_BIRTHDAY       = 'birthday';
+		const string STR_CONFIRM_EMAIL  = 'confirmEmail';
+		const string STR_CONFIRM_KEY    = 'confirmKey';
+		const string STR_COOKIE_TOKEN   = 'zsf_token';
+		const string STR_DATA           = 'data';
+		const string STR_DESCRIPTION    = 'description';
+		const string STR_DISPLAY_NAME   = 'displayName';
+		const string STR_EMAIL          = 'email';
+		const string STR_EMAILCONFIRMED = 'emailConfirmed';
+		const string STR_GENDER         = 'gender';
+		const string STR_HTML_EMAILS    = 'htmlEmails';
+		const string STR_HTTP_CODE      = 'httpCode';
+		const string STR_ID             = 'id';
+		const string STR_KEY            = 'key';
+		const string STR_OLD_KEY        = 'oldKey';
+		const string STR_PLAY_SOUNDS    = 'playSounds';
+		const string STR_PROFILE        = 'profile';
+		const string STR_PROVIDER       = 'provider';
+		const string STR_REAL_NAME      = 'realName';
+		const string STR_ROLES          = 'roles';
+		const string STR_SEARCHES       = 'searches';
+		const string STR_SESSION_USERID = 'zUserID';
+		const string STR_SESSION_TOKEN  = 'zToken';
+		const string STR_SETTINGS       = 'settings';
+		const string STR_TOKEN          = 'token';
+		const string STR_USERID         = 'userId';
+		const string STR_VISIBILITIES   = 'visibilities';
 
 
 		/**
@@ -675,7 +676,8 @@
 		 * [
 		 *   'email'    => (string) 'user@domain.com', # the email address of the user in question
 		 *   'key'      => (string) 'someKey',         # the login key value of the user in question
-		 *   'provider' => (int|LoginKeyProviders) 1   # the login key provider type
+		 *   'provider' => (int|LoginKeyProviders) 1,  # the login key provider type
+		 *   'roles'    => (string|array) []           # optional user roles to enforce for login
 		 * ]
 		 *
 		 * Resulting ReturnHelper will include a suggested HTTP status code in the 'httpCode' index and the session data if the
@@ -703,10 +705,11 @@
 				return $ret;
 			}
 
-			$email    = $params->getString(self::STR_EMAIL);
-			$key      = $params->getString(self::STR_KEY);
-			$provider = $params->getInt(self::STR_PROVIDER);
-			$user     = User::fromEmail($email, $this->db, $this->log);
+			$email     = $params->getString(self::STR_EMAIL);
+			$key       = $params->getString(self::STR_KEY);
+			$provider  = $params->getInt(self::STR_PROVIDER);
+			$user      = User::fromEmail($email, $this->db, $this->log);
+			$userRoles = new UserRoles($this->db, $this->log);
 
 			if ($user->id < 1) {
 				$this->assignError($ret, "Invalid credentials supplied");
@@ -772,6 +775,34 @@
 				return $ret;
 			}
 
+			if ($params->has(self::STR_ROLES)) {
+				$roles = $params->get(self::STR_ROLES);
+
+				if (is_array($roles)) {
+					$roleFound = false;
+
+					foreach ($roles as $role) {
+						if ($userRoles->userInRoleByName($user->id, $role)) {
+							$roleFound = true;
+
+							break;
+						}
+					}
+
+					if (!$roleFound) {
+						$this->assignError($ret, "User does not have required role to login");
+
+						return $ret;
+					}
+				} else {
+					if (!$userRoles->userInRoleByName($user->id, $roles)) {
+						$this->assignError($ret, "User does not have required role to login");
+
+						return $ret;
+					}
+				}
+			}
+
 			$user->lastLogin = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 
 			if ($user->update()->isBad()) {
@@ -810,29 +841,23 @@
 				$_SESSION[self::STR_SESSION_TOKEN]  = $session->token;
 			}
 
-			$ret->makeGood();
+			$bearerToken = base64_encode("{$user->id}:{$session->token}");
 
-			if (!STOIC_API_AUTH_COOKIE) {
-				$ret->addResult([
-					self::STR_HTTP_CODE => HttpStatusCodes::OK,
-					self::STR_DATA      => [
-						self::STR_USERID => $user->id,
-						self::STR_TOKEN  => $session->token,
-						self::STR_BEARER => base64_encode("{$user->id}:{$session->token}")
-					]
-				]);
-			} else {
+			if (STOIC_API_AUTH_COOKIE) {
 				$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
 
-				setcookie(self::STR_COOKIE_TOKEN, $session->token, time() + 31536000, '/', '', $secure, true);
-
-				$ret->addResult([
-					self::STR_HTTP_CODE => HttpStatusCodes::OK,
-					self::STR_DATA      => [
-						self::STR_USERID => $user->id
-					]
-				]);
+				setcookie(self::STR_COOKIE_TOKEN, $bearerToken, time() + 31536000, '/', '', $secure, true);
 			}
+
+			$ret->makeGood();
+			$ret->addResult([
+				self::STR_HTTP_CODE => HttpStatusCodes::OK,
+				self::STR_DATA      => [
+					self::STR_USERID => $user->id,
+					self::STR_TOKEN  => $session->token,
+					self::STR_BEARER => $bearerToken
+				]
+			]);
 
 			$this->touchEvent(UserEventTypes::LOGIN, new UserEventLoginDispatch($user, $session->token, $this->db, $this->log));
 
@@ -1057,7 +1082,6 @@
 		 * UserEventResetPasswordDispatch object. The following parameters are required:
 		 *
 		 * [
-		 *   'id'         => (int) 1,            # user identifier
 		 *   'key'        => (string) 'someKey', # new password
 		 *   'confirmKey' => (string) 'someKey', # confirmation of new password
 		 *   'token'      => (string) 'token'    # token to confirm this is authorized
@@ -1074,13 +1098,12 @@
 		public function doResetPassword(ParameterHelper $params) : ReturnHelper {
 			$ret = new ReturnHelper();
 
-			if (!$params->hasAll(self::STR_ID, self::STR_KEY, self::STR_CONFIRM_KEY, self::STR_TOKEN)) {
+			if (!$params->hasAll(self::STR_KEY, self::STR_CONFIRM_KEY, self::STR_TOKEN)) {
 				$this->assignError($ret, "Missing parameters for reset");
 
 				return $ret;
 			}
 
-			$id         = $params->getInt(self::STR_ID);
 			$key        = $params->getString(self::STR_KEY);
 			$token      = $params->getString(self::STR_TOKEN);
 			$confirmKey = $params->getString(self::STR_CONFIRM_KEY);
@@ -1091,7 +1114,15 @@
 				return $ret;
 			}
 
-			$user = User::fromId($id, $this->db, $this->log);
+			$token = explode(':', base64_decode($token));
+
+			if (count($token) !== 2) {
+				$this->assignError($ret, "Invalid reset token");
+
+				return $ret;
+			}
+
+			$user = User::fromId($token[0], $this->db, $this->log);
 
 			if ($user->id < 1) {
 				$this->assignError($ret, "Invalid account information");
@@ -1099,7 +1130,7 @@
 				return $ret;
 			}
 
-			$tok = UserToken::fromToken($token, $user->id, $this->db, $this->log);
+			$tok = UserToken::fromToken($token[1], $user->id, $this->db, $this->log);
 
 			if ($tok->id < 1) {
 				$this->assignError($ret, "Invalid token for reset");
@@ -1259,7 +1290,7 @@
 				$confirmKey = $params->getString(self::STR_CONFIRM_KEY);
 				$login      = LoginKey::fromUserAndProvider($user->id, LoginKeyProviders::PASSWORD, $this->db, $this->log);
 
-				if (password_verify($params->getString(self::STR_OLD_KEY), PASSWORD_DEFAULT)) {
+				if (password_verify($params->getString(self::STR_OLD_KEY), $login->key)) {
 					if ($login->userId == $user->id && !empty($key) && $key === $confirmKey) {
 						$login->key = password_hash($key, PASSWORD_DEFAULT);
 

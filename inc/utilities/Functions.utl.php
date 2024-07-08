@@ -1124,6 +1124,53 @@
 	}
 
 	/**
+	 * Attempts to send a confirmation email.
+	 *
+	 * @param string $email Email address to use for finding user in question.
+	 * @param PageHelper $page PageHelper instance for resolving current domain in email links.
+	 * @param ConfigContainer $settings Settings container for site.
+	 * @param PdoHelper $db PdoHelper instance for internal use.
+	 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
+	 * @throws \PHPMailer\PHPMailer\Exception
+	 * @return bool
+	 */
+	function sendConfirmEmail(string $email, PageHelper $page, ConfigContainer $settings, PdoHelper $db, Logger|null $log = null) : bool {
+		$user = User::fromEmail($email, $db, $log);
+
+		if ($user->id < 1) {
+			return false;
+		}
+
+		$ut          = new UserToken($db, $log);
+		$ut->context = "EMAIL CONFIRMATION";
+		$ut->token   = UserSession::generateGuid(false);
+		$ut->userId  = $user->id;
+
+		if ($ut->create()->isBad()) {
+			return false;
+		}
+
+		$tpl = new Engine(null, 'tpl.php');
+		$tpl->addFolder('shared', STOIC_CORE_PATH . '/tpl/shared');
+		$tpl->addFolder('emails', STOIC_CORE_PATH . '/tpl/emails');
+
+		$mail          = getPhpMailer($settings);
+		$mail->Subject = "[{$settings->get(SettingsStrings::SITE_NAME)}] Confirm Your Email Address";
+		$mail->isHTML(true);
+		$mail->Body    = $tpl->render('emails::email-confirmation', [
+			'page'  => $page,
+			'token' => base64_encode("{$ut->userId}:{$ut->token}")
+		]);
+		$mail->addAddress($email);
+
+		if (!$mail->send()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Attempts to send a password reset email.
 	 *
 	 * @param string $email Email address to use for finding user in question.
