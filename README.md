@@ -94,7 +94,7 @@ When deploying to webservers, the site will need some routing adjustments to fun
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-  Rewriterule ^index\.html$ - [L]
+  RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
