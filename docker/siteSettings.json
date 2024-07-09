@@ -1,9 +1,14 @@
 {
 	"schema": {
 		"configVersion": "int",
+		"api.cacheControl": "str",
+		"api.contentType": "str",
 		"assetsPath": "str",
 		"classesExt": "str",
 		"classesPath": "str",
+		"cors.headers": "str",
+		"cors.methods": "str",
+		"cors.origins": "str[]",
 		"dbDsn": "str",
 		"dbPass": "str",
 		"dbUser": "str",
@@ -38,9 +43,22 @@
 	},
 	"settings": {
 		"configVersion": 5,
+		"api": {
+			"cacheControl": "max-age=500",
+			"contentType": "application\/json"
+		},
 		"assetsPath": "~\/assets",
 		"classesExt": ".cls.php",
 		"classesPath": "classes",
+		"cors": {
+			"headers": "Accept, Authorization, Content-Type, X-CSRF-Token, App-Token, Token",
+			"methods": "GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH",
+			"origins": [
+				"http:\/\/localhost",
+				"http:\/\/localhost:5173",
+				"http:\/\/localhost:5174"
+			]
+		},
 		"dbDsn": "mysql:host=db:3306;dbname=zsf",
 		"dbPass": "P@55word",
 		"dbUser": "root",
@@ -70,7 +88,7 @@
 		"smtpPass": "<changeme>",
 		"defaultFromAddress": "noreply@domain.com",
 		"defaultFromName": "Your Site",
-		"apiPath": "http:\/\/localhost\/api\/1",
+		"apiPath": "http:\/\/localhost\/api",
 		"curlSecure": false
 	}
 }

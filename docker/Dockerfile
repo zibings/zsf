@@ -1,5 +1,5 @@
-FROM php:8.1-apache
-RUN apt-get update && apt-get upgrade
+FROM php:8.3-apache
+RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y libbz2-dev sqlite3 libsqlite3-dev libssl-dev libcurl4-openssl-dev libjpeg-dev libonig-dev libreadline-dev libtidy-dev libxslt-dev libzip-dev 'libpng*'
 RUN docker-php-ext-install pdo pdo_mysql mysqli bz2 mbstring gd xsl
 
