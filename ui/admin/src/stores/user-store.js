@@ -118,7 +118,12 @@ export const useUserStore = defineStore("user", {
 	state: () => ({
 		users: [],
 		columns: [],
-		currentUser: null,
+		currentUser: {
+			account: {},
+			profile: {},
+			settings: {},
+			roles: [],
+		},
 	}),
 	actions: {
 		async fetchColumns() {
@@ -154,11 +159,49 @@ export const useUserStore = defineStore("user", {
 			}
 		},
 		async fetchCurrentUser(id) {
-			if (this.users.length <= 0) {
-				await this.fetchUsers();
+			const api = useApi();
+
+			try {
+				let res = await api.get(`/1.1/Account?userId=${id}`);
+
+				if (res.status !== 200) {
+					console.error("Error fetching user");
+					console.log(res);
+
+					return;
+				}
+
+				this.currentUser.account = res.data
+
+				res = await api.get(`/1.1/Profile?userId=${id}`);
+
+				if (res.status === 200) {
+					this.currentUser.profile = res.data;
+				}
+
+				res = await api.get(`/1.1/Settings?userId=${id}`);
+
+				if (res.status === 200) {
+					this.currentUser.settings = res.data;
+				}
+
+				res = await api.get(`/1.1/Roles/UserRoles/${id}`);
+
+				if (res.status === 200) {
+					this.currentUser.roles = [];
+
+					for (const role of Object.values(res.data)) {
+						if (this.currentUser.roles.filter(r => r.id === role.id).length <= 0) {
+							this.currentUser.roles.push(role);
+						}
+					}
+				}
+			} catch (error) {
+				console.error("Exception fetching user");
+				console.log(error);
 			}
 
-			this.currentUser = deepCopy(this.users.find((user) => user.id === id));
+			return;
 		},
 		async saveUser(user) {
 			if (user.id) {
