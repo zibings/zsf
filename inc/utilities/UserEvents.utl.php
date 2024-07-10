@@ -471,7 +471,27 @@
 		 *   'key'            => (string) 'someKey',         # the login key value for the new user
 		 *   'confirmKey'     => (string) 'someKey',         # repeat of the login key value
 		 *   'provider'       => (int|LoginKeyProviders) 1,  # the login key provider type
-		 *   'emailConfirmed' => (bool) false                # whether the new user's email is confirmed
+		 *   'emailConfirmed' => (bool) false,               # whether the new user's email is confirmed,
+		 *   'profile'        => (array) [                   # optional user profile data
+		 *     'birthday'    => (string) 'YYYY-MM-DD',       # the user's birthday
+		 *     'description' => (string) '',                 # the user's profile description
+		 *     'displayName' => (string) '',                 # the user's display name
+		 *     'gender'      => (int|UserGenders) 0,         # the user's chosen gender
+		 *     'realName'    => (string) ''                  # the user's real name
+		 *   ],
+		 *   'settings'       => (array) [                   # optional user settings data
+		 *     'htmlEmails' => (bool) false,                 # whether the user prefers HTML emails
+		 *     'playSounds' => (bool) false                  # whether the user prefers to play sounds
+		 *   ],
+		 *   'visibilities'   => (array) [                   # optional user visibilities data
+		 *     'birthday'   => (int|VisibilityState) 0,      # the visibility state of the user's birthday
+		 *     'description' => (int|VisibilityState) 0,     # the visibility state of the user's profile description
+		 *     'email'       => (int|VisibilityState) 0,     # the visibility state of the user's email
+		 *     'gender'      => (int|VisibilityState) 0,     # the visibility state of the user's gender
+		 *     'profile'     => (int|VisibilityState) 0,     # the visibility state of the user's profile
+		 *     'realName'    => (int|VisibilityState) 0,     # the visibility state of the user's real name
+		 *     'searches'    => (int|VisibilityState) 0      # the visibility state of the user's searches
+		 *   ]
 		 * ]
 		 *
 		 * After the User and their LoginKey have been created, the system will attempt to create (without guaranteeing) the
@@ -555,14 +575,54 @@
 
 				$profile = new UserProfile($this->db, $this->log);
 				$profile->userId = $user->id;
+
+				if ($params->has(self::STR_PROFILE)) {
+					$pParams              = new ParameterHelper($params->get(self::STR_PROFILE));
+					$profile->birthday    = new \DateTimeImmutable($pParams->getString(self::STR_BIRTHDAY, $profile->birthday->format('Y-m-d G:i:s')), new \DateTimeZone('UTC'));
+					$profile->description = $pParams->getString(self::STR_DESCRIPTION, $profile->description);
+					$displayName          = $pParams->getString(self::STR_DISPLAY_NAME);
+
+					if ($displayName !== $profile->displayName && UserProfile::validDisplayName($displayName)) {
+						$p = UserProfile::fromDisplayName($displayName, $this->db, $this->log);
+
+						if ($p->userId < 1) {
+							$profile->displayName = $displayName;
+						} else {
+							$ret->addMessage("Couldn't change display name, invalid or already in use");
+						}
+					}
+
+					$profile->gender   = new UserGenders($pParams->getInt(self::STR_GENDER, $profile->gender->getValue()));
+					$profile->realName = $pParams->getString(self::STR_REAL_NAME, $profile->realName);
+				}
+
 				$profile->create();
 
 				$settings = new UserSettings($this->db, $this->log);
 				$settings->userId = $user->id;
+
+				if ($params->has(self::STR_SETTINGS)) {
+					$sParams              = new ParameterHelper($params->get(self::STR_SETTINGS));
+					$settings->htmlEmails = $sParams->getBool(self::STR_HTML_EMAILS, $settings->htmlEmails);
+					$settings->playSounds = $sParams->getBool(self::STR_PLAY_SOUNDS, $settings->playSounds);
+				}
+
 				$settings->create();
 
 				$visibilities = new UserVisibilities($this->db, $this->log);
 				$visibilities->userId = $user->id;
+
+				if ($params->has(self::STR_VISIBILITIES)) {
+					$vParams                   = new ParameterHelper($params->get(self::STR_VISIBILITIES));
+					$visibilities->birthday    = new VisibilityState($vParams->getInt(self::STR_BIRTHDAY, $visibilities->birthday->getValue()));
+					$visibilities->description = new VisibilityState($vParams->getInt(self::STR_DESCRIPTION, $visibilities->description->getValue()));
+					$visibilities->email       = new VisibilityState($vParams->getInt(self::STR_EMAIL, $visibilities->email->getValue()));
+					$visibilities->gender      = new VisibilityState($vParams->getInt(self::STR_GENDER, $visibilities->gender->getValue()));
+					$visibilities->profile     = new VisibilityState($vParams->getInt(self::STR_PROFILE, $visibilities->profile->getValue()));
+					$visibilities->realName    = new VisibilityState($vParams->getInt(self::STR_REAL_NAME, $visibilities->realName->getValue()));
+					$visibilities->searches    = new VisibilityState($vParams->getInt(self::STR_SEARCHES, $visibilities->searches->getValue()));
+				}
+
 				$visibilities->create();
 
 				$this->touchEvent(UserEventTypes::CREATE, new UserEventCreateDispatch($user, $this->db, $this->log));
@@ -968,7 +1028,27 @@
 		 *   'email'          => (string) 'user@domain.com', # the email address for the new user
 		 *   'key'            => (string) 'someKey',         # the login key value for the new user
 		 *   'confirmKey'     => (string) 'someKey',         # confirm the login key value for the new user
-		 *   'provider'       => (int|LoginKeyProviders) 1   # the login key provider type
+		 *   'provider'       => (int|LoginKeyProviders) 1,  # the login key provider type
+		 *   'profile'        => (array) [                   # optional user profile data
+		 *      'birthday'    => (string) 'YYYY-MM-DD',       # the user's birthday
+		 *      'description' => (string) '',                 # the user's profile description
+		 *      'displayName' => (string) '',                 # the user's display name
+		 *      'gender'      => (int|UserGenders) 0,         # the user's chosen gender
+		 *      'realName'    => (string) ''                  # the user's real name
+		 *    ],
+		 *    'settings'       => (array) [                   # optional user settings data
+		 *      'htmlEmails' => (bool) false,                 # whether the user prefers HTML emails
+		 *      'playSounds' => (bool) false                  # whether the user prefers to play sounds
+		 *    ],
+		 *    'visibilities'   => (array) [                   # optional user visibilities data
+		 *      'birthday'   => (int|VisibilityState) 0,      # the visibility state of the user's birthday
+		 *      'description' => (int|VisibilityState) 0,     # the visibility state of the user's profile description
+		 *      'email'       => (int|VisibilityState) 0,     # the visibility state of the user's email
+		 *      'gender'      => (int|VisibilityState) 0,     # the visibility state of the user's gender
+		 *      'profile'     => (int|VisibilityState) 0,     # the visibility state of the user's profile
+		 *      'realName'    => (int|VisibilityState) 0,     # the visibility state of the user's real name
+		 *      'searches'    => (int|VisibilityState) 0      # the visibility state of the user's searches
+		 *    ]
 		 * ]
 		 *
 		 * After the User and their LoginKey have been created, the system will attempt to create (without guaranteeing) the
@@ -989,8 +1069,8 @@
 		 * ]
 		 *
 		 * @param ParameterHelper $params Parameters provided to perform the event.
-		 * @throws \ReflectionException
 		 * @return ReturnHelper
+		 *@throws \ReflectionException
 		 */
 		public function doRegister(ParameterHelper $params) : ReturnHelper {
 			$ret = new ReturnHelper();
@@ -1053,14 +1133,54 @@
 
 				$profile = new UserProfile($this->db, $this->log);
 				$profile->userId = $user->id;
+
+				if ($params->has(self::STR_PROFILE)) {
+					$pParams              = new ParameterHelper($params->get(self::STR_PROFILE));
+					$profile->birthday    = new \DateTimeImmutable($pParams->getString(self::STR_BIRTHDAY, $profile->birthday->format('Y-m-d G:i:s')), new \DateTimeZone('UTC'));
+					$profile->description = $pParams->getString(self::STR_DESCRIPTION, $profile->description);
+					$displayName          = $pParams->getString(self::STR_DISPLAY_NAME);
+
+					if ($displayName !== $profile->displayName && UserProfile::validDisplayName($displayName)) {
+						$p = UserProfile::fromDisplayName($displayName, $this->db, $this->log);
+
+						if ($p->userId < 1) {
+							$profile->displayName = $displayName;
+						} else {
+							$ret->addMessage("Couldn't change display name, invalid or already in use");
+						}
+					}
+
+					$profile->gender   = new UserGenders($pParams->getInt(self::STR_GENDER, $profile->gender->getValue()));
+					$profile->realName = $pParams->getString(self::STR_REAL_NAME, $profile->realName);
+				}
+
 				$profile->create();
 
 				$settings = new UserSettings($this->db, $this->log);
 				$settings->userId = $user->id;
+
+				if ($params->has(self::STR_SETTINGS)) {
+					$sParams              = new ParameterHelper($params->get(self::STR_SETTINGS));
+					$settings->htmlEmails = $sParams->getBool(self::STR_HTML_EMAILS, $settings->htmlEmails);
+					$settings->playSounds = $sParams->getBool(self::STR_PLAY_SOUNDS, $settings->playSounds);
+				}
+
 				$settings->create();
 
 				$visibilities = new UserVisibilities($this->db, $this->log);
 				$visibilities->userId = $user->id;
+
+				if ($params->has(self::STR_VISIBILITIES)) {
+					$vParams                   = new ParameterHelper($params->get(self::STR_VISIBILITIES));
+					$visibilities->birthday    = new VisibilityState($vParams->getInt(self::STR_BIRTHDAY, $visibilities->birthday->getValue()));
+					$visibilities->description = new VisibilityState($vParams->getInt(self::STR_DESCRIPTION, $visibilities->description->getValue()));
+					$visibilities->email       = new VisibilityState($vParams->getInt(self::STR_EMAIL, $visibilities->email->getValue()));
+					$visibilities->gender      = new VisibilityState($vParams->getInt(self::STR_GENDER, $visibilities->gender->getValue()));
+					$visibilities->profile     = new VisibilityState($vParams->getInt(self::STR_PROFILE, $visibilities->profile->getValue()));
+					$visibilities->realName    = new VisibilityState($vParams->getInt(self::STR_REAL_NAME, $visibilities->realName->getValue()));
+					$visibilities->searches    = new VisibilityState($vParams->getInt(self::STR_SEARCHES, $visibilities->searches->getValue()));
+				}
+
 				$visibilities->create();
 
 				$this->touchEvent(UserEventTypes::REGISTER, new UserEventRegisterDispatch($user, $this->db, $this->log));

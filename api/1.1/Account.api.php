@@ -285,11 +285,11 @@
 		 *     required=true,
 		 *     @OA\JsonContent(
 		 *       type="object",
-		 *       @OA\Property(property="email",           type="string"),
-		 *       @OA\Property(property="password",        type="string"),
-		 *       @OA\Property(property="confirmPassword", type="string"),
-		 *       @OA\Property(property="provider",        type="number"),
-		 *       @OA\Property(property="emailConfirmed",  type="boolean")
+		 *       @OA\Property(property="email",          type="string"),
+		 *       @OA\Property(property="key",            type="string"),
+		 *       @OA\Property(property="confirmKey",     type="string"),
+		 *       @OA\Property(property="provider",       type="number"),
+		 *       @OA\Property(property="emailConfirmed", type="boolean")
 		 *     )
 		 *   ),
 		 *   @OA\Response(
@@ -297,11 +297,11 @@
 		 *     description="OK",
 		 *     @OA\JsonContent(
 		 *       type="object",
-		 *       @OA\Property(property="email",           type="string"),
-		 *       @OA\Property(property="password",        type="string"),
-		 *       @OA\Property(property="confirmPassword", type="string"),
-		 *       @OA\Property(property="provider",        type="number"),
-		 *       @OA\Property(property="emailConfirmed",  type="boolean")
+		 *       @OA\Property(property="email",          type="string"),
+		 *       @OA\Property(property="key",            type="string"),
+		 *       @OA\Property(property="confirmKey",     type="string"),
+		 *       @OA\Property(property="provider",       type="number"),
+		 *       @OA\Property(property="emailConfirmed", type="boolean")
 		 *     )
 		 *   ),
 		 *   @OA\Response(
@@ -324,13 +324,7 @@
 			$user    = $this->getUser();
 			$ret     = $this->newResponse();
 			$params  = $request->getInput();
-			$evtData = [
-				'email'          => $params->getString('email'),
-				'key'            => $params->getString('password'),
-				'confirmKey'     => $params->getString('confirmPassword'),
-				'provider'       => $params->getInt('provider'),
-				'emailConfirmed' => false
-			];
+			$evtData = $params->getSource();
 
 			if ($this->userRoles->userInRoleByName($user->id, RoleStrings::ADMINISTRATOR) && $params->has('emailConfirmed')) {
 				$evtData['emailConfirmed'] = $params->getBool('emailConfirmed');
