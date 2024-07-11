@@ -12,13 +12,15 @@
 					</span>
 
 					<span>
-						<Button label="Save" class="p-button-outlined p-button-success" icon="pi pi-save" icon-pos="right" @click="userStore.saveUser(userStore.currentUser)" />
+						<Button label="Save" class="p-button-outlined p-button-success" icon="pi pi-save" icon-pos="right" @click="doSave(userStore.currentUser)" />
 						<Button label="Delete" class="p-button-outlined p-button-danger" icon="pi pi-trash" icon-pos="right" />
 					</span>
 				</div>
 			</div>
 
 			<div class="col-12 lg:col-4 xl:col-4">
+				<Toast position="top-center" />
+
 				<Card class="card">
 					<template #title>
 						<h5>Account Info</h5>
@@ -43,7 +45,7 @@
 
 						<div class="p-fluid grid mt-3">
 							<div class="field-checkbox col-12 mb-1">
-								<Checkbox v-model="userStore.currentUser.settings.htmlEmail" :binary="true" input-id="htmlEmailsBox" />
+								<Checkbox v-model="userStore.currentUser.settings.htmlEmails" :binary="true" input-id="htmlEmailsBox" />
 								<label for="htmlEmailsBox">Receive HTML emails</label>
 							</div>
 
@@ -250,19 +252,21 @@
 <script setup>
 import { ref } from "vue";
 import { useRoute } from "vue-router";
+import { useToast } from "primevue/usetoast";
 import { useApi } from "@/composables/useApi.js";
 import { useUserStore } from "@/stores/user-store";
 import PasswordInput from "@/components/custom/PasswordInput.vue";
 
 const route = useRoute();
+const toast = useToast();
 const userStore = useUserStore();
 
 const id = Number(route.params.id);
 
 await userStore.fetchCurrentUser(id);
 
-const filteredUserRoles = ref(null);
 const birthdayCal = ref(null);
+const filteredUserRoles = ref(null);
 
 const userRoles = ref([]);
 
@@ -289,18 +293,40 @@ const searchUserRoles = (event) => {
 };
 
 const visibilityOpts = [
-	{ label: "Only Them", value: 0 },
-	{ label: "Friends", value: 1 },
-	{ label: "Any Authenticated Users", value: 2 },
-	{ label: "Anyone", value: 3 },
+	{label: "Only Them", value: 0},
+	{label: "Friends", value: 1},
+	{label: "Any Authenticated Users", value: 2},
+	{label: "Anyone", value: 3},
 ];
 
 const genders = [
-	{ label: "None", value: 0 },
-	{ label: "Female", value: 1 },
-	{ label: "Male", value: 2 },
-	{ label: "Other", value: 3 },
+	{label: "None", value: 0},
+	{label: "Female", value: 1},
+	{label: "Male", value: 2},
+	{label: "Other", value: 3},
 ];
+
+const doSave = async (user) => {
+	const result = await userStore.saveUser(user);
+
+	if (result.indexOf('Error') > -1) {
+		toast.add({
+			severity: "error",
+			summary: "Error",
+			detail: result,
+			life: 5000,
+		});
+	}
+
+	toast.add({
+		severity: "success",
+		summary: "Success",
+		detail: "User saved successfully",
+		life: 5000,
+	});
+
+	return;
+};
 </script>
 
 <style lang="scss" scoped>

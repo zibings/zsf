@@ -215,6 +215,7 @@
 			$this->registerEndpoint('POST', '/^\/?Roles\/RemoveUserRole\/?$/i',           'removeUserRole',  RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('POST', '/^\/?Roles\/Remove\/?$/i',                   'removeRole',      RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('POST', '/^\/?Roles\/SetUserRole\/?$/i',              'setUserRole',     RoleStrings::ADMINISTRATOR);
+			$this->registerEndpoint('POST', '/^\/?Roles\/SyncUserRoles\/?$/i',            'syncUserRoles',   RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('POST', '/^\/?Roles\/UserInRole\/?$/i',               'userInRole',      true);
 			$this->registerEndpoint('GET',  '/^\/?Roles\/UsersInRole\/([a-z]{3,})\/?$/i', 'usersInRole',     RoleStrings::ADMINISTRATOR);
 			$this->registerEndpoint('GET',  '/^\/?Roles\/UserRoles\/([0-9]{1,})\/?$/i',   'getUserRoles',    true);
@@ -456,6 +457,73 @@
 			}
 
 			$ret->setData(Role::fromName($params->getString('name'), $this->db, $this->log));
+
+			return $ret;
+		}
+
+		/**
+		 * Synchronize roles for the given user.
+		 *
+		 * @OA\Post(
+		 *   path="/Roles/SyncUserRoles",
+		 *   operationId="syncUserRoles",
+		 *   summary="Synchronize user roles",
+		 *   description="Synchronize user roles",
+		 *   tags={"Roles"},
+		 *   @OA\RequestBody(
+		 *     required=true,
+		 *     @OA\JsonContent(
+		 *       type="object",
+		 *       @OA\Property(property="userId", type="number"),
+		 *       @OA\Property(property="roles",  type="array")
+		 *     )
+		 *   ),
+		 *   @OA\Response(
+		 *     response="200",
+		 *     description="OK",
+		 *     @OA\JsonContent(type="array")
+		 *   ),
+		 *   security={
+		 *     {"header_token": {}},
+		 *     {"cookie_token": {}}
+		 *   }
+		 * )
+		 *
+		 * @param Request $request The current request which routed to the endpoint.
+		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\Exception
+		 * @return Response
+		 */
+		public function syncUserRoles(Request $request, array $matches = null) : Response {
+			$user   = $this->getUser();
+			$ret    = $this->newResponse();
+			$params = $request->getInput()->getSource();
+
+			if (!isset($params['userId']) || !isset($params['roles']) || !is_array($params['roles'])) {
+				$ret->setAsError("Invalid parameters supplied");
+
+				return $ret;
+			}
+
+			$newRoles  = [];
+			$userId    = intval($params['userId']);
+			$userRoles = new UserRoles($this->db, $this->log);
+
+			if ($userRoles->userInRoleByName($userId, RoleStrings::ADMINISTRATOR)) {
+				$ret->setAsError("You cannot modify other administrators from the API.");
+
+				return $ret;
+			}
+
+			$userRoles->removeUserFromAllRoles($userId);
+
+			foreach ($params['roles'] as $role) {
+				if ($userRoles->addUserToRoleByName($userId, $role)) {
+					$newRoles[] = $role;
+				}
+			}
+
+			$ret->setData($newRoles);
 
 			return $ret;
 		}

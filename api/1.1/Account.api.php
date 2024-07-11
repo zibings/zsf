@@ -801,17 +801,11 @@
 				return $ret;
 			}
 
-			$postData = [
-				'id'             => $userId,
-				'actor'          => $user->id,
-				'email'          => $params->getString('email'),
-				'confirmEmail'   => $params->getString('email'),
-				'emailConfirmed' => false,
-				'key'            => $params->getString('password'),
-				'confirmKey'     => $params->getString('password'),
-				'oldKey'         => $params->getString('oldPassword'),
-				'provider'       => LoginKeyProviders::PASSWORD
-			];
+			$postData = $params->getSource();
+
+			if ($user->id != $userId) {
+				$postData['actor'] = $user->id;
+			}
 
 			$update = $this->events->doUpdate(new ParameterHelper($postData));
 

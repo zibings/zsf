@@ -118,7 +118,7 @@
 			$visibilities = UserVisibilities::fromUser($userId, $this->db, $this->log);
 
 			$ret->setData([
-				"htmlEmail"      => $settings->htmlEmails,
+				"htmlEmails"     => $settings->htmlEmails,
 				"playSounds"     => $settings->playSounds,
 				"userId"         => $userId,
 				"visBirthday"    => $visibilities->birthday->getValue(),

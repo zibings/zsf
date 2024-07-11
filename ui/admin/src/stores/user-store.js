@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { useApi } from '@/composables/useApi.js';
-import { deepCopy } from "@/composables/deepCopy";
 import { useGeneralStore } from "./general-store";
 
 const generalStore = useGeneralStore();
@@ -162,7 +161,7 @@ export const useUserStore = defineStore("user", {
 			const api = useApi();
 
 			try {
-				let res = await api.get(`/1.1/Account?userId=${id}`);
+				let res = await api.get(`/1.1/Account?userId=${id}&r=${Math.random()}`);
 
 				if (res.status !== 200) {
 					console.error("Error fetching user");
@@ -173,19 +172,19 @@ export const useUserStore = defineStore("user", {
 
 				this.currentUser.account = res.data
 
-				res = await api.get(`/1.1/Profile?userId=${id}`);
+				res = await api.get(`/1.1/Profile?userId=${id}&r=${Math.random()}`);
 
 				if (res.status === 200) {
 					this.currentUser.profile = res.data;
 				}
 
-				res = await api.get(`/1.1/Settings?userId=${id}`);
+				res = await api.get(`/1.1/Settings?userId=${id}&r=${Math.random()}`);
 
 				if (res.status === 200) {
 					this.currentUser.settings = res.data;
 				}
 
-				res = await api.get(`/1.1/Roles/UserRoles/${id}`);
+				res = await api.get(`/1.1/Roles/UserRoles/${id}?r=${Math.random()}`);
 
 				if (res.status === 200) {
 					this.currentUser.roles = [];
@@ -204,11 +203,61 @@ export const useUserStore = defineStore("user", {
 			return;
 		},
 		async saveUser(user) {
-			if (user.id) {
-				this.users = this.users.map((u) => (u.id === user.id ? deepCopy(user) : u));
-			} else {
-				this.users = [this.users, deepCopy(user)];
+			const api = useApi();
+			let endpoint = '/1.1/Account/Create';
+
+			if (user.account.id > 0) {
+				endpoint = `/1.1/Account/Update`;
 			}
+
+			const data = {
+				id: user.account.id,
+				email: user.account.email,
+				confirmEmail: user.account.email,
+				key: user.account.password,
+				confirmKey: user.account.password,
+				provider: 1,
+				profile: {
+					birthday: user.profile.birthday,
+					description: user.profile.description,
+					displayName: user.profile.displayName,
+					gender: user.profile.gender,
+					realName: user.profile.realName,
+				},
+				settings: {
+					htmlEmails: user.settings.htmlEmails,
+					playSounds: user.settings.playSounds,
+				},
+				visibilities: {
+					birthday: user.settings.visBirthday,
+					description: user.settings.visDescription,
+					email: user.settings.visEmail,
+					gender: user.settings.visGender,
+					profile: user.settings.visProfile,
+					realName: user.settings.visRealName,
+					searches: user.settings.visSearches,
+				}
+			};
+
+			if (user.password) {
+				data.key = user.password;
+				data.confirmKey = user.password;
+			}
+
+			const res = await api.post(endpoint, data);
+
+			if (res.status !== 200) {
+				return `Error saving user: ${res.data}`;
+			}
+
+			if (user.roles.length > 0) {
+				api.post(`/1.1/Roles/SyncUserRoles?r=${Math.random()}`, {
+					userId: user.account.id,
+					roles: user.roles.map(r => r.name)
+				});
+			}
+
+			return 'User saved successsfully';
 		},
 	},
 });
