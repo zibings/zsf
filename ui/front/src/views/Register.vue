@@ -65,14 +65,11 @@ const doRegister = () => {
 		return;
 	}
 
-	api
-		.post("/1.1/Account/Register", {
+	api.post("/1.1/Account/Register", {
 			email: email.value,
 			key: password.value,
 			confirmKey: password.value,
 			provider: 1
-		}, {
-			withCredentials: false
 		}).then(res => {
 			if (generalStore.environment === "development") {
 				console.log(res);

@@ -977,7 +977,9 @@
 			}
 
 			if (STOIC_API_AUTH_COOKIE) {
-				setcookie(self::STR_COOKIE_TOKEN, '', time() - 3600);
+				$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+
+				setcookie(self::STR_COOKIE_TOKEN, '', time() - 3600, '/', '', $secure, true);
 			}
 
 			if ($userId === null || $token === null) {

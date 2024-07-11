@@ -52,13 +52,10 @@ const doLogIn = () => {
 		return;
 	}
 
-	api
-		.post("/1.1/Account/Login", {
+	api.post("/1.1/Account/Login", {
 			email: email.value,
 			key: password.value,
 			provider: 1,
-		}, {
-			withCredentials: false
 		})
 		.then(res => {
 			if (generalStore.environment === "development") {
