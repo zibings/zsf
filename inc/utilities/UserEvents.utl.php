@@ -1458,9 +1458,9 @@
 					$profile->birthday    = new \DateTimeImmutable($pParams->getString(self::STR_BIRTHDAY, $profile->birthday->format('Y-m-d G:i:s')), new \DateTimeZone('UTC'));
 					$profile->description = $pParams->getString(self::STR_DESCRIPTION, $profile->description);
 
-					$displayName = $pParams->getString(self::STR_DISPLAY_NAME);
+					$displayName = $pParams->getString(self::STR_DISPLAY_NAME, '');
 
-					if ($displayName !== $profile->displayName && UserProfile::validDisplayName($displayName)) {
+					if (!empty($dispalyName) && $displayName !== $profile->displayName && UserProfile::validDisplayName($displayName)) {
 						$p = UserProfile::fromDisplayName($displayName, $this->db, $this->log);
 
 						if ($p->userId < 1) {
