@@ -65,9 +65,10 @@
 		 * @return void
 		 */
 		public function __construct(
-			public User      $user,
-			public PdoHelper $db,
-			public Logger    $log) {
+			public User            $user,
+			public ParameterHelper $params,
+			public PdoHelper       $db,
+			public Logger          $log) {
 			$this->makeValid();
 
 			return;
@@ -207,9 +208,10 @@
 		 * @return void
 		 */
 		public function __construct(
-			public User      $user,
-			public PdoHelper $db,
-			public Logger    $log) {
+			public User            $user,
+			public ParameterHelper $params,
+			public PdoHelper       $db,
+			public Logger          $log) {
 			$this->makeValid();
 
 			return;
@@ -625,7 +627,7 @@
 
 				$visibilities->create();
 
-				$this->touchEvent(UserEventTypes::CREATE, new UserEventCreateDispatch($user, $this->db, $this->log));
+				$this->touchEvent(UserEventTypes::CREATE, new UserEventCreateDispatch($user, $params, $this->db, $this->log));
 
 				$ret->makeGood();
 				$ret->addResult([
@@ -1185,7 +1187,7 @@
 
 				$visibilities->create();
 
-				$this->touchEvent(UserEventTypes::REGISTER, new UserEventRegisterDispatch($user, $this->db, $this->log));
+				$this->touchEvent(UserEventTypes::REGISTER, new UserEventRegisterDispatch($user, $params, $this->db, $this->log));
 
 				$ret->makeGood();
 				$ret->addResult([
