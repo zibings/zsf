@@ -1,33 +1,25 @@
 <template>
-	<Editor @load="onLoad" @update:model-value="onChange" />
+	<Editor v-bind="props" @load="onLoad" @update:model-value="onChange" />
 </template>
 
 <script setup>
 import Editor from "primevue/editor";
+import BaseEditor from "primevue/editor/BaseEditor.vue";
 
 const props = defineProps({
-	modelValue: {
-		type: String,
-		default: "",
-	},
+	...BaseEditor.props,
 });
 
-const emits = defineEmits(["update:modelValue"]);
+const model = defineModel({ type: String, default: "" });
 
 const onLoad = ({ instance }) => {
-	instance.setContents(
-		instance.clipboard.convert({
-			html: props.modelValue,
-		}),
-	);
+	instance.setContents(instance.clipboard.convert({ html: model.value }));
 
 	return;
 };
 
 const onChange = (v) => {
-	emits("update:modelValue", v);
-
-	return;
+	model.value = v;
 };
 </script>
 
