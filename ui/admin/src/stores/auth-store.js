@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { useApi } from '@/composables/useApi.js';
-import { useGeneralStore } from '@/stores/general-store.js';
+import { useApi } from "@/composables/useApi.js";
+import { useGeneralStore } from "@/stores/general-store.js";
 
 export const useAuthStore = defineStore("auth", () => {
 	const loggedIn = ref(false);
@@ -33,7 +33,7 @@ export const useAuthStore = defineStore("auth", () => {
 
 	async function logOut() {
 		try {
-			const res = await useApi().post('/1.1/Account/Logout');
+			const res = await useApi().post("/1.1/Account/Logout");
 
 			if (res.status === 200) {
 				loggedIn.value = false;

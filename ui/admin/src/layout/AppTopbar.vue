@@ -48,8 +48,8 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth-store.js';
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth-store.js";
 import { useLayout } from "@/layout/composables/layout";
 import { useGeneralStore } from "@/stores/general-store";
 import { toggleDarkMode } from "@/composables/toggleDarkMode";
@@ -73,19 +73,19 @@ const profileMenu = ref();
 const profileMenuItems = ref([
 	{
 		label: "Profile Settings",
-		icon: 'pi pi-cog',
-		route: `/users/${generalStore.currentUser.userId}`
+		icon: "pi pi-cog",
+		route: { name: "userEdit", params: { id: generalStore.currentUser.userId } },
 	},
 	{
-		label: 'Logout',
-		icon: 'pi pi-sign-out',
+		label: "Logout",
+		icon: "pi pi-sign-out",
 		command: async () => {
 			await authStore.logOut();
-			router.push('/auth/login');
+			router.push({ name: "login" });
 
 			return;
-		}
-	}
+		},
+	},
 ]);
 // const router = useRouter();
 
@@ -138,7 +138,7 @@ const isOutsideClicked = (event) => {
 
 	return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
 };
-const toggleProfileMenu = event => {
+const toggleProfileMenu = (event) => {
 	profileMenu.value.toggle(event);
 
 	return;
