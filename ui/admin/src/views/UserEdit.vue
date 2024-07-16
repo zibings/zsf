@@ -270,13 +270,15 @@ const filteredUserRoles = ref(null);
 
 const userRoles = ref([]);
 
-useApi().get("/1.1/Roles").then((res) => {
-	if (res.status === 200) {
-		userRoles.value = res.data;
-	}
+useApi()
+	.get("/1.1/Roles")
+	.then((res) => {
+		if (res.status === 200) {
+			userRoles.value = res.data;
+		}
 
-	return;
-});
+		return;
+	});
 
 const searchUserRoles = (event) => {
 	if (!event.query.trim().length) {
@@ -293,23 +295,23 @@ const searchUserRoles = (event) => {
 };
 
 const visibilityOpts = [
-	{label: "Only Them", value: 0},
-	{label: "Friends", value: 1},
-	{label: "Any Authenticated Users", value: 2},
-	{label: "Anyone", value: 3},
+	{ label: "Only Them", value: 0 },
+	{ label: "Friends", value: 1 },
+	{ label: "Any Authenticated Users", value: 2 },
+	{ label: "Anyone", value: 3 },
 ];
 
 const genders = [
-	{label: "None", value: 0},
-	{label: "Female", value: 1},
-	{label: "Male", value: 2},
-	{label: "Other", value: 3},
+	{ label: "None", value: 0 },
+	{ label: "Female", value: 1 },
+	{ label: "Male", value: 2 },
+	{ label: "Other", value: 3 },
 ];
 
 const doSave = async (user) => {
 	const result = await userStore.saveUser(user);
 
-	if (result.indexOf('Error') > -1) {
+	if (result.indexOf("Error") > -1) {
 		toast.add({
 			severity: "error",
 			summary: "Error",

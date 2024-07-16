@@ -45,10 +45,10 @@
 
 <script setup>
 import { ref } from "vue";
-import { useRouter } from 'vue-router';
-import { useApi } from '@/composables/useApi.js';
-import { useAuthStore } from '@/stores/auth-store.js';
-import { useGeneralStore } from '@/stores/general-store.js';
+import { useRouter } from "vue-router";
+import { useApi } from "@/composables/useApi.js";
+import { useAuthStore } from "@/stores/auth-store.js";
+import { useGeneralStore } from "@/stores/general-store.js";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -62,21 +62,21 @@ const doLogIn = async () => {
 	const api = useApi();
 
 	try {
-		const res = await api.post('/1.1/Account/Login', {
+		const res = await api.post("/1.1/Account/Login", {
 			email: email.value,
 			key: password.value,
-			provider: 1
+			provider: 1,
 		});
 
 		if (res.status === 200) {
-			const axsRes = await api.post('/1.1/Roles/UserInRole', {
-				name: 'Administrator'
+			const axsRes = await api.post("/1.1/Roles/UserInRole", {
+				name: "Administrator",
 			});
 
 			if (axsRes.status === 200 && axsRes.data) {
 				generalStore.currentUser.userId = res.data.userId;
 
-				router.push({ name: 'dashboard' });
+				router.push({ name: "dashboard" });
 			} else {
 				authStore.logOut();
 				errorMessage.value = "Account cannot access this section";

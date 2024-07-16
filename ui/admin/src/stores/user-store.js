@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { useApi } from '@/composables/useApi.js';
+import { useApi } from "@/composables/useApi.js";
 import { useGeneralStore } from "./general-store";
 
 const generalStore = useGeneralStore();
@@ -132,9 +132,11 @@ export const useUserStore = defineStore("user", {
 				return;
 			}
 
-			await useApi().get(generalStore.api.fetchColumns).then((response) => {
-				this.columns = response.data;
-			});
+			await useApi()
+				.get(generalStore.api.fetchColumns)
+				.then((response) => {
+					this.columns = response.data;
+				});
 		},
 		async fetchUsers() {
 			if (!generalStore.api.useApi) {
@@ -143,9 +145,11 @@ export const useUserStore = defineStore("user", {
 				return;
 			}
 
-			await useApi().get(generalStore.api.fetchUsers).then((response) => {
-				this.users = response.data;
-			});
+			await useApi()
+				.get(generalStore.api.fetchUsers)
+				.then((response) => {
+					this.users = response.data;
+				});
 		},
 		async fetchUsersCached() {
 			if (this.users.length <= 0) {
@@ -170,7 +174,7 @@ export const useUserStore = defineStore("user", {
 					return;
 				}
 
-				this.currentUser.account = res.data
+				this.currentUser.account = res.data;
 
 				res = await api.get(`/1.1/Profile?userId=${id}&r=${Math.random()}`);
 
@@ -190,7 +194,7 @@ export const useUserStore = defineStore("user", {
 					this.currentUser.roles = [];
 
 					for (const role of Object.values(res.data)) {
-						if (this.currentUser.roles.filter(r => r.id === role.id).length <= 0) {
+						if (this.currentUser.roles.filter((r) => r.id === role.id).length <= 0) {
 							this.currentUser.roles.push(role);
 						}
 					}
@@ -204,7 +208,7 @@ export const useUserStore = defineStore("user", {
 		},
 		async saveUser(user) {
 			const api = useApi();
-			let endpoint = '/1.1/Account/Create';
+			let endpoint = "/1.1/Account/Create";
 
 			if (user.account.id > 0) {
 				endpoint = `/1.1/Account/Update`;
@@ -236,7 +240,7 @@ export const useUserStore = defineStore("user", {
 					profile: user.settings.visProfile,
 					realName: user.settings.visRealName,
 					searches: user.settings.visSearches,
-				}
+				},
 			};
 
 			if (user.password) {
@@ -253,11 +257,11 @@ export const useUserStore = defineStore("user", {
 			if (user.roles.length > 0) {
 				api.post(`/1.1/Roles/SyncUserRoles?r=${Math.random()}`, {
 					userId: user.account.id,
-					roles: user.roles.map(r => r.name)
+					roles: user.roles.map((r) => r.name),
 				});
 			}
 
-			return 'User saved successsfully';
+			return "User saved successsfully";
 		},
 	},
 });

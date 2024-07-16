@@ -9,15 +9,17 @@ const props = defineProps({
 	modelValue: {
 		type: String,
 		default: "",
-	}
+	},
 });
 
 const emits = defineEmits(["update:modelValue"]);
 
-const onLoad = ({instance}) => {
-	instance.setContents(instance.clipboard.convert({
-		html: props.modelValue
-	}));
+const onLoad = ({ instance }) => {
+	instance.setContents(
+		instance.clipboard.convert({
+			html: props.modelValue,
+		}),
+	);
 
 	return;
 };
@@ -29,6 +31,4 @@ const onChange = (v) => {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

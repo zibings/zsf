@@ -20,7 +20,7 @@ export const useGeneralStore = defineStore("general", {
 			openApiUrl: null,
 			fetchColumns: null,
 			fetchUsers: null,
-			fetchCurrentUser: null
+			fetchCurrentUser: null,
 		},
 		displayNames: {
 			title: "",
@@ -36,7 +36,7 @@ export const useGeneralStore = defineStore("general", {
 			const api = useApi();
 			this.currentUser.userId = 0;
 
-			api.get("/1.1/Account").then(res => {
+			api.get("/1.1/Account").then((res) => {
 				if (res.status === 200) {
 					this.currentUser.userId = res.data.id;
 				}
@@ -45,6 +45,6 @@ export const useGeneralStore = defineStore("general", {
 			});
 
 			return;
-		}
+		},
 	},
 });
