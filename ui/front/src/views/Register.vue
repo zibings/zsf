@@ -2,8 +2,6 @@
 	<h1>Register</h1>
 
 	<form v-if="!registerSent">
-		<Toast position="top-center" />
-
 		<FloatLabel>
 			<InputText v-model="email" type="email" id="register-email" />
 			<label for="register-email">Email Address</label>
@@ -29,13 +27,9 @@
 
 <script setup>
 import { ref } from "vue";
-import Button from "primevue/button";
-import InputText from "primevue/inputtext";
-import { useApi } from 'composables/useApi';
-import FloatLabel from "primevue/floatlabel";
-import { useToast } from 'primevue/usetoast';
-import ToggleSwitch from "primevue/toggleswitch";
-import { useGeneralStore } from 'stores/general';
+import { useApi } from "composables/useApi";
+import { useToast } from "primevue/usetoast";
+import { useGeneralStore } from "stores/general";
 
 const api = useApi();
 const toast = useToast();
@@ -56,7 +50,7 @@ const agreeToTerms = () => {
 const doRegister = () => {
 	if (!agreesToTos.value) {
 		toast.add({
-			severity: 'error',
+			severity: "error",
 			summary: "Error",
 			detail: "You must agree to the Terms of Service to register",
 			life: 5000,
@@ -65,12 +59,14 @@ const doRegister = () => {
 		return;
 	}
 
-	api.post("/1.1/Account/Register", {
+	api
+		.post("/1.1/Account/Register", {
 			email: email.value,
 			key: password.value,
 			confirmKey: password.value,
-			provider: 1
-		}).then(res => {
+			provider: 1,
+		})
+		.then((res) => {
 			if (generalStore.environment === "development") {
 				console.log(res);
 			}
@@ -83,16 +79,17 @@ const doRegister = () => {
 			}
 
 			return;
-		}).catch(error => {
+		})
+		.catch((error) => {
 			if (generalStore.environment === "development") {
 				console.log(error);
 			}
 
 			toast.add({
-				severity: 'error',
+				severity: "error",
 				summary: "Error",
 				detail: error.response.data,
-				life: 5000
+				life: 5000,
 			});
 		});
 

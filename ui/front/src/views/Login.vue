@@ -2,8 +2,6 @@
 	<h1>Log In</h1>
 
 	<form>
-		<Toast position="top-center" />
-
 		<FloatLabel>
 			<InputText v-model="email" type="text" id="login-email" label="Email" />
 			<label for="login-email">Email Address</label>
@@ -20,19 +18,16 @@
 
 <script setup>
 import { ref } from "vue";
-import Button from "primevue/button";
 import { useRouter } from "vue-router";
-import InputText from "primevue/inputtext";
-import FloatLabel from "primevue/floatlabel";
 import { useToast } from "primevue/usetoast";
 
-import { useUserStore } from 'stores/user';
+import { useUserStore } from "stores/user";
 import { useApi } from "composables/useApi";
 import { useGeneralStore } from "stores/general";
 
 const api = useApi();
-const toast = useToast();
 const router = useRouter();
+const toast = useToast();
 
 const email = ref("");
 const password = ref("");
@@ -52,12 +47,13 @@ const doLogIn = () => {
 		return;
 	}
 
-	api.post("/1.1/Account/Login", {
+	api
+		.post("/1.1/Account/Login", {
 			email: email.value,
 			key: password.value,
 			provider: 1,
 		})
-		.then(res => {
+		.then((res) => {
 			if (generalStore.environment === "development") {
 				console.log(res);
 			}

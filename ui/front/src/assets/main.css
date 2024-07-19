@@ -1,4 +1,9 @@
-@import './base.css';
+@import "./base.css";
+
+:root {
+	--link-color: hsla(160, 100%, 37%, 1);
+	--hover-background-color: hsla(160, 100%, 37%, 0.2);
+}
 
 #app {
 	padding: 2rem;
@@ -12,9 +17,13 @@
 a,
 .green {
 	text-decoration: none;
-	color: hsla(160, 100%, 37%, 1);
+	color: var(--link-color);
 	transition: 0.4s;
 	padding: 3px;
+}
+
+.link {
+	cursor: pointer;
 }
 
 h1 {
@@ -24,6 +33,6 @@ h1 {
 
 @media (hover: hover) {
 	a:hover {
-		background-color: hsla(160, 100%, 37%, 0.2);
+		background-color: var(--hover-background-color);
 	}
 }

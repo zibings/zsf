@@ -1,6 +1,11 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
 export const useUserStore = defineStore("user", {
+	state: () => ({
+		loggedIn: false,
+		userId: 0,
+	}),
+
 	actions: {
 		logIn(userId: number) {
 			this.loggedIn = true;
@@ -13,14 +18,6 @@ export const useUserStore = defineStore("user", {
 			this.userId = 0;
 
 			return;
-		}
+		},
 	},
-	getters: {
-		isLoggedIn: (state) => state.loggedIn,
-		getUserId: (state) => state.userId,
-	},
-	state: () => ({
-		loggedIn: false,
-		userId: 0,
-	}),
 });

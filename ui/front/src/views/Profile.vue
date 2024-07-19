@@ -2,13 +2,13 @@
 	<h1>Profile</h1>
 
 	<div>
-		<a href="#" @click="doLogOut">Log Out</a>
+		<a class="link" @click="doLogOut">Log Out</a>
 	</div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
-import { useUserStore } from 'stores/user';
+import { useUserStore } from "stores/user";
 
 const router = useRouter();
 const userStore = useUserStore();

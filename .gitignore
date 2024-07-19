@@ -201,7 +201,6 @@ scripts/test.php
 docker/.env
 
 # UI Stuff
-ui/admin/.vscode/
-ui/admin/node_modules/
-ui/front/.vscode/
-ui/front/node_modules/
+.vscode/
+node_modules/
+ui/*/.env.*

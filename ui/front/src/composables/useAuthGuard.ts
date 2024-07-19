@@ -1,5 +1,5 @@
 import type { Router } from "vue-router";
-import { useUserStore } from 'stores/user';
+import { useUserStore } from "stores/user";
 
 export default function useAuthGuard(router: Router): void {
 	const userStore = useUserStore();
@@ -11,13 +11,13 @@ export default function useAuthGuard(router: Router): void {
 			return;
 		}
 
-		if (to.meta.requiresAuth && !userStore.isLoggedIn) {
+		if (to.meta.requiresAuth && !userStore.loggedIn) {
 			next({ name: "login" });
 
 			return;
 		}
 
-		if (!to.meta.requiresAuth && userStore.isLoggedIn) {
+		if (!to.meta.requiresAuth && userStore.loggedIn) {
 			next({ name: "profile" });
 
 			return;
