@@ -4,6 +4,7 @@ import { ViteSSG } from "vite-ssg";
 import { createPinia } from "pinia";
 import { createApi } from "composables/useApi";
 import { useGeneralStore } from "stores/general";
+import { useConfig } from "composables/useConfig";
 import useAuthGuard from "composables/useAuthGuard";
 
 import App from "./App.vue";
@@ -11,10 +12,10 @@ import router from "./router";
 import PrimeVue from "primevue/config";
 import Aura from "@primevue/themes/aura";
 
-import Tooltip from "primevue/tooltip";
 import Ripple from "primevue/ripple";
-import BadgeDirective from "primevue/badgedirective";
+import Tooltip from "primevue/tooltip";
 import StyleClass from "primevue/styleclass";
+import BadgeDirective from "primevue/badgedirective";
 
 import ToastService from "primevue/toastservice";
 import DialogService from "primevue/dialogservice";
@@ -50,42 +51,49 @@ export const createApp = ViteSSG(
 		scrollBehavior,
 	},
 	({ app, router, initialState }) => {
-		const pinia = createPinia();
-		app.use(pinia);
+		fetch(`${import.meta.env.BASE_URL}config.json`)
+	  .then((res) => res.json())
+	  .then(async (config) => {
+		  const pinia = createPinia();
+		  app.use(pinia);
 
-		app.use(PrimeVue, {
-			theme: {
-				preset: Aura,
-			},
-		});
+		  const conf = useConfig(config);
+		  useGeneralStore().$patch(conf);
 
-		app.use(ConfirmationService);
-		app.use(ToastService);
-		app.use(DialogService);
-		app.directive("tooltip", Tooltip);
-		app.directive("ripple", Ripple);
-		app.directive("badge", BadgeDirective);
-		app.directive("styleclass", StyleClass);
+		  app.use(PrimeVue, {
+			  theme: {
+				  preset: Aura,
+			  },
+		  });
 
-		const api = createApi(import.meta.env.VITE_API_BASE_URL);
-		app.provide("$api", api);
+		  app.use(ConfirmationService);
+		  app.use(ToastService);
+		  app.use(DialogService);
+		  app.directive("tooltip", Tooltip);
+		  app.directive("ripple", Ripple);
+		  app.directive("badge", BadgeDirective);
+		  app.directive("styleclass", StyleClass);
 
-		if (import.meta.env.SSR) {
-			// this will be stringified and set to window.__INITIAL_STATE__
-			initialState.pinia = pinia.state.value;
-		} else {
-			// on the client side, we restore the state
-			pinia.state.value = initialState?.pinia || {};
-		}
+		  const api = createApi(conf.api.baseUrl);
+		  app.provide("$api", api);
 
-		router.beforeEach((to, from, next) => {
-			const generalStore = useGeneralStore(pinia);
-			generalStore.initialize();
+		  if (import.meta.env.SSR) {
+			  // this will be stringified and set to window.__INITIAL_STATE__
+			  initialState.pinia = pinia.state.value;
+		  } else {
+			  // on the client side, we restore the state
+			  pinia.state.value = initialState?.pinia || {};
+		  }
 
-			next();
-		});
+		  router.beforeEach((to, from, next) => {
+			  const generalStore = useGeneralStore(pinia);
+			  generalStore.initialize();
 
-		useAuthGuard(router);
+			  next();
+		  });
+
+		  useAuthGuard(router);
+	  });
 	},
 );
 
