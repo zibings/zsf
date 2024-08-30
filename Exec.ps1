@@ -69,6 +69,7 @@ PROJECT_NAME=$($ProjectName)
 	Write-Host "Initializing container.."
 
 	docker exec -t $WebContainer cp docker/siteSettings.json siteSettings.json
+	docker exec -t $WebContainer composer update
 	docker exec -t $WebContainer vendor/bin/stoic-migrate up
 
 	Write-Host "Docker container initialized"
