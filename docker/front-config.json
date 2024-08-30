@@ -1,0 +1,8 @@
+{
+	"environment": "development",
+
+	"api": {
+		"useApi": true,
+		"baseUrl": "http://localhost:8080/api/"
+	}
+}

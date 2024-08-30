@@ -74,22 +74,24 @@ PROJECT_NAME=$($ProjectName)
 
 	Write-Host "Docker container initialized"
 
-  Write-Host "Starting admin UI.. " -NoNewline
+	Write-Host "Starting admin UI.. " -NoNewline
 
-  Push-Location ./ui/admin
-  pnpm install
-  Start-Job -Name ZsfUiAdmin -ScriptBlock { Invoke-Expression "pnpm dev" }
-  Pop-Location
+	Push-Location ./ui/admin
+	cp ../../docker/admin-config.json public/config.json
+	pnpm install
+	Start-Job -Name ZsfUiAdmin -ScriptBlock { Invoke-Expression "pnpm dev" }
+	Pop-Location
 
-  Write-Host "DONE"
-  Write-Host "Starting front UI.. " -NoNewline
+	Write-Host "DONE"
+	Write-Host "Starting front UI.. " -NoNewline
 
-  Push-Location ./ui/front
-  pnpm install
-  Start-Job -Name ZsfUiFront -ScriptBlock { Invoke-Expression "pnpm dev" }
-  Pop-Location
+	Push-Location ./ui/front
+	cp ../../docker/front-config.json public/config.json
+	pnpm install
+	Start-Job -Name ZsfUiFront -ScriptBlock { Invoke-Expression "pnpm dev" }
+	Pop-Location
 
-  Write-Host "DONE"
+	Write-Host "DONE"
 }
 
 function UpdateDocker([string] $ProjectName, [string] $WebContainer) {
@@ -108,26 +110,26 @@ function StopDocker([string] $ProjectName) {
 	Pop-Location
 
 	Write-Host "Docker container stopped"
-  Write-Host "Stopping admin UI.. " -NoNewline
+	Write-Host "Stopping admin UI.. " -NoNewline
 
-  Stop-Job -Name ZsfUiAdmin
+	Stop-Job -Name ZsfUiAdmin
 
-  Write-Host "DONE"
-  Write-Host "Stopping front UI.. " -NoNewline
+	Write-Host "DONE"
+	Write-Host "Stopping front UI.. " -NoNewline
 
-  Stop-Job -Name ZsfUiFront
+	Stop-Job -Name ZsfUiFront
 
-  Write-Host "DONE"
+	Write-Host "DONE"
 }
 
 function DownDocker([string] $ProjectName) {
-  Write-Host "Removing docker container.. "
+	Write-Host "Removing docker container.. "
 
-  Push-Location docker
-  docker compose -p $ProjectName down
-  Pop-Location
+	Push-Location docker
+	docker compose -p $ProjectName down
+	Pop-Location
 
-  Write-Host "Docker container removed"
+	Write-Host "Docker container removed"
 }
 
 Write-Host "Executing command on '$ProjectName' project: $Command"
@@ -139,7 +141,7 @@ if ($Command -eq "init") {
 } elseif ($Command -eq "stop") {
 	StopDocker -ProjectName $ProjectName
 } elseif ($Command -eq "down") {
-  DownDocker -ProjectName $ProjectName
+	DownDocker -ProjectName $ProjectName
 } else {
 	$opts = "t"
 
