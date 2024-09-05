@@ -69,7 +69,7 @@
 		$interfaceStr  = "export interface {$interfaceName} {";
 
 		foreach ($fields as $property => $field) {
-			$interfaceStr  .= "\n\t{$property}: {$typeLookup[$field->type->getValue()]}";
+			$interfaceStr  .= "\n\t{$property}: {$typeLookup[$field->type->getValue()]};";
 			$ctorInit      .= "\t\tthis.{$property} = model?.{$property} ?? {$defaultLookup[$field->type->getValue()]};\n";
 			$classStr      .= "\n\tpublic {$property}: {$typeLookup[$field->type->getValue()]};";
 		}
