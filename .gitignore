@@ -204,3 +204,4 @@ docker/.env
 .vscode/
 node_modules/
 ui/*/.env.*
+ui/*/src/types/stoic-models.ts
