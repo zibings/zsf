@@ -88,7 +88,7 @@
 		 *
 		 * [ 'user' => User{}, 'params' => ParameterHelper{} ]
 		 *
-		 * @param \Stoic\Web\Request $request
+		 * @param Request $request
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException
 		 * @return array
 		 */
@@ -179,6 +179,19 @@
 			}
 
 			return $session;
+		}
+
+		/**
+		 * Helper method to check if a user is an administrator or is themselves.
+		 *
+		 * @param User $user
+		 * @param int $userId
+		 * @return bool
+		 */
+		protected function isSelfOrAdmin(User $user, int $userId) : bool {
+			$userRoles = new UserRoles($this->db, $this->log);
+
+			return $user->id !== $userId && !$userRoles->userInRoleByName($user->id, RoleStrings::ADMINISTRATOR);
 		}
 
 		/**
