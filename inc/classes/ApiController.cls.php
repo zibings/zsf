@@ -6,7 +6,8 @@
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Utilities\ParameterHelper;
 	use Stoic\Utilities\ReturnHelper;
-	use Stoic\Web\Api\BaseDbApi;
+	use Stoic\Web\Request;
+	use Stoic\Web\Api\BaseDbApi;;
 	use Stoic\Web\Api\Response;
 	use Stoic\Web\Api\Stoic;
 
@@ -80,6 +81,22 @@
 			}
 
 			return;
+		}
+
+		/**
+		 * Returns the two basic parameters for most API calls, the User object and the input parameters.
+		 *
+		 * [ 'user' => User{}, 'params' => ParameterHelper{} ]
+		 *
+		 * @param \Stoic\Web\Request $request
+		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException
+		 * @return array
+		 */
+		protected function getBasicParams(Request $request) : array {
+			return [
+				'user'   => $this->getUser(),
+				'params' => $request->getInput(),
+			];
 		}
 
 		/**
