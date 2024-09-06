@@ -10,6 +10,7 @@ web/admin/
 web/index.php
 web/web.config
 web/email-preview.php
+scripts/scratch.php
 
 # User-specific files
 *.suo
