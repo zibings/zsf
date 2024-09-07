@@ -11,6 +11,8 @@ web/index.php
 web/web.config
 web/email-preview.php
 scripts/scratch.php
+ui/admin/.pnpm-store/
+ui/front/.pnpm-store/
 
 # User-specific files
 *.suo
