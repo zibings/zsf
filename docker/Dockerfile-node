@@ -1,18 +1,25 @@
 ARG NODE_VERSION=22.5.1
-ARG NODE_PORT=5173
 
-FROM node:${NODE_VERSION}-alpine AS base
+FROM node:${NODE_VERSION}
 
 ENV NODE_ENV=development
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-WORKDIR /app
-
-COPY . /app
-
 RUN corepack enable
 
-EXPOSE ${NODE_PORT}
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml ./
+
+RUN pnpm install
+
+COPY . .
+
+RUN chown -R node:node /app/node_modules
+
+EXPOSE 5173
+
+USER node
 
 CMD ["/bin/sh", "-c", "pnpm install; pnpm dev"]
