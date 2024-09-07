@@ -56,7 +56,6 @@ PROJECT_NAME=$($ProjectName)
 
 	Push-Location ./docker
 	$envContents | Out-File -FilePath .env
-	docker build .
 	docker compose -p $ProjectName up -d
 	Pop-Location
 
@@ -74,23 +73,12 @@ PROJECT_NAME=$($ProjectName)
 
 	Write-Host "Docker container initialized"
 
-	Write-Host "Starting admin UI.. " -NoNewline
-
-	Push-Location ./ui/admin
-	cp ../../docker/admin-config.json public/config.json
-	pnpm install
-	Start-Job -Name ZsfUiAdmin -ScriptBlock { Invoke-Expression "pnpm dev" }
-	Pop-Location
-
+	Write-Host "Configuring admin UI.. " -NoNewline
+	cp ./docker/admin-config.json ./ui/admin/public/config.json
 	Write-Host "DONE"
-	Write-Host "Starting front UI.. " -NoNewline
 
-	Push-Location ./ui/front
-	cp ../../docker/front-config.json public/config.json
-	pnpm install
-	Start-Job -Name ZsfUiFront -ScriptBlock { Invoke-Expression "pnpm dev" }
-	Pop-Location
-
+	Write-Host "Configuring front UI.. " -NoNewline
+	cp ./docker/front-config.json ./ui/front/public/config.json
 	Write-Host "DONE"
 }
 
