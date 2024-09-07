@@ -1,8 +1,8 @@
-version: "3.8"
-
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile-php
     container_name: ${PROJECT_NAME}-web
     depends_on:
       - db
@@ -25,3 +25,27 @@ services:
     environment:
       MYSQL_DATABASE: zsf
       MYSQL_ROOT_PASSWORD: P@55word
+
+  front:
+    build:
+      context: ../ui/front
+      dockerfile: ../../docker/Dockerfile-node
+    container_name: ${PROJECT_NAME}-front
+    depends_on:
+      - web
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../ui/front:/app
+
+  admin:
+    build:
+      context: ../ui/admin
+      dockerfile: ../../docker/Dockerfile-node
+    container_name: ${PROJECT_NAME}-admin
+    depends_on:
+      - web
+    ports:
+      - "5174:5173"
+    volumes:
+      - ../ui/admin:/app
