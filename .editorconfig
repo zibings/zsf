@@ -16,6 +16,11 @@ ij_smart_tabs = false
 ij_visual_guides = 240
 ij_wrap_on_typing = false
 
+[{*.ps1}]
+indent_size = 2
+indent_style = tab
+tab_width = 2
+
 [{*.cjs,*.js}]
 indent_size = 2
 indent_style = tab
