@@ -37,6 +37,7 @@ services:
       - "5173:5173"
     volumes:
       - ../ui/front:/app
+      - ../ui/front/src:/app/src
 
   admin:
     build:
@@ -49,3 +50,4 @@ services:
       - "5174:5173"
     volumes:
       - ../ui/admin:/app
+      - ../ui/admin/src:/app/src

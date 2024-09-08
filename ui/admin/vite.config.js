@@ -25,6 +25,13 @@ export default defineConfig(async () => {
 			// 	targets: ["defaults", "not IE 11"],
 			// }),
 		],
+		server: {
+			host: true,
+			port: 5173,
+			watch: {
+				usePolling: true,
+			},
+		},
 		build: {
 			outDir: outDir,
 			rollupOptions: {

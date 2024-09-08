@@ -5,6 +5,7 @@ FROM node:${NODE_VERSION}
 ENV NODE_ENV=development
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV HOST=0.0.0.0
 
 RUN corepack enable
 

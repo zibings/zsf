@@ -71,7 +71,7 @@ PROJECT_NAME=$($ProjectName)
 	docker exec -t $WebContainer composer update
 	docker exec -t $WebContainer vendor/bin/stoic-migrate up
 
-	Write-Host "Docker container initialized"
+	Write-Host "Docker container initialized`n"
 
 	Write-Host "Configuring admin UI.. " -NoNewline
 	cp ./docker/admin-config.json ./ui/admin/public/config.json
