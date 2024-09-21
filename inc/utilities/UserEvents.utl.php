@@ -14,6 +14,24 @@
 	use Stoic\Web\Resources\HttpStatusCodes;
 	use Stoic\Web\Resources\ServerIndices as SI;
 
+	class UserEventPreConfirmDispatch extends DispatchBase {
+		public function __construct(
+			public PdoHelper       $db,
+			public Logger          $log,
+			public string          $token,
+			public ParameterHelper $fullParams
+		) {
+			$this->makeValid();
+			$this->makeConsumable();
+
+			return;
+		}
+
+		public function initialize(mixed $input) : void {
+			return;
+		}
+	}
+
 	/**
 	 * Dispatch used for confirm event.
 	 *
@@ -32,7 +50,8 @@
 		public function __construct(
 			public User      $user,
 			public PdoHelper $db,
-			public Logger    $log) {
+			public Logger    $log
+		) {
 			$this->makeValid();
 
 			return;
@@ -44,6 +63,27 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
+		public function initialize(mixed $input) : void {
+			return;
+		}
+	}
+
+	class UserEventPreCreateDispatch extends DispatchBase {
+		public function __construct(
+			public PdoHelper             $db,
+			public Logger                $log,
+			public string                $email,
+			public string                $key,
+			public int|LoginKeyProviders $provider,
+			public bool                  $emailConfirmed,
+			public ParameterHelper       $fullParams
+		) {
+			$this->makeValid();
+			$this->makeConsumable();
+
+			return;
+		}
+
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -68,7 +108,8 @@
 			public User            $user,
 			public ParameterHelper $params,
 			public PdoHelper       $db,
-			public Logger          $log) {
+			public Logger          $log
+		) {
 			$this->makeValid();
 
 			return;
@@ -80,6 +121,25 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
+		public function initialize(mixed $input) : void {
+			return;
+		}
+	}
+
+	class UserEventPreDeleteDispatch extends DispatchBase {
+		public function __construct(
+			public PdoHelper       $db,
+			public Logger          $log,
+			public int             $id,
+			public int             $actor,
+			public ParameterHelper $fullParams
+		) {
+			$this->makeValid();
+			$this->makeConsumable();
+
+			return;
+		}
+
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -103,7 +163,8 @@
 		public function __construct(
 			public User      $user,
 			public PdoHelper $db,
-			public Logger    $log) {
+			public Logger    $log
+		) {
 			$this->makeValid();
 
 			return;
@@ -115,6 +176,27 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
+		public function initialize(mixed $input) : void {
+			return;
+		}
+	}
+
+	class UserEventPreLoginDispatch extends DispatchBase {
+		public function __construct(
+			public PdoHelper             $db,
+			public Logger                $log,
+			public string                $email,
+			public string                $key,
+			public int|LoginKeyProviders $provider,
+			public string|array          $roles,
+			public ParameterHelper       $fullParams
+		) {
+			$this->makeValid();
+			$this->makeConsumable();
+
+			return;
+		}
+
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -140,7 +222,8 @@
 			public User      $user,
 			public string    $token,
 			public PdoHelper $db,
-			public Logger    $log) {
+			public Logger    $log
+		) {
 			$this->makeValid();
 
 			return;
@@ -152,6 +235,24 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
+		public function initialize(mixed $input) : void {
+			return;
+		}
+	}
+
+	class UserEventPreLogoutDispatch extends DispatchBase {
+		public function __construct(
+			public PdoHelper $db,
+			public Logger    $log,
+			public int       $userId,
+			public string    $token
+		) {
+			$this->makeValid();
+			$this->makeConsumable();
+
+			return;
+		}
+
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -175,7 +276,8 @@
 		public function __construct(
 			public UserSession $session,
 			public PdoHelper   $db,
-			public Logger      $log) {
+			public Logger      $log
+		) {
 			$this->makeValid();
 
 			return;
@@ -187,6 +289,26 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
+		public function initialize(mixed $input) : void {
+			return;
+		}
+	}
+
+	class UserEventPreRegisterDispatch extends DispatchBase {
+		public function __construct(
+			public PdoHelper             $db,
+			public Logger                $log,
+			public string                $email,
+			public string                $key,
+			public int|LoginKeyProviders $provider,
+			public ParameterHelper       $fullParams
+		) {
+			$this->makeValid();
+			$this->makeConsumable();
+
+			return;
+		}
+
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -211,7 +333,8 @@
 			public User            $user,
 			public ParameterHelper $params,
 			public PdoHelper       $db,
-			public Logger          $log) {
+			public Logger          $log
+		) {
 			$this->makeValid();
 
 			return;
@@ -223,6 +346,25 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
+		public function initialize(mixed $input) : void {
+			return;
+		}
+	}
+
+	class UserEventPreResetPasswordDispatch extends DispatchBase {
+		public function __construct(
+			public PdoHelper       $db,
+			public Logger          $log,
+			public string          $key,
+			public string          $token,
+			public ParameterHelper $fullParams
+		) {
+			$this->makeValid();
+			$this->makeConsumable();
+
+			return;
+		}
+
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -246,7 +388,8 @@
 		public function __construct(
 			public User      $user,
 			public PdoHelper $db,
-			public Logger    $log) {
+			public Logger    $log
+		) {
 			$this->makeValid();
 
 			return;
@@ -258,6 +401,24 @@
 		 * @param mixed $input Input used for initialization.
 		 * @return void
 		 */
+		public function initialize(mixed $input) : void {
+			return;
+		}
+	}
+
+	class UserEventPreUpdateDispatch extends DispatchBase {
+		public function __construct(
+			public PdoHelper       $db,
+			public Logger          $log,
+			public int             $id,
+			public ParameterHelper $fullParams
+		) {
+			$this->makeValid();
+			$this->makeConsumable();
+
+			return;
+		}
+
 		public function initialize(mixed $input) : void {
 			return;
 		}
