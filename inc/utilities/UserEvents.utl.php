@@ -14,7 +14,21 @@
 	use Stoic\Web\Resources\HttpStatusCodes;
 	use Stoic\Web\Resources\ServerIndices as SI;
 
+	/**
+	 * Dispatch used for pre-confirmation event.
+	 *
+	 * @package Zibings
+	 */
 	class UserEventPreConfirmDispatch extends DispatchBase {
+		/**
+		 * Instantiates a new UserEventPreConfirmDispatch object.
+		 *
+		 * @param PdoHelper $db PdoHelper object for use.
+		 * @param Logger $log Logger object for use.
+		 * @param string $token Token to be used for confirmation.
+		 * @param ParameterHelper $fullParams Full parameters for reference.
+		 * @throws \Exception
+		 */
 		public function __construct(
 			public PdoHelper       $db,
 			public Logger          $log,
@@ -27,6 +41,12 @@
 			return;
 		}
 
+		/**
+		 * Basic initialization method, unused by UserEvents dispatches.
+		 *
+		 * @param mixed $input Input used for initialization.
+		 * @return void
+		 */
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -45,7 +65,6 @@
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
 		 * @throws \Exception
-		 * @return void
 		 */
 		public function __construct(
 			public User      $user,
@@ -68,7 +87,24 @@
 		}
 	}
 
+	/**
+	 * Dispatch used for pre-creation event.
+	 *
+	 * @package Zibings
+	 */
 	class UserEventPreCreateDispatch extends DispatchBase {
+		/**
+		 * Instantiates a new UserEventPreCreateDispatch object.
+		 *
+		 * @param PdoHelper $db  PdoHelper object for use.
+		 * @param Logger $log Logger object for use.
+		 * @param string $email Email address for new user.
+		 * @param string $key Login key for new user.
+		 * @param int|LoginKeyProviders $provider Login key provider for new user.
+		 * @param bool $emailConfirmed Whether the new user's email is confirmed.
+		 * @param ParameterHelper $fullParams Full parameters for reference.
+		 * @throws \Exception
+		 */
 		public function __construct(
 			public PdoHelper             $db,
 			public Logger                $log,
@@ -84,6 +120,12 @@
 			return;
 		}
 
+		/**
+		 * Basic initialization method, unused by UserEvents dispatches.
+		 *
+		 * @param mixed $input Input used for initialization.
+		 * @return void
+		 */
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -102,7 +144,6 @@
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
 		 * @throws \Exception
-		 * @return void
 		 */
 		public function __construct(
 			public User            $user,
@@ -126,7 +167,22 @@
 		}
 	}
 
+	/**
+	 * Dispatch used for pre-deletion event.
+	 *
+	 * @package Zibings
+	 */
 	class UserEventPreDeleteDispatch extends DispatchBase {
+		/**
+		 * Instantiates a new UserEventPreDeleteDispatch object.
+		 *
+		 * @param PdoHelper $db  PdoHelper object for use.
+		 * @param Logger $log Logger object for use.
+		 * @param int $id Identifier for user being deleted.
+		 * @param int $actor Identifier of the user performing the deletion.
+		 * @param ParameterHelper $fullParams Full parameters for reference.
+		 * @throws \Exception
+		 */
 		public function __construct(
 			public PdoHelper       $db,
 			public Logger          $log,
@@ -140,6 +196,12 @@
 			return;
 		}
 
+		/**
+		 * Basic initialization method, unused by UserEvents dispatches.
+		 *
+		 * @param mixed $input Input used for initialization.
+		 * @return void
+		 */
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -158,7 +220,6 @@
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
 		 * @throws \Exception
-		 * @return void
 		 */
 		public function __construct(
 			public User      $user,
@@ -181,7 +242,24 @@
 		}
 	}
 
+	/**
+	 * Dispatch used for pre-login event.
+	 *
+	 * @package Zibings
+	 */
 	class UserEventPreLoginDispatch extends DispatchBase {
+		/**
+		 * Instantiates a new UserEventPreLoginDispatch object.
+		 *
+		 * @param PdoHelper $db  PdoHelper object for use.
+		 * @param Logger $log Logger object for use.
+		 * @param string $email Email address for login.
+		 * @param string $key Login key for login.
+		 * @param int|LoginKeyProviders $provider Login key provider for login.
+		 * @param string|array $roles Roles for login.
+		 * @param ParameterHelper $fullParams Full parameters for reference.
+		 * @throws \Exception
+		 */
 		public function __construct(
 			public PdoHelper             $db,
 			public Logger                $log,
@@ -197,6 +275,12 @@
 			return;
 		}
 
+		/**
+		 * Basic initialization method, unused by UserEvents dispatches.
+		 *
+		 * @param mixed $input Input used for initialization.
+		 * @return void
+		 */
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -216,7 +300,6 @@
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
 		 * @throws \Exception
-		 * @return void
 		 */
 		public function __construct(
 			public User      $user,
@@ -240,12 +323,28 @@
 		}
 	}
 
+	/**
+	 * Dispatch used for pre-logout event.
+	 *
+	 * @package Zibings
+	 */
 	class UserEventPreLogoutDispatch extends DispatchBase {
+		/**
+		 * Instantiates a new UserEventPreLogoutDispatch object.
+		 *
+		 * @param PdoHelper $db  PdoHelper object for use.
+		 * @param Logger $log Logger object for use.
+		 * @param int $userId Identifier for user being logged out.
+		 * @param string $token Token for user being logged out.
+		 * @param ParameterHelper $fullParams Full parameters for reference.
+		 * @throws \Exception
+		 */
 		public function __construct(
-			public PdoHelper $db,
-			public Logger    $log,
-			public int       $userId,
-			public string    $token
+			public PdoHelper       $db,
+			public Logger          $log,
+			public int             $userId,
+			public string          $token,
+			public ParameterHelper $fullParams
 		) {
 			$this->makeValid();
 			$this->makeConsumable();
@@ -253,6 +352,12 @@
 			return;
 		}
 
+		/**
+		 * Basic initialization method, unused by UserEvents dispatches.
+		 *
+		 * @param mixed $input Input used for initialization.
+		 * @return void
+		 */
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -271,7 +376,6 @@
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
 		 * @throws \Exception
-		 * @return void
 		 */
 		public function __construct(
 			public UserSession $session,
@@ -294,7 +398,23 @@
 		}
 	}
 
+	/**
+	 * Dispatch used for pre-registration event.
+	 *
+	 * @package Zibings
+	 */
 	class UserEventPreRegisterDispatch extends DispatchBase {
+		/**
+		 * Instantiates a new UserEventPreRegisterDispatch object.
+		 *
+		 * @param PdoHelper $db  PdoHelper object for use.
+		 * @param Logger $log Logger object for use.
+		 * @param string $email Email address for new user.
+		 * @param string $key Login key for new user.
+		 * @param int|LoginKeyProviders $provider Login key provider for new user.
+		 * @param ParameterHelper $fullParams Full parameters for reference.
+		 * @throws \Exception
+		 */
 		public function __construct(
 			public PdoHelper             $db,
 			public Logger                $log,
@@ -309,6 +429,12 @@
 			return;
 		}
 
+		/**
+		 * Basic initialization method, unused by UserEvents dispatches.
+		 *
+		 * @param mixed $input Input used for initialization.
+		 * @return void
+		 */
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -327,7 +453,6 @@
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
 		 * @throws \Exception
-		 * @return void
 		 */
 		public function __construct(
 			public User            $user,
@@ -351,7 +476,22 @@
 		}
 	}
 
+	/**
+	 * Dispatch used for pre-password reset event.
+	 *
+	 * @package Zibings
+	 */
 	class UserEventPreResetPasswordDispatch extends DispatchBase {
+		/**
+		 * Instantiates a new UserEventPreResetPasswordDispatch object.
+		 *
+		 * @param PdoHelper $db  PdoHelper object for use.
+		 * @param Logger $log Logger object for use.
+		 * @param string $key Login key for user requesting password reset.
+		 * @param string $token Token for user requesting password reset.
+		 * @param ParameterHelper $fullParams Full parameters for reference.
+		 * @throws \Exception
+		 */
 		public function __construct(
 			public PdoHelper       $db,
 			public Logger          $log,
@@ -365,6 +505,12 @@
 			return;
 		}
 
+		/**
+		 * Basic initialization method, unused by UserEvents dispatches.
+		 *
+		 * @param mixed $input Input used for initialization.
+		 * @return void
+		 */
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -383,7 +529,6 @@
 		 * @param PdoHelper $db PdoHelper object for reference.
 		 * @param Logger $log Logger object for reference.
 		 * @throws \Exception
-		 * @return void
 		 */
 		public function __construct(
 			public User      $user,
@@ -406,7 +551,21 @@
 		}
 	}
 
+	/**
+	 * Dispatch used for pre-update event.
+	 *
+	 * @package Zibings
+	 */
 	class UserEventPreUpdateDispatch extends DispatchBase {
+		/**
+		 * Instantiates a new UserEventPreUpdateDispatch object.
+		 *
+		 * @param PdoHelper $db PdoHelper object for use.
+		 * @param Logger $log Logger object for use.
+		 * @param int $id Identifier for user being updated.
+		 * @param ParameterHelper $fullParams Full parameters for reference.
+		 * @throws \Exception
+		 */
 		public function __construct(
 			public PdoHelper       $db,
 			public Logger          $log,
@@ -419,6 +578,12 @@
 			return;
 		}
 
+		/**
+		 * Basic initialization method, unused by UserEvents dispatches.
+		 *
+		 * @param mixed $input Input used for initialization.
+		 * @return void
+		 */
 		public function initialize(mixed $input) : void {
 			return;
 		}
@@ -439,7 +604,6 @@
 		 * @param Logger $log Logger object for reference.
 		 * @param bool $emailUpdated Optional toggle to show if the user's email was updated.
 		 * @throws \Exception
-		 * @return void
 		 */
 		public function __construct(
 			public User            $user,
