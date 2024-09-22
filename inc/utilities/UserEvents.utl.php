@@ -19,14 +19,22 @@
 	 * @package Zibings
 	 */
 	class UserEventTypes extends EnumBase {
-		const int CONFIRM       = 1;
-		const int CREATE        = 2;
-		const int DELETE        = 3;
-		const int LOGIN         = 4;
-		const int LOGOUT        = 5;
-		const int REGISTER      = 6;
-		const int RESETPASSWORD = 7;
-		const int UPDATE        = 8;
+		const int CONFIRM           = 1;
+		const int CONFIRM_PRE       = 9;
+		const int CREATE            = 2;
+		const int CREATE_PRE        = 10;
+		const int DELETE            = 3;
+		const int DELETE_PRE        = 11;
+		const int LOGIN             = 4;
+		const int LOGIN_PRE         = 12;
+		const int LOGOUT            = 5;
+		const int LOGOUT_PRE        = 13;
+		const int REGISTER          = 6;
+		const int REGISTER_PRE      = 14;
+		const int RESETPASSWORD     = 7;
+		const int RESETPASSWORD_PRE = 15;
+		const int UPDATE            = 8;
+		const int UPDATE_PRE        = 16;
 	}
 
 	/**
