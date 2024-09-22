@@ -170,6 +170,10 @@
 				return $ret;
 			}
 
+			if (!$this->touchPreEvent(UserEventTypes::CONFIRM_PRE, new UserEventPreConfirmDispatch($this->db, $this->log, $tok[1], $params), $ret, "Pre-confirmation event chain stopped the event")) {
+				return $ret;
+			}
+
 			$user->emailConfirmed = true;
 			$user->update();
 
@@ -231,7 +235,7 @@
 		 * ]
 		 *
 		 * @param ParameterHelper $params Parameters provided to perform the event.
-		 * @throws \ReflectionException
+		 * @throws \ReflectionException|\Exception
 		 * @return ReturnHelper
 		 */
 		public function doCreate(ParameterHelper $params) : ReturnHelper {
@@ -252,6 +256,10 @@
 			if ($key !== $confirmKey || empty($key)) {
 				$this->assignError($ret, "Invalid parameters for account creation");
 
+				return $ret;
+			}
+
+			if (!$this->touchPreEvent(UserEventTypes::CREATE_PRE, new UserEventPreCreateDispatch($this->db, $this->log, $email, $key, $provider, $emailConfirmed, $params), $ret, "Pre-creation event chain stopped the event")) {
 				return $ret;
 			}
 
@@ -426,6 +434,10 @@
 				return $ret;
 			}
 
+			if (!$this->touchPreEvent(UserEventTypes::DELETE_PRE, new UserEventPreDeleteDispatch($this->db, $this->log, $id, $actor, $params), $ret, "Pre-delete event chain stopped the event")) {
+				return $ret;
+			}
+
 			$this->touchEvent(UserEventTypes::DELETE, new UserEventDeleteDispatch($user, $this->db, $this->log));
 
 			(new UserVisibilitiesRepo($this->db, $this->log))->deleteAllForUser($user->id);
@@ -583,6 +595,10 @@
 				}
 			}
 
+			if (!$this->touchPreEvent(UserEventTypes::LOGIN_PRE, new UserEventPreLoginDispatch($this->db, $this->log, $email, $key, $provider, $params->get(self::STR_ROLES), $params), $ret, "Pre-login event chain stopped the event")) {
+				return $ret;
+			}
+
 			$user->lastLogin = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 
 			if ($user->update()->isBad()) {
@@ -672,27 +688,33 @@
 		 * @return ReturnHelper
 		 */
 		public function doLogout(ParameterHelper $params) : ReturnHelper {
-			$ret         = new ReturnHelper();
 			$userId      = null;
 			$token       = null;
+			$useSession  = false;
+			$ret         = new ReturnHelper();
+			$session     = new ParameterHelper($_SESSION);
 			$userSession = new UserSession($this->db, $this->log);
 
 			if ($params->hasAll(self::STR_USERID, self::STR_TOKEN)) {
 				$userId      = $params->getInt(self::STR_USERID);
 				$token       = $params->getString(self::STR_TOKEN);
 			} else {
-				$session = new ParameterHelper($_SESSION);
-				$userId  = $session->getInt(self::STR_SESSION_USERID);
-				$token   = $session->getString(self::STR_SESSION_TOKEN);
+				$useSession = true;
+				$userId     = $session->getInt(self::STR_SESSION_USERID);
+				$token      = $session->getString(self::STR_SESSION_TOKEN);
+			}
 
-				if (!STOIC_DISABLE_SESSION) {
-					if ($session->has(self::STR_SESSION_USERID)) {
-						unset($_SESSION[self::STR_SESSION_USERID]);
-					}
+			if (!$this->touchPreEvent(UserEventTypes::LOGOUT_PRE, new UserEventPreLogoutDispatch($this->db, $this->log, $userId, $token, $params), $ret, "Pre-logout event chain stopped the event")) {
+				return $ret;
+			}
 
-					if ($session->has(self::STR_SESSION_TOKEN)) {
-						unset($_SESSION[self::STR_SESSION_TOKEN]);
-					}
+			if ($useSession && !STOIC_DISABLE_SESSION) {
+				if ($session->has(self::STR_SESSION_USERID)) {
+					unset($_SESSION[self::STR_SESSION_USERID]);
+				}
+
+				if ($session->has(self::STR_SESSION_TOKEN)) {
+					unset($_SESSION[self::STR_SESSION_TOKEN]);
 				}
 			}
 
@@ -781,7 +803,7 @@
 		 *   - UserVisibilities
 		 *
 		 * NOTE: This event does NOT automatically send any emails for confirmation.
-		 * 
+		 *
 		 * Resulting ReturnHelper will include a suggested HTTP status code in the 'httpCode' index and the user object if the
 		 * operation was successful:
 		 *
@@ -791,8 +813,8 @@
 		 * ]
 		 *
 		 * @param ParameterHelper $params Parameters provided to perform the event.
+		 * @throws \ReflectionException|\Exception
 		 * @return ReturnHelper
-		 *@throws \ReflectionException
 		 */
 		public function doRegister(ParameterHelper $params) : ReturnHelper {
 			$ret = new ReturnHelper();
@@ -815,6 +837,10 @@
 			}
 
 			$user = new User($this->db, $this->log);
+
+			if (!$this->touchPreEvent(UserEventTypes::REGISTER_PRE, new UserEventPreRegisterDispatch($this->db, $this->log, $email, $key, $provider, $params), $ret, "Pre-registration event chain stopped the event")) {
+				return $ret;
+			}
 
 			try {
 				$user->email          = $email;
@@ -980,6 +1006,10 @@
 				return $ret;
 			}
 
+			if (!$this->touchPreEvent(UserEventTypes::RESETPASSWORD_PRE, new UserEventPreResetPasswordDispatch($this->db, $this->log, $key, $token[1], $params), $ret, "Pre-reset event chain stopped the event")) {
+				return $ret;
+			}
+
 			$tok->delete();
 			$login = LoginKey::fromUserAndProvider($user->id, LoginKeyProviders::PASSWORD, $this->db, $this->log);
 
@@ -1101,6 +1131,10 @@
 			if ($user->id < 1) {
 				$this->assignError($ret, "Invalid user for update");
 
+				return $ret;
+			}
+
+			if (!$this->touchPreEvent(UserEventTypes::UPDATE_PRE, new UserEventPreUpdateDispatch($this->db, $this->log, $user->id, $params), $ret, "Pre-update event chain stopped the event")) {
 				return $ret;
 			}
 
@@ -1295,5 +1329,38 @@
 			$this->events[$e->getValue()]->traverse($dispatch, $this);
 
 			return;
+		}
+
+		/**
+		 * Touches a 'pre' event, traversing the related chain so all linked nodes receive a chance to consume the event.
+		 * If an invalid event type is supplied, nothing will be traversed.  If the chain consumes the event, the
+		 * ReturnHelper object will be updated with the results and an error message will be added.
+		 *
+		 * @param UserEventTypes|int $event UserEventTypes object or value to route dispatch to correct chain.
+		 * @param DispatchBase $dispatch Dispatch with relevant information for the selected chain.
+		 * @param ReturnHelper $ret ReturnHelper object to store any messages or errors.
+		 * @param string $errorMessage Error message to assign if the chain consumes the event.
+		 * @throws \ReflectionException
+		 * @return bool
+		 */
+		protected function touchPreEvent(UserEventTypes|int $event, DispatchBase $dispatch, ReturnHelper &$ret, string $errorMessage) : bool {
+			$e = UserEventTypes::tryGet($event);
+
+			if ($e->getValue() === null) {
+				$this->assignError($ret, "Invalid event type");
+
+				return false;
+			}
+
+			$this->events[$e->getValue()]->traverse($dispatch, $this);
+
+			if ($dispatch->isConsumed()) {
+				$this->assignError($ret, $errorMessage);
+				$ret->addResults($dispatch->getResults());
+
+				return false;
+			}
+
+			return true;
 		}
 	}
