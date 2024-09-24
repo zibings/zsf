@@ -6,7 +6,6 @@
 	use Stoic\Chain\DispatchBase;
 	use Stoic\Chain\NodeBase;
 	use Stoic\Log\Logger;
-	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbClass;
 	use Stoic\Utilities\EnumBase;
 	use Stoic\Utilities\ParameterHelper;
@@ -15,307 +14,27 @@
 	use Stoic\Web\Resources\ServerIndices as SI;
 
 	/**
-	 * Dispatch used for confirm event.
-	 *
-	 * @package Zibings
-	 */
-	class UserEventConfirmDispatch extends DispatchBase {
-		/**
-		 * Instantiates a new UserEventConfirmDispatch object.
-		 *
-		 * @param User $user User object for reference.
-		 * @param PdoHelper $db PdoHelper object for reference.
-		 * @param Logger $log Logger object for reference.
-		 * @throws \Exception
-		 * @return void
-		 */
-		public function __construct(
-			public User      $user,
-			public PdoHelper $db,
-			public Logger    $log) {
-			$this->makeValid();
-
-			return;
-		}
-
-		/**
-		 * Basic initialization method, unused by UserEvents dispatches.
-		 *
-		 * @param mixed $input Input used for initialization.
-		 * @return void
-		 */
-		public function initialize(mixed $input) : void {
-			return;
-		}
-	}
-
-	/**
-	 * Dispatch used for creation event.
-	 *
-	 * @package Zibings
-	 */
-	class UserEventCreateDispatch extends DispatchBase {
-		/**
-		 * Instantiates a new UserEventCreateDispatch object.
-		 *
-		 * @param User $user User object for reference.
-		 * @param PdoHelper $db PdoHelper object for reference.
-		 * @param Logger $log Logger object for reference.
-		 * @throws \Exception
-		 * @return void
-		 */
-		public function __construct(
-			public User            $user,
-			public ParameterHelper $params,
-			public PdoHelper       $db,
-			public Logger          $log) {
-			$this->makeValid();
-
-			return;
-		}
-
-		/**
-		 * Basic initialization method, unused by UserEvents dispatches.
-		 *
-		 * @param mixed $input Input used for initialization.
-		 * @return void
-		 */
-		public function initialize(mixed $input) : void {
-			return;
-		}
-	}
-
-	/**
-	 * Dispatch used for deletion event.
-	 *
-	 * @package Zibings
-	 */
-	class UserEventDeleteDispatch extends DispatchBase {
-		/**
-		 * Instantiates a new UserEventDeleteDispatch object.
-		 *
-		 * @param User $user User object for reference.
-		 * @param PdoHelper $db PdoHelper object for reference.
-		 * @param Logger $log Logger object for reference.
-		 * @throws \Exception
-		 * @return void
-		 */
-		public function __construct(
-			public User      $user,
-			public PdoHelper $db,
-			public Logger    $log) {
-			$this->makeValid();
-
-			return;
-		}
-
-		/**
-		 * Basic initialization method, unused by UserEvents dispatches.
-		 *
-		 * @param mixed $input Input used for initialization.
-		 * @return void
-		 */
-		public function initialize(mixed $input) : void {
-			return;
-		}
-	}
-
-	/**
-	 * Dispatch used for login event.
-	 *
-	 * @package Zibings
-	 */
-	class UserEventLoginDispatch extends DispatchBase {
-		/**
-		 * Instantiates a new UserEventLoginDispatch object.
-		 *
-		 * @param User $user User object for reference.
-		 * @param string $token Generated session token for user.
-		 * @param PdoHelper $db PdoHelper object for reference.
-		 * @param Logger $log Logger object for reference.
-		 * @throws \Exception
-		 * @return void
-		 */
-		public function __construct(
-			public User      $user,
-			public string    $token,
-			public PdoHelper $db,
-			public Logger    $log) {
-			$this->makeValid();
-
-			return;
-		}
-
-		/**
-		 * Basic initialization method, unused by UserEvents dispatches.
-		 *
-		 * @param mixed $input Input used for initialization.
-		 * @return void
-		 */
-		public function initialize(mixed $input) : void {
-			return;
-		}
-	}
-
-	/**
-	 * Dispatch used for logout event.
-	 *
-	 * @package Zibings
-	 */
-	class UserEventLogoutDispatch extends DispatchBase {
-		/**
-		 * Instantiates a new UserEventLogoutDispatch object.
-		 *
-		 * @param UserSession $session UserSession object for reference.
-		 * @param PdoHelper $db PdoHelper object for reference.
-		 * @param Logger $log Logger object for reference.
-		 * @throws \Exception
-		 * @return void
-		 */
-		public function __construct(
-			public UserSession $session,
-			public PdoHelper   $db,
-			public Logger      $log) {
-			$this->makeValid();
-
-			return;
-		}
-
-		/**
-		 * Basic initialization method, unused by UserEvents dispatches.
-		 *
-		 * @param mixed $input Input used for initialization.
-		 * @return void
-		 */
-		public function initialize(mixed $input) : void {
-			return;
-		}
-	}
-
-	/**
-	 * Dispatch used for registration event.
-	 *
-	 * @package Zibings
-	 */
-	class UserEventRegisterDispatch extends DispatchBase {
-		/**
-		 * Instantiates a new UserEventRegisterDispatch object.
-		 *
-		 * @param User $user User object for reference.
-		 * @param PdoHelper $db PdoHelper object for reference.
-		 * @param Logger $log Logger object for reference.
-		 * @throws \Exception
-		 * @return void
-		 */
-		public function __construct(
-			public User            $user,
-			public ParameterHelper $params,
-			public PdoHelper       $db,
-			public Logger          $log) {
-			$this->makeValid();
-
-			return;
-		}
-
-		/**
-		 * Basic initialization method, unused by UserEvents dispatches.
-		 *
-		 * @param mixed $input Input used for initialization.
-		 * @return void
-		 */
-		public function initialize(mixed $input) : void {
-			return;
-		}
-	}
-
-	/**
-	 * Dispatch used for password reset event.
-	 *
-	 * @package Zibings
-	 */
-	class UserEventResetPasswordDispatch extends DispatchBase {
-		/**
-		 * Instantiates a new UserEventResetPasswordDispatch object.
-		 *
-		 * @param User $user User object for reference.
-		 * @param PdoHelper $db PdoHelper object for reference.
-		 * @param Logger $log Logger object for reference.
-		 * @throws \Exception
-		 * @return void
-		 */
-		public function __construct(
-			public User      $user,
-			public PdoHelper $db,
-			public Logger    $log) {
-			$this->makeValid();
-
-			return;
-		}
-
-		/**
-		 * Basic initialization method, unused by UserEvents dispatches.
-		 *
-		 * @param mixed $input Input used for initialization.
-		 * @return void
-		 */
-		public function initialize(mixed $input) : void {
-			return;
-		}
-	}
-
-	/**
-	 * Dispatch used for update event.
-	 *
-	 * @package Zibings
-	 */
-	class UserEventUpdateDispatch extends DispatchBase {
-		/**
-		 * Instantiates a new UserEventUpdateDispatch object.
-		 *
-		 * @param User $user User object for reference.
-		 * @param ParameterHelper $params Parameters provided for user update.
-		 * @param PdoHelper $db PdoHelper object for reference.
-		 * @param Logger $log Logger object for reference.
-		 * @param bool $emailUpdated Optional toggle to show if the user's email was updated.
-		 * @throws \Exception
-		 * @return void
-		 */
-		public function __construct(
-			public User            $user,
-			public ParameterHelper $params,
-			public PdoHelper       $db,
-			public Logger          $log,
-			public bool            $emailUpdated = false) {
-			$this->makeValid();
-
-			return;
-		}
-
-		/**
-		 * Basic initialization method, unused by UserEvents dispatches.
-		 *
-		 * @param mixed $input Input used for initialization.
-		 * @return void
-		 */
-		public function initialize(mixed $input) : void {
-			return;
-		}
-	}
-
-	/**
 	 * Available types of user events.
 	 *
 	 * @package Zibings
 	 */
 	class UserEventTypes extends EnumBase {
-		const int CONFIRM       = 1;
-		const int CREATE        = 2;
-		const int DELETE        = 3;
-		const int LOGIN         = 4;
-		const int LOGOUT        = 5;
-		const int REGISTER      = 6;
-		const int RESETPASSWORD = 7;
-		const int UPDATE        = 8;
+		const int CONFIRM           = 1;
+		const int CONFIRM_PRE       = 9;
+		const int CREATE            = 2;
+		const int CREATE_PRE        = 10;
+		const int DELETE            = 3;
+		const int DELETE_PRE        = 11;
+		const int LOGIN             = 4;
+		const int LOGIN_PRE         = 12;
+		const int LOGOUT            = 5;
+		const int LOGOUT_PRE        = 13;
+		const int REGISTER          = 6;
+		const int REGISTER_PRE      = 14;
+		const int RESETPASSWORD     = 7;
+		const int RESETPASSWORD_PRE = 15;
+		const int UPDATE            = 8;
+		const int UPDATE_PRE        = 16;
 	}
 
 	/**
@@ -451,6 +170,10 @@
 				return $ret;
 			}
 
+			if (!$this->touchPreEvent(UserEventTypes::CONFIRM_PRE, new UserEventPreConfirmDispatch($this->db, $this->log, $tok[1], $params), $ret, "Pre-confirmation event chain stopped the event")) {
+				return $ret;
+			}
+
 			$user->emailConfirmed = true;
 			$user->update();
 
@@ -512,7 +235,7 @@
 		 * ]
 		 *
 		 * @param ParameterHelper $params Parameters provided to perform the event.
-		 * @throws \ReflectionException
+		 * @throws \ReflectionException|\Exception
 		 * @return ReturnHelper
 		 */
 		public function doCreate(ParameterHelper $params) : ReturnHelper {
@@ -533,6 +256,10 @@
 			if ($key !== $confirmKey || empty($key)) {
 				$this->assignError($ret, "Invalid parameters for account creation");
 
+				return $ret;
+			}
+
+			if (!$this->touchPreEvent(UserEventTypes::CREATE_PRE, new UserEventPreCreateDispatch($this->db, $this->log, $email, $key, $provider, $emailConfirmed, $params), $ret, "Pre-creation event chain stopped the event")) {
 				return $ret;
 			}
 
@@ -707,6 +434,10 @@
 				return $ret;
 			}
 
+			if (!$this->touchPreEvent(UserEventTypes::DELETE_PRE, new UserEventPreDeleteDispatch($this->db, $this->log, $id, $actor, $params), $ret, "Pre-delete event chain stopped the event")) {
+				return $ret;
+			}
+
 			$this->touchEvent(UserEventTypes::DELETE, new UserEventDeleteDispatch($user, $this->db, $this->log));
 
 			(new UserVisibilitiesRepo($this->db, $this->log))->deleteAllForUser($user->id);
@@ -716,7 +447,6 @@
 			(new UserRoles($this->db, $this->log))->deleteAllForUser($user->id);
 			(new UserRelations($this->db, $this->log))->deleteAllForUser($user->id);
 			(new UserProfiles($this->db, $this->log))->deleteAllForUser($user->id);
-			(new UserDevices($this->db, $this->log))->deleteAllForUser($user->id);
 			(new UserContacts($this->db, $this->log))->deleteAllForUser($user->id);
 			(new LoginKeys($this->db, $this->log))->deleteAllForUser($user->id);
 
@@ -865,6 +595,10 @@
 				}
 			}
 
+			if (!$this->touchPreEvent(UserEventTypes::LOGIN_PRE, new UserEventPreLoginDispatch($this->db, $this->log, $email, $key, $provider, $params->get(self::STR_ROLES), $params), $ret, "Pre-login event chain stopped the event")) {
+				return $ret;
+			}
+
 			$user->lastLogin = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 
 			if ($user->update()->isBad()) {
@@ -954,27 +688,33 @@
 		 * @return ReturnHelper
 		 */
 		public function doLogout(ParameterHelper $params) : ReturnHelper {
-			$ret         = new ReturnHelper();
 			$userId      = null;
 			$token       = null;
+			$useSession  = false;
+			$ret         = new ReturnHelper();
+			$session     = new ParameterHelper($_SESSION);
 			$userSession = new UserSession($this->db, $this->log);
 
 			if ($params->hasAll(self::STR_USERID, self::STR_TOKEN)) {
 				$userId      = $params->getInt(self::STR_USERID);
 				$token       = $params->getString(self::STR_TOKEN);
 			} else {
-				$session = new ParameterHelper($_SESSION);
-				$userId  = $session->getInt(self::STR_SESSION_USERID);
-				$token   = $session->getString(self::STR_SESSION_TOKEN);
+				$useSession = true;
+				$userId     = $session->getInt(self::STR_SESSION_USERID);
+				$token      = $session->getString(self::STR_SESSION_TOKEN);
+			}
 
-				if (!STOIC_DISABLE_SESSION) {
-					if ($session->has(self::STR_SESSION_USERID)) {
-						unset($_SESSION[self::STR_SESSION_USERID]);
-					}
+			if (!$this->touchPreEvent(UserEventTypes::LOGOUT_PRE, new UserEventPreLogoutDispatch($this->db, $this->log, $userId, $token, $params), $ret, "Pre-logout event chain stopped the event")) {
+				return $ret;
+			}
 
-					if ($session->has(self::STR_SESSION_TOKEN)) {
-						unset($_SESSION[self::STR_SESSION_TOKEN]);
-					}
+			if ($useSession && !STOIC_DISABLE_SESSION) {
+				if ($session->has(self::STR_SESSION_USERID)) {
+					unset($_SESSION[self::STR_SESSION_USERID]);
+				}
+
+				if ($session->has(self::STR_SESSION_TOKEN)) {
+					unset($_SESSION[self::STR_SESSION_TOKEN]);
 				}
 			}
 
@@ -1063,7 +803,7 @@
 		 *   - UserVisibilities
 		 *
 		 * NOTE: This event does NOT automatically send any emails for confirmation.
-		 * 
+		 *
 		 * Resulting ReturnHelper will include a suggested HTTP status code in the 'httpCode' index and the user object if the
 		 * operation was successful:
 		 *
@@ -1073,8 +813,8 @@
 		 * ]
 		 *
 		 * @param ParameterHelper $params Parameters provided to perform the event.
+		 * @throws \ReflectionException|\Exception
 		 * @return ReturnHelper
-		 *@throws \ReflectionException
 		 */
 		public function doRegister(ParameterHelper $params) : ReturnHelper {
 			$ret = new ReturnHelper();
@@ -1097,6 +837,10 @@
 			}
 
 			$user = new User($this->db, $this->log);
+
+			if (!$this->touchPreEvent(UserEventTypes::REGISTER_PRE, new UserEventPreRegisterDispatch($this->db, $this->log, $email, $key, $provider, $params), $ret, "Pre-registration event chain stopped the event")) {
+				return $ret;
+			}
 
 			try {
 				$user->email          = $email;
@@ -1262,6 +1006,10 @@
 				return $ret;
 			}
 
+			if (!$this->touchPreEvent(UserEventTypes::RESETPASSWORD_PRE, new UserEventPreResetPasswordDispatch($this->db, $this->log, $key, $token[1], $params), $ret, "Pre-reset event chain stopped the event")) {
+				return $ret;
+			}
+
 			$tok->delete();
 			$login = LoginKey::fromUserAndProvider($user->id, LoginKeyProviders::PASSWORD, $this->db, $this->log);
 
@@ -1383,6 +1131,10 @@
 			if ($user->id < 1) {
 				$this->assignError($ret, "Invalid user for update");
 
+				return $ret;
+			}
+
+			if (!$this->touchPreEvent(UserEventTypes::UPDATE_PRE, new UserEventPreUpdateDispatch($this->db, $this->log, $user->id, $params), $ret, "Pre-update event chain stopped the event")) {
 				return $ret;
 			}
 
@@ -1577,5 +1329,38 @@
 			$this->events[$e->getValue()]->traverse($dispatch, $this);
 
 			return;
+		}
+
+		/**
+		 * Touches a 'pre' event, traversing the related chain so all linked nodes receive a chance to consume the event.
+		 * If an invalid event type is supplied, nothing will be traversed.  If the chain consumes the event, the
+		 * ReturnHelper object will be updated with the results and an error message will be added.
+		 *
+		 * @param UserEventTypes|int $event UserEventTypes object or value to route dispatch to correct chain.
+		 * @param DispatchBase $dispatch Dispatch with relevant information for the selected chain.
+		 * @param ReturnHelper $ret ReturnHelper object to store any messages or errors.
+		 * @param string $errorMessage Error message to assign if the chain consumes the event.
+		 * @throws \ReflectionException
+		 * @return bool
+		 */
+		protected function touchPreEvent(UserEventTypes|int $event, DispatchBase $dispatch, ReturnHelper &$ret, string $errorMessage) : bool {
+			$e = UserEventTypes::tryGet($event);
+
+			if ($e->getValue() === null) {
+				$this->assignError($ret, "Invalid event type");
+
+				return false;
+			}
+
+			$this->events[$e->getValue()]->traverse($dispatch, $this);
+
+			if ($dispatch->isConsumed()) {
+				$this->assignError($ret, $errorMessage);
+				$ret->addResults($dispatch->getResults());
+
+				return false;
+			}
+
+			return true;
 		}
 	}
