@@ -80,14 +80,22 @@
 		 * @var ChainHelper[]
 		 */
 		protected array $events = [
-			UserEventTypes::CONFIRM       => null,
-			UserEventTypes::CREATE        => null,
-			UserEventTypes::DELETE        => null,
-			UserEventTypes::LOGIN         => null,
-			UserEventTypes::LOGOUT        => null,
-			UserEventTypes::REGISTER      => null,
-			UserEventTypes::RESETPASSWORD => null,
-			UserEventTypes::UPDATE        => null
+			UserEventTypes::CONFIRM           => null,
+			UserEventTypes::CONFIRM_PRE       => null,
+			UserEventTypes::CREATE            => null,
+			UserEventTypes::CREATE_PRE        => null,
+			UserEventTypes::DELETE            => null,
+			UserEventTypes::DELETE_PRE        => null,
+			UserEventTypes::LOGIN             => null,
+			UserEventTypes::LOGIN_PRE         => null,
+			UserEventTypes::LOGOUT            => null,
+			UserEventTypes::LOGOUT_PRE        => null,
+			UserEventTypes::REGISTER          => null,
+			UserEventTypes::REGISTER_PRE      => null,
+			UserEventTypes::RESETPASSWORD     => null,
+			UserEventTypes::RESETPASSWORD_PRE => null,
+			UserEventTypes::UPDATE            => null,
+			UserEventTypes::UPDATE_PRE        => null,
 		];
 
 
