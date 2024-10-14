@@ -1,6 +1,8 @@
 [CmdletBinding()]
 
 $ProjectName      = ""
+$UiFrontDocker    = $true
+$UiAdminDocker    = $true
 $Commands         = @()
 $EnvVariables     = @{}
 $IsInteractive    = $false
@@ -34,7 +36,9 @@ if ($HasEnvFile) {
   Get-Content ./docker/.env | ForEach-Object {
     $name, $value = $_.split('=')
 
-    $EnvVariables.Add($name, $value)
+		if (!$EnvVariables.ContainsKey($name)) {
+			$EnvVariables.Add($name, $value)
+		}
   }
 }
 
@@ -44,6 +48,16 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
   } else {
     $ProjectName = $EnvVariables.PROJECT_NAME
   }
+
+	if ($HasEnvFile) {
+		if ($EnvVariables.ContainsKey('UI_FRONT_DOCKER') -and $EnvVariables.UI_FRONT_DOCKER -eq 'False') {
+			$UiFrontDocker = $false
+		}
+
+		if ($EnvVariables.ContainsKey('UI_ADMIN_DOCKER') -and $EnvVariables.UI_ADMIN_DOCKER -eq 'False') {
+			$UiAdminDocker = $false
+		}
+	}
 }
 
 $Command      = $Commands -Join " "
@@ -52,11 +66,23 @@ $WebContainer = "$ProjectName-web"
 function InitDocker([string] $ProjectName, [string] $WebContainer) {
 	$envContents  = @"
 PROJECT_NAME=$($ProjectName)
+UI_FRONT_DOCKER=$($UiAdminDocker)
+UI_ADMIN_DOCKER=$($UiFrontDocker)
 "@
+
+	$ComposeFile = 'docker-compose.yml'
+
+	if (!$UiFrontDocker -and !$UiAdminDocker) {
+		$ComposeFile = 'docker-compose-no-ui.yml'
+	} elseif (!$UiFrontDocker) {
+		$ComposeFile = 'docker-compose-no-front.yml'
+	} elseif (!$UiAdminDocker) {
+		$ComposeFile = 'docker-compose-no-admin.yml'
+	}
 
 	Push-Location ./docker
 	$envContents | Out-File -FilePath .env
-	docker compose -p $ProjectName up -d
+	docker compose -f $ComposeFile -p $ProjectName up -d
 	Pop-Location
 
 	Write-Host "Docker container build complete"
@@ -80,6 +106,28 @@ PROJECT_NAME=$($ProjectName)
 	Write-Host "Configuring front UI.. " -NoNewline
 	cp ./docker/front-config.json ./ui/front/public/config.json
 	Write-Host "DONE"
+
+	if (!$UiAdminDocker) {
+		Write-Host "Starting admin UI.. " -NoNewline
+
+		Push-Location ./ui/admin
+		pnpm install
+		Start-Job -Name ZsfUiAdmin -ScriptBlock { Invoke-Expression "pnpm dev" }
+		Pop-Location
+
+		Write-Host "DONE"
+	}
+
+	if (!$UiFrontDocker) {
+		Write-Host "Starting front UI.. " -NoNewline
+
+		Push-Location ./ui/front
+		pnpm install
+		Start-Job -Name ZsfUiFront -ScriptBlock { Invoke-Expression "pnpm dev" }
+		Pop-Location
+
+		Write-Host "DONE"
+	}
 }
 
 function UpdateDocker([string] $ProjectName, [string] $WebContainer) {
@@ -98,16 +146,22 @@ function StopDocker([string] $ProjectName) {
 	Pop-Location
 
 	Write-Host "Docker container stopped"
-	Write-Host "Stopping admin UI.. " -NoNewline
 
-	Stop-Job -Name ZsfUiAdmin
+	if (!$UiAdminDocker) {
+		Write-Host "Stopping admin UI.. " -NoNewline
 
-	Write-Host "DONE"
-	Write-Host "Stopping front UI.. " -NoNewline
+		Stop-Job -Name ZsfUiAdmin
 
-	Stop-Job -Name ZsfUiFront
+		Write-Host "DONE"
+	}
 
-	Write-Host "DONE"
+	if (!$UiFrontDocker) {
+		Write-Host "Stopping front UI.. " -NoNewline
+
+		Stop-Job -Name ZsfUiFront
+
+		Write-Host "DONE"
+	}
 }
 
 function DownDocker([string] $ProjectName) {
@@ -118,6 +172,22 @@ function DownDocker([string] $ProjectName) {
 	Pop-Location
 
 	Write-Host "Docker container removed"
+
+	if (!$UiAdminDocker) {
+		Write-Host "Stopping admin UI.. " -NoNewline
+
+		Stop-Job -Name ZsfUiAdmin
+
+		Write-Host "DONE"
+	}
+
+	if (!$UiFrontDocker) {
+		Write-Host "Stopping front UI.. " -NoNewline
+
+		Stop-Job -Name ZsfUiFront
+
+		Write-Host "DONE"
+	}
 }
 
 Write-Host "Executing command on '$ProjectName' project: $Command"
