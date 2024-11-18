@@ -398,7 +398,6 @@
 		 *   - UserRole
 		 *   - UserRelation
 		 *   - UserProfile
-		 *   - UserDevice
 		 *   - UserCustomVisibility
 		 *   - UserContact
 		 *   - LoginKey
