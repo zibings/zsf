@@ -5,6 +5,7 @@ assets/migrations/db/
 .scannerwork/
 .idea/
 .vs/
+migrations/db/
 tpl/index/
 web/admin/
 web/index.php

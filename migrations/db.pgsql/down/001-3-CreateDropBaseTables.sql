@@ -1,0 +1,17 @@
+CREATE OR REPLACE FUNCTION dropBaseTables() RETURNS void AS $$
+BEGIN
+	DROP TABLE IF EXISTS "LoginKey";
+	DROP TABLE IF EXISTS "UserRole";
+	DROP TABLE IF EXISTS "UserSession";
+	DROP TABLE IF EXISTS "UserAuthHistory";
+	DROP TABLE IF EXISTS "UserToken";
+	DROP TABLE IF EXISTS "UserProfile";
+	DROP TABLE IF EXISTS "UserSettings";
+	DROP TABLE IF EXISTS "UserVisibilities";
+	DROP TABLE IF EXISTS "UserContact";
+	DROP TABLE IF EXISTS "UserRelationEvent";
+	DROP TABLE IF EXISTS "UserRelation";
+	DROP TABLE IF EXISTS "User";
+	DROP TABLE IF EXISTS "Role";
+END;
+$$ LANGUAGE plpgsql;
