@@ -98,7 +98,7 @@ UI_ADMIN_DOCKER=$($UiFrontDocker)
 	}
 
 	docker exec -t $WebContainer composer update
-	docker exec -t $WebContainer vendor/bin/stoic-migrate up
+	docker exec -t $WebContainer php vendor/bin/stoic-migrate up
 
 	Write-Host "Docker container initialized`n"
 
@@ -136,7 +136,7 @@ UI_ADMIN_DOCKER=$($UiFrontDocker)
 function UpdateDocker([string] $ProjectName, [string] $WebContainer) {
 	Write-Host "Updating container for '$ProjectName'.."
 
-	docker exec -t $WebContainer vendor/bin/stoic-migrate up
+	docker exec -t $WebContainer php vendor/bin/stoic-migrate up
 
 	Write-Host "Finished updating"
 }
