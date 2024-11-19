@@ -5,3 +5,5 @@ services:
     environment:
       MYSQL_DATABASE: zsf
       MYSQL_ROOT_PASSWORD: P@55word
+    volumes:
+      - ./init-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql
