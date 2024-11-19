@@ -188,6 +188,13 @@ DB_ENGINE=$($DbEngine)
 	Start-Sleep -Seconds 15
 	Write-Host "DONE"
 
+	if ($DbEngine -eq "sqlsrv") {
+		$DbContainer = "$ProjectName-db"
+
+		Write-Host "Initializing SQL Server DB.. "
+		docker exec -it $DbContainer /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'P@55word' -i /docker-entrypoint-initdb.d/sqlsrv-init.sql
+	}
+
 	Write-Host "Initializing container.."
 
 	if (!(Test-Path -Path siteSettings.json)) {

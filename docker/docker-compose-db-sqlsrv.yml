@@ -1,7 +1,9 @@
 services:
   db:
-    image: mcr.microsoft.com/mssql/server
+    image: mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-20.04
     container_name: ${PROJECT_NAME}-db
     environment:
       SA_PASSWORD: P@55word
       ACCEPT_EULA: "Y"
+    volumes:
+      - ./init-scripts:/docker-entrypoint-initdb.d
