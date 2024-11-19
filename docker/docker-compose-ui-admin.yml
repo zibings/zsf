@@ -1,0 +1,13 @@
+services:
+  admin:
+    build:
+      context: ../ui/admin
+      dockerfile: ../../docker/Dockerfile-node
+    container_name: ${PROJECT_NAME}-admin
+    depends_on:
+      - web
+    ports:
+      - "5174:5173"
+    volumes:
+      - ../ui/admin:/app
+      - ../ui/admin/src:/app/src

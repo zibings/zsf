@@ -1,0 +1,13 @@
+services:
+  front:
+    build:
+      context: ../ui/front
+      dockerfile: ../../docker/Dockerfile-node
+    container_name: ${PROJECT_NAME}-front
+    depends_on:
+      - web
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../ui/front:/app
+      - ../ui/front/src:/app/src

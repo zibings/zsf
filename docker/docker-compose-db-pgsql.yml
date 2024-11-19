@@ -1,0 +1,8 @@
+services:
+  db:
+    image: postgres
+    container_name: ${PROJECT_NAME}-db
+    environment:
+      POSTGRES_DATABASE: zsf
+      POSTGRES_PASSWORD: P@55word
+      POSTGRES_DB: zsf
