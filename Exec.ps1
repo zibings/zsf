@@ -253,7 +253,7 @@ DB_ENGINE=$($DbEngine)
 
 	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
 
-	Write-Host "Docker container initialized`n"
+	Write-Host "Docker container initialized"
 }
 
 function UpdateDocker([string] $ProjectName, [string] $WebContainer) {

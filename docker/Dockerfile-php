@@ -23,6 +23,8 @@ RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 RUN install-php-extensions xdebug @composer
 
+RUN echo "xdebug.mode=develop,coverage" >> /usr/local/etc/php/php.ini
+
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 
 RUN a2enmod rewrite

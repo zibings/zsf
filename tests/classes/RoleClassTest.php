@@ -27,6 +27,10 @@
 			$cls->name = uniqid();
 
 			self::assertTrue($cls->create()->isGood());
+
+			$cls2 = Role::fromId($cls->id, self::$db, self::$log);
+			self::assertTrue($cls2->name === $cls->name);
+
 			//self::assertTrue($cls->delete()->isGood());
 
 			return;
