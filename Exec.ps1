@@ -199,7 +199,6 @@ DB_ENGINE=$($DbEngine)
 	switch ($DbEngine) {
 		"mysql" { Invoke-Expression "docker exec -i $DbContainer sh -c `"mysql -u root -p'P@55word' < /docker-entrypoint-initdb.d/mysql-init.sql`""	}
 		"sqlsrv" { Invoke-Expression "docker exec -it $DbContainer /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'P@55word' -i /docker-entrypoint-initdb.d/sqlsrv-init.sql" }
-		"pgsql" { Invoke-Expression "docker exec -it $DbContainer export PGPASSWORD='P@55word' psql -h localhost -U postgres -c `"CREATE DATABASE zsf_test`"" }
 	}
 
 	Write-Host "Initializing container.."

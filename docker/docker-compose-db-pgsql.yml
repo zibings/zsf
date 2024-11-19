@@ -5,3 +5,5 @@ services:
     environment:
       POSTGRES_PASSWORD: P@55word
       POSTGRES_DB: zsf
+    volumes:
+      - ./init-scripts/pgsql-init.sql:/docker-entrypoint-initdb.d/pgsql-init.sql
