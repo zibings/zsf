@@ -5,9 +5,3 @@ services:
     environment:
       SA_PASSWORD: P@55word
       ACCEPT_EULA: "Y"
-    command: >
-      /bin/bash -c "
-      /opt/mssql/bin/sqlservr &&
-      sleep 15 &&
-      /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'P@55word' -Q \"CREATE DATABASE [zsf];\"
-      "

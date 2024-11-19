@@ -94,7 +94,7 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 
 		$adminUiPrompt = QueryForInput -Prompt "Use Docker for Admin UI"
 		$frontUiPrompt = QueryForInput -Prompt "Use Docker for Front UI"
-		$dbEnginePrompt = QueryForInput -Prompt "Which DB engine" -AllowedValues @("MYSQL", "sqlsrv", "pgsql")
+		$dbEnginePrompt = QueryForInput -Prompt "Which DB engine" -AllowedValues @("mysql", "sqlsrv", "pgsql")
 
 		if ($adminUiPrompt -eq "N") {
 			$UiAdminDocker = $False
@@ -158,7 +158,7 @@ $($coreCompose)
 function InitDocker([string] $ProjectName, [string] $WebContainer) {
 	$dbDsns = @{
 		mysql = "mysql:host=db:3306;dbname=zsf"
-		sqlsrv = "sqlsrv:Server=db;Database=zsf"
+		sqlsrv = "sqlsrv:Server=db;Database=zsf;Encrypt=0"
 		pgsql = "pgsql:host=db;dbname=zsf"
 	}
 
