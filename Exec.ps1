@@ -7,6 +7,7 @@ $Commands         = @()
 $EnvVariables     = @{}
 $IsInteractive    = $false
 $FoundProjectName = $false
+$DbEngine         = "mysql"
 $HasEnvFile       = Test-Path -Path "./docker/.env"
 
 $args | ForEach-Object {
@@ -42,14 +43,33 @@ if ($HasEnvFile) {
   }
 }
 
-if ([string]::IsNullOrWhiteSpace($ProjectName)) {
-  if (!$HasEnvFile -or !$EnvVariables.ContainsKey('PROJECT_NAME')) {
-    $ProjectName = Read-Host -Prompt "What is the name of your project"
-  } else {
-    $ProjectName = $EnvVariables.PROJECT_NAME
-  }
+function QueryForInput {
+	param (
+		[Parameter(Mandatory=$True)] [string] $Prompt,
+		[string[]] $AllowedValues = @("Y", "n")
+	)
 
+	$answers = $AllowedValues | ForEach-Object { $_.ToUpper() }
+
+	do {
+		$response = (Read-Host "$Prompt ($($AllowedValues -Join '/'))").Trim().ToUpper()
+
+		if ($answers -contains $response) {
+			return $response
+		}
+
+		Write-Host "Invalid input, please try again"
+	} while ($true)
+}
+
+if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 	if ($HasEnvFile) {
+		if (!$EnvVariables.ContainsKey('PROJECT_NAME')) {
+			$ProjectName = Read-Host -Prompt "What is the name of your project"
+		} else {
+			$ProjectName = $EnvVariables.PROJECT_NAME
+		}
+
 		if ($EnvVariables.ContainsKey('UI_FRONT_DOCKER') -and $EnvVariables.UI_FRONT_DOCKER -eq 'False') {
 			$UiFrontDocker = $false
 		}
@@ -57,32 +77,109 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 		if ($EnvVariables.ContainsKey('UI_ADMIN_DOCKER') -and $EnvVariables.UI_ADMIN_DOCKER -eq 'False') {
 			$UiAdminDocker = $false
 		}
+
+		if ($EnvVariables.ContainsKey('DB_ENGINE') -and @('mysql', 'sqlsrv', 'pgsql') -contains $EnvVariables.DB_ENGINE.ToLower()) {
+			$DbEngine = $EnvVariables.DB_ENGINE.ToLower()
+		}
+	} else {
+		$projectNamePrompt = Read-Host -Prompt "What is the name of your project"
+
+		if ($projectNamePrompt.Length -lt 1) {
+			Write-Host "You must enter a project name to continue"
+
+			Exit
+		}
+
+		$ProjectName = $projectNamePrompt.ToLower()
+
+		$adminUiPrompt = QueryForInput -Prompt "Use Docker for Admin UI"
+		$frontUiPrompt = QueryForInput -Prompt "Use Docker for Front UI"
+		$dbEnginePrompt = QueryForInput -Prompt "Which DB engine" -AllowedValues @("MYSQL", "sqlsrv", "pgsql")
+
+		if ($adminUiPrompt -eq "N") {
+			$UiAdminDocker = $False
+		}
+
+		if ($frontUiPrompt -eq "N") {
+			$UiFrontDocker = $False
+		}
+
+		$DbEngine = $dbEnginePrompt.ToLower()
 	}
 }
 
 $Command      = $Commands -Join " "
 $WebContainer = "$ProjectName-web"
 
+function CreateCompose {
+	param(
+		[string] $DbEngine,
+		[bool] $UiAdminDocker,
+		[bool] $UiFrontDocker
+	)
+
+	$corePath = Join-Path -Path $PSScriptRoot -ChildPath docker/docker-compose-core.yml
+	$coreCompose = [System.IO.File]::ReadAllText($corePath, [System.Text.Encoding]::UTF8)
+
+	$includeLines = @("include:")
+
+	switch ($DbEngine) {
+		"mysql" { $includeLines += "  - docker-compose-db-mysql.yml" }
+		"sqlsrv" { $includeLines += "  - docker-compose-db-sqlsrv.yml" }
+		"pgsql" { $includeLines += "  - docker-compose-db-pgsql.yml" }
+	}
+
+	if ($UiAdminDocker) {
+		$includeLines += "  - docker-compose-ui-admin.yml"
+	}
+
+	if ($UiFrontDocker) {
+		$includeLines += "  - docker-compose-ui-front.yml"
+	}
+
+	$composeContents = @"
+$($includeLines -join "`n")
+
+$($coreCompose)
+"@
+
+	$composeContents = $composeContents -replace "`r`n", "`n"
+
+	if (Test-Path -Path ./docker/docker-compose.yml) {
+		Remove-Item -Path ./docker/docker-compose.yml -Force
+	}
+
+	$encoding = New-Object System.Text.UTF8Encoding($false)
+	$composePath = Join-Path -Path $PSScriptRoot -ChildPath docker/docker-compose.yml
+
+	[System.IO.File]::WriteAllText($composePath, $composeContents, $encoding)
+}
+
 function InitDocker([string] $ProjectName, [string] $WebContainer) {
+	$dbDsns = @{
+		mysql = "mysql:host=db:3306;dbname=zsf"
+		sqlsrv = "sqlsrv:Server=db;Database=zsf"
+		pgsql = "pgsql:host=db;dbname=zsf"
+	}
+
+	$dbUsers = @{
+		mysql = "root"
+		sqlsrv = "sa"
+		pgsql = "postgres"
+	}
+
 	$envContents  = @"
 PROJECT_NAME=$($ProjectName)
 UI_FRONT_DOCKER=$($UiAdminDocker)
 UI_ADMIN_DOCKER=$($UiFrontDocker)
+DB_ENGINE=$($DbEngine)
 "@
 
-	$ComposeFile = 'docker-compose.yml'
-
-	if (!$UiFrontDocker -and !$UiAdminDocker) {
-		$ComposeFile = 'docker-compose-no-ui.yml'
-	} elseif (!$UiFrontDocker) {
-		$ComposeFile = 'docker-compose-no-front.yml'
-	} elseif (!$UiAdminDocker) {
-		$ComposeFile = 'docker-compose-no-admin.yml'
-	}
+	CreateCompose -DbEngine $DbEngine -UiAdminDocker $UiAdminDocker -UiFrontDocker $UiFrontDocker
 
 	Push-Location ./docker
 	$envContents | Out-File -FilePath .env
-	docker compose -f $ComposeFile -p $ProjectName up -d
+	docker compose -f docker-compose.yml -p $ProjectName up -d
 	Pop-Location
 
 	Write-Host "Docker container build complete"
@@ -97,8 +194,15 @@ UI_ADMIN_DOCKER=$($UiFrontDocker)
  		docker exec -t $WebContainer cp docker/siteSettings.json siteSettings.json
 	}
 
-	docker exec -t $WebContainer composer update
-	docker exec -t $WebContainer php vendor/bin/stoic-migrate up
+	if (Test-Path -Path migrations/db) {
+		Remove-Item migrations/db -Recurse -Force
+	}
+
+	Copy-Item -Path "migrations/db.$DbEngine" "migrations/db" -Recurse
+
+	docker exec -it $WebContainer composer update
+	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($dbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
+	docker exec -it $WebContainer php vendor/bin/stoic-migrate up
 
 	Write-Host "Docker container initialized`n"
 
@@ -191,6 +295,8 @@ function DownDocker([string] $ProjectName) {
 
 		Write-Host "DONE"
 	}
+
+	Remove-Item -Path docker/.env -Force
 }
 
 Write-Host "Executing command on '$ProjectName' project: $Command"

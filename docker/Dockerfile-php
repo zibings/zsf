@@ -1,7 +1,24 @@
 FROM php:8.3-apache
+
+ENV ACCEPT_EULA=Y
+
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y libbz2-dev sqlite3 libsqlite3-dev libssl-dev libcurl4-openssl-dev libjpeg-dev libonig-dev libreadline-dev libtidy-dev libxslt-dev libzip-dev 'libpng*'
-RUN docker-php-ext-install pdo pdo_mysql mysqli bz2 mbstring gd xsl
+RUN apt-get install -y libbz2-dev sqlite3 libsqlite3-dev libssl-dev libcurl4-openssl-dev libjpeg-dev \
+        libonig-dev libreadline-dev libtidy-dev libxslt-dev libzip-dev 'libpng*' libpq-dev gnupg2
+
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
+RUN docker-php-ext-install pdo pdo_mysql mysqli bz2 mbstring gd xsl pdo_pgsql pgsql
+
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update
+RUN apt-get install -y msodbcsql18
+RUN apt-get install -y mssql-tools18
+RUN apt-get install -y unixodbc-dev
+RUN apt-get install -y libgssapi-krb5-2
+RUN pecl install sqlsrv
+RUN pecl install pdo_sqlsrv
+RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 RUN install-php-extensions xdebug @composer

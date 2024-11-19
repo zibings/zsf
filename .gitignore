@@ -5,6 +5,7 @@ assets/migrations/db/
 .scannerwork/
 .idea/
 .vs/
+docker/docker-compose.yml
 migrations/db/
 tpl/index/
 web/admin/
