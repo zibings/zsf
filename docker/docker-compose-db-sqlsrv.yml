@@ -6,4 +6,4 @@ services:
       SA_PASSWORD: P@55word
       ACCEPT_EULA: "Y"
     volumes:
-      - ./init-scripts:/docker-entrypoint-initdb.d
+      - ./init-scripts/sqlsrv-init.sql:/docker-entrypoint-initdb.d/sqlsrv-init.sql

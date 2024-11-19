@@ -10,6 +10,24 @@ $FoundProjectName = $false
 $DbEngine         = "mysql"
 $HasEnvFile       = Test-Path -Path "./docker/.env"
 
+$dbDsns = @{
+	mysql = "mysql:host=db:3306;dbname=zsf"
+	sqlsrv = "sqlsrv:Server=db;Database=zsf;Encrypt=0"
+	pgsql = "pgsql:host=db;dbname=zsf"
+}
+
+$testDbDsns = @{
+	mysql = "mysql:host=db:3306;dbname=zsf_test"
+	sqlsrv = "sqlsrv:Server=db;Database=zsf_test;Encrypt=0"
+	pgsql = "pgsql:host=db;dbname=zsf_test"
+}
+
+$dbUsers = @{
+	mysql = "root"
+	sqlsrv = "sa"
+	pgsql = "postgres"
+}
+
 $args | ForEach-Object {
 	if ($_ -eq "projectname") {
 		$FoundProjectName = $true
@@ -156,18 +174,6 @@ $($coreCompose)
 }
 
 function InitDocker([string] $ProjectName, [string] $WebContainer) {
-	$dbDsns = @{
-		mysql = "mysql:host=db:3306;dbname=zsf"
-		sqlsrv = "sqlsrv:Server=db;Database=zsf;Encrypt=0"
-		pgsql = "pgsql:host=db;dbname=zsf"
-	}
-
-	$dbUsers = @{
-		mysql = "root"
-		sqlsrv = "sa"
-		pgsql = "postgres"
-	}
-
 	$envContents  = @"
 PROJECT_NAME=$($ProjectName)
 UI_FRONT_DOCKER=$($UiAdminDocker)
@@ -184,15 +190,16 @@ DB_ENGINE=$($DbEngine)
 
 	Write-Host "Docker container build complete"
 
-	Write-Host "Waiting 15s to let docker do its thang.. " -NoNewline
-	Start-Sleep -Seconds 15
+	Write-Host "Waiting 30s to let docker do its thang.. " -NoNewline
+	Start-Sleep -Seconds 30
 	Write-Host "DONE"
 
-	if ($DbEngine -eq "sqlsrv") {
-		$DbContainer = "$ProjectName-db"
+	$DbContainer = "$ProjectName-db"
 
-		Write-Host "Initializing SQL Server DB.. "
-		docker exec -it $DbContainer /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'P@55word' -i /docker-entrypoint-initdb.d/sqlsrv-init.sql
+	switch ($DbEngine) {
+		"mysql" { Invoke-Expression "docker exec -it $DbContainer mysql -u root -p"P@55word" < /docker-entrypoint-initdb.d/mysql-init.sql" }
+		"sqlsrv" { Invoke-Expression "docker exec -it $DbContainer /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'P@55word' -i /docker-entrypoint-initdb.d/sqlsrv-init.sql" }
+		"pgsql" { Invoke-Expression "docker exec -it $DbContainer export PGPASSWORD='P@55word' psql -h localhost -U postgres -c `"CREATE DATABASE zsf_test`"" }
 	}
 
 	Write-Host "Initializing container.."
@@ -208,6 +215,10 @@ DB_ENGINE=$($DbEngine)
 	Copy-Item -Path "migrations/db.$DbEngine" "migrations/db" -Recurse
 
 	docker exec -it $WebContainer composer update
+
+	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($testDbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
+	docker exec -it $WebContainer php vendor/bin/stoic-migrate up
+
 	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($dbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
 	docker exec -it $WebContainer php vendor/bin/stoic-migrate up
 
@@ -247,7 +258,11 @@ DB_ENGINE=$($DbEngine)
 function UpdateDocker([string] $ProjectName, [string] $WebContainer) {
 	Write-Host "Updating container for '$ProjectName'.."
 
-	docker exec -t $WebContainer php vendor/bin/stoic-migrate up
+	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($testDbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
+	docker exec -it $WebContainer php vendor/bin/stoic-migrate up
+
+	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($dbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
+	docker exec -it $WebContainer php vendor/bin/stoic-migrate up
 
 	Write-Host "Finished updating"
 }

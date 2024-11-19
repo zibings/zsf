@@ -20,13 +20,6 @@
 BEGIN TRY
 	BEGIN TRANSACTION;
 
-	IF NOT EXISTS (SELECT name FROM [sys].[databases] WHERE name = 'zsf')
-	BEGIN
-			CREATE DATABASE [zsf];
-	END
-
-	USE [zsf];
-
 	/* User Table */
 	IF NOT EXISTS(SELECT * FROM [INFORMATION_SCHEMA].[TABLES] WHERE [TABLE_SCHEMA] = 'dbo' AND [TABLE_NAME] = 'User')
 	BEGIN
