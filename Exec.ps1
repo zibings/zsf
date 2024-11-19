@@ -219,6 +219,10 @@ UI_ADMIN_DOCKER=$($UiFrontDocker)
 DB_ENGINE=$($DbEngine)
 "@
 
+  Push-Location ./docker
+  $envContents | Out-File -FilePath .env
+  Pop-Location
+
 	CreateCompose -DbEngine $DbEngine -UiAdminDocker $UiAdminDocker -UiFrontDocker $UiFrontDocker
 	StartDocker -ProjectName $ProjectName -WebContainer $WebContainer
 
