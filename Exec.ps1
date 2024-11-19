@@ -173,55 +173,12 @@ $($coreCompose)
 	[System.IO.File]::WriteAllText($composePath, $composeContents, $encoding)
 }
 
-function InitDocker([string] $ProjectName, [string] $WebContainer) {
-	$envContents  = @"
-PROJECT_NAME=$($ProjectName)
-UI_FRONT_DOCKER=$($UiAdminDocker)
-UI_ADMIN_DOCKER=$($UiFrontDocker)
-DB_ENGINE=$($DbEngine)
-"@
-
-	CreateCompose -DbEngine $DbEngine -UiAdminDocker $UiAdminDocker -UiFrontDocker $UiFrontDocker
-
+function StartDocker([string] $ProjectName, [string] $WebContainer) {
 	Push-Location ./docker
-	$envContents | Out-File -FilePath .env
 	docker compose -f docker-compose.yml -p $ProjectName up -d
 	Pop-Location
 
-	Write-Host "Docker container build complete"
-
-	Write-Host "Waiting 30s to let docker do its thang.. " -NoNewline
-	Start-Sleep -Seconds 30
-	Write-Host "DONE"
-
-	$DbContainer = "$ProjectName-db"
-
-	switch ($DbEngine) {
-		"mysql" { Invoke-Expression "docker exec -i $DbContainer sh -c `"mysql -u root -p'P@55word' < /docker-entrypoint-initdb.d/mysql-init.sql`""	}
-		"sqlsrv" { Invoke-Expression "docker exec -it $DbContainer /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'P@55word' -i /docker-entrypoint-initdb.d/sqlsrv-init.sql" }
-	}
-
-	Write-Host "Initializing container.."
-
-	if (!(Test-Path -Path siteSettings.json)) {
- 		docker exec -t $WebContainer cp docker/siteSettings.json siteSettings.json
-	}
-
-	if (Test-Path -Path migrations/db) {
-		Remove-Item migrations/db -Recurse -Force
-	}
-
-	Copy-Item -Path "migrations/db.$DbEngine" "migrations/db" -Recurse
-
-	docker exec -it $WebContainer composer update
-
-	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($testDbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
-	docker exec -it $WebContainer php vendor/bin/stoic-migrate up
-
-	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($dbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
-	docker exec -it $WebContainer php vendor/bin/stoic-migrate up
-
-	Write-Host "Docker container initialized`n"
+	Write-Host "Docker container started"
 
 	Write-Host "Configuring admin UI.. " -NoNewline
 	cp ./docker/admin-config.json ./ui/admin/public/config.json
@@ -254,6 +211,47 @@ DB_ENGINE=$($DbEngine)
 	}
 }
 
+function InitDocker([string] $ProjectName, [string] $WebContainer) {
+	$envContents  = @"
+PROJECT_NAME=$($ProjectName)
+UI_FRONT_DOCKER=$($UiAdminDocker)
+UI_ADMIN_DOCKER=$($UiFrontDocker)
+DB_ENGINE=$($DbEngine)
+"@
+
+	CreateCompose -DbEngine $DbEngine -UiAdminDocker $UiAdminDocker -UiFrontDocker $UiFrontDocker
+	StartDocker -ProjectName $ProjectName -WebContainer $WebContainer
+
+	Write-Host "Waiting 30s to let docker do its thang.. " -NoNewline
+	Start-Sleep -Seconds 30
+	Write-Host "DONE"
+
+	$DbContainer = "$ProjectName-db"
+
+	switch ($DbEngine) {
+		"mysql" { Invoke-Expression "docker exec -i $DbContainer sh -c `"mysql -u root -p'P@55word' < /docker-entrypoint-initdb.d/mysql-init.sql`""	}
+		"sqlsrv" { Invoke-Expression "docker exec -it $DbContainer /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'P@55word' -i /docker-entrypoint-initdb.d/sqlsrv-init.sql" }
+	}
+
+	Write-Host "Initializing container.."
+
+	if (!(Test-Path -Path siteSettings.json)) {
+ 		docker exec -t $WebContainer cp docker/siteSettings.json siteSettings.json
+	}
+
+	if (Test-Path -Path migrations/db) {
+		Remove-Item migrations/db -Recurse -Force
+	}
+
+	Copy-Item -Path "migrations/db.$DbEngine" "migrations/db" -Recurse
+
+	docker exec -it $WebContainer composer update
+
+	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
+
+	Write-Host "Docker container initialized`n"
+}
+
 function UpdateDocker([string] $ProjectName, [string] $WebContainer) {
 	Write-Host "Updating container for '$ProjectName'.."
 
@@ -264,6 +262,18 @@ function UpdateDocker([string] $ProjectName, [string] $WebContainer) {
 	docker exec -it $WebContainer php vendor/bin/stoic-migrate up
 
 	Write-Host "Finished updating"
+}
+
+function TestDocker([string] $ProjectName, [string] $WebContainer) {
+	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
+
+	Write-Host "Running automated tests against test db"
+
+	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($testDbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
+	docker exec -it $WebContainer php vendor/bin/phpunit
+	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($dbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
+
+	Write-Host "Automated tests complete, db reset to development"
 }
 
 function StopDocker([string] $ProjectName) {
@@ -324,8 +334,12 @@ Write-Host "Executing command on '$ProjectName' project: $Command"
 
 if ($Command -eq "init") {
 	InitDocker -ProjectName $ProjectName -WebContainer $WebContainer
+} elseif ($Command -eq "start") {
+	StartDocker -ProjectName $ProjectName -WebContainer $WebContainer
 } elseif ($Command -eq "update") {
 	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
+} elseif ($Command -eq "test") {
+	TestDocker -ProjectName $ProjectName -WebContainer $WebContainer
 } elseif ($Command -eq "stop") {
 	StopDocker -ProjectName $ProjectName
 } elseif ($Command -eq "down") {

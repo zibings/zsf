@@ -16,6 +16,10 @@ scripts/scratch.php
 ui/admin/.pnpm-store/
 ui/front/.pnpm-store/
 
+# Test stuff
+reports/
+coverage/
+
 # User-specific files
 *.suo
 *.user
