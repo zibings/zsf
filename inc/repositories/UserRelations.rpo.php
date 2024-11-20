@@ -51,20 +51,20 @@
 			$this->urObj = new UserRelation($this->db, $this->log);
 
 			if (!static::$dbInitialized) {
-				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELREL, "DELETE FROM {$this->urObj->getDbTableName()} WHERE ([UserID_One] = :userOne AND [UserID_Two] = :userTwo) OR ([UserID_One] = :userTwo AND [UserID_Two] = :userOne)");
-				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELREL, "DELETE FROM {$this->urObj->getDbTableName()} WHERE (`UserID_One` = :userOne AND `UserID_Two` = :userTwo) OR (`UserID_One` = :userTwo AND `UserID_Two` = :userOne)");
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELREL, "DELETE FROM {$this->urObj->getDbTableName()} WHERE ([UserID_One] = :userOne AND [UserID_Two] = :userTwo) OR ([UserID_One] = :userThree AND [UserID_Two] = :userFour)");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELREL, "DELETE FROM {$this->urObj->getDbTableName()} WHERE (`UserID_One` = :userOne AND `UserID_Two` = :userTwo) OR (`UserID_One` = :userThree AND `UserID_Two` = :userFour)");
 
-				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELALLFORUSR, "DELETE FROM {$this->urObj->getDbTableName()} WHERE [UserID_One] = :userId OR [UserID_Two] = :userId");
-				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELALLFORUSR, "DELETE FROM {$this->urObj->getDbTableName()} WHERE `UserID_One` = :userId OR `UserID_Two` = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELALLFORUSR, "DELETE FROM {$this->urObj->getDbTableName()} WHERE [UserID_One] = :userId OR [UserID_Two] = :userIdTwo");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELALLFORUSR, "DELETE FROM {$this->urObj->getDbTableName()} WHERE `UserID_One` = :userId OR `UserID_Two` = :userIdTwo");
 
-				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GUSRRELS, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [UserID_One] = :userId OR [UserID_Two] = :userId ORDER BY [Created] ASC");
-				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GUSRRELS, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `UserID_One` = :userId OR `UserID_Two` = :userId ORDER BY `Created` ASC");
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GUSRRELS, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [UserID_One] = :userId OR [UserID_Two] = :userIdTwo ORDER BY [Created] ASC");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GUSRRELS, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `UserID_One` = :userId OR `UserID_Two` = :userIdTwo ORDER BY `Created` ASC");
 
-				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GRELSBYSTAGE, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE ([UserID_One] = :userId OR [UserID_Two] = :userId) AND [Stage] = :stage ORDER BY [Created] ASC");
-				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GRELSBYSTAGE, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE (`UserID_One` = :userId OR `UserID_Two` = :userId) AND `Stage` = :stage ORDER BY `Created` ASC");
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GRELSBYSTAGE, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE ([UserID_One] = :userId OR [UserID_Two] = :userIdTwo) AND [Stage] = :stage ORDER BY [Created] ASC");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GRELSBYSTAGE, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE (`UserID_One` = :userId OR `UserID_Two` = :userIdTwo) AND `Stage` = :stage ORDER BY `Created` ASC");
 
-				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GRELS, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE ([UserID_One] = :userOne AND [UserID_Two] = :userTwo) OR ([UserID_One] = :userTwo AND [UserID_Two] = :userOne) ORDER BY [Origin] DESC");
-				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GRELS, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE (`UserID_One` = :userOne AND `UserID_Two` = :userTwo) OR (`UserID_One` = :userTwo AND `UserID_Two` = :userOne) ORDER BY `Origin` DESC");
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GRELS, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE ([UserID_One] = :userOne AND [UserID_Two] = :userTwo) OR ([UserID_One] = :userThree AND [UserID_Two] = :userFour) ORDER BY [Origin] DESC");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GRELS, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE (`UserID_One` = :userOne AND `UserID_Two` = :userTwo) OR (`UserID_One` = :userThree AND `UserID_Two` = :userFour) ORDER BY `Origin` DESC");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GINCRELS, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [UserID_Two] = :userId ORDER BY [Created] ASC");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GINCRELS, $this->urObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `UserID_Two` = :userId ORDER BY `Created` ASC");
@@ -190,8 +190,10 @@
 
 			$this->tryPdoExcept(function () use ($userOne, $userTwo) {
 				$stmt = $this->db->prepareStored(self::SQL_DELREL);
-				$stmt->bindParam(':userOne', $userOne);
-				$stmt->bindParam(':userTwo', $userTwo);
+				$stmt->bindParam(':userOne', $userOne, \PDO::PARAM_INT);
+				$stmt->bindParam(':userTwo', $userTwo, \PDO::PARAM_INT);
+				$stmt->bindParam(':userThree', $userTwo, \PDO::PARAM_INT);
+				$stmt->bindParam(':userFour', $userOne, \PDO::PARAM_INT);
 				$stmt->execute();
 
 				return;
@@ -213,7 +215,8 @@
 
 			$this->tryPdoExcept(function () use ($userId) {
 				$stmt = $this->db->prepareStored(self::SQL_DELALLFORUSR);
-				$stmt->bindParam(':userId', $userId);
+				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userIdTwo', $userId, \PDO::PARAM_INT);
 				$stmt->execute();
 
 				return;
@@ -234,13 +237,14 @@
 				$sql  = $obj->generateClassQuery(BaseDbQueryTypes::DELETE, false);
 
 				if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
-					$sql .= " WHERE [UserID_One] = :userId OR [UserID_Two] = :userId";
+					$sql .= " WHERE [UserID_One] = :userId OR [UserID_Two] = :userIdTwo";
 				} else {
-					$sql .= " WHERE `UserID_One` = :userId OR `UserID_Two` = :userId";
+					$sql .= " WHERE `UserID_One` = :userId OR `UserID_Two` = :userIdTwo";
 				}
 
 				$stmt = $this->db->prepare($sql);
 				$stmt->bindValue(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindValue(':userIdTwo', $userId, \PDO::PARAM_INT);
 				$stmt->execute();
 
 				return;
@@ -260,7 +264,8 @@
 
 			$this->tryPdoExcept(function () use (&$ret, $userId) {
 				$stmt = $this->db->prepareStored(self::SQL_GUSRRELS);
-				$stmt->bindParam(':userId', $userId);
+				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userIdTwo', $userId, \PDO::PARAM_INT);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -291,8 +296,9 @@
 
 			$this->tryPdoExcept(function () use (&$ret, $userId, $stage) {
 				$stmt = $this->db->prepareStored(self::SQL_GRELSBYSTAGE);
-				$stmt->bindParam(':userId', $userId);
-				$stmt->bindParam(':stage', $stage);
+				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':userIdTwo', $userId, \PDO::PARAM_INT);
+				$stmt->bindParam(':stage', $stage, \PDO::PARAM_INT);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -318,8 +324,10 @@
 
 			$this->tryPdoExcept(function () use (&$ret, $userOne, $userTwo) {
 				$stmt = $this->db->prepareStored(self::SQL_GRELS);
-				$stmt->bindParam(':userOne', $userOne);
-				$stmt->bindParam(':userTwo', $userTwo);
+				$stmt->bindParam(':userOne', $userOne, \PDO::PARAM_INT);
+				$stmt->bindParam(':userTwo', $userTwo, \PDO::PARAM_INT);
+				$stmt->bindParam(':userThree', $userTwo, \PDO::PARAM_INT);
+				$stmt->bindParam(':userFour', $userOne, \PDO::PARAM_INT);
 
 				if ($stmt->execute()) {
 					$rows = [];
