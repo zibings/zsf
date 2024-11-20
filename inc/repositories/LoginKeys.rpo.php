@@ -12,7 +12,8 @@
 	 * @package Zibings
 	 */
 	class LoginKeys extends StoicDbClass {
-		const SQL_DELFORUSER = 'loginkeys-deleteforuser';
+		const SQL_COUNTFORUSER = 'loginkeys-countforuser';
+		const SQL_DELFORUSER   = 'loginkeys-deleteforuser';
 
 
 		/**
@@ -40,6 +41,9 @@
 			$this->lkObj = new LoginKey($this->db, $this->log);
 
 			if (!static::$dbInitialized) {
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_COUNTFORUSER, "SELECT COUNT(*) FROM {$this->lkObj->getDbTableName()} WHERE [UserID] = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_COUNTFORUSER, "SELECT COUNT(*) FROM {$this->lkObj->getDbTableName()} WHERE `UserID` = :userId");
+
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELFORUSER, "DELETE FROM {$this->lkObj->getDbTableName()} WHERE [UserID] = :userId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELFORUSER, "DELETE FROM {$this->lkObj->getDbTableName()} WHERE `UserID` = :userId");
 
@@ -47,6 +51,29 @@
 			}
 
 			return;
+		}
+
+		/**
+		 * Retrieves the number of login keys a user has in the database.
+		 *
+		 * @param int $userId Integer identifier for user in question.
+		 * @return int
+		 */
+		public function getNumKeysForUser(int $userId) : int {
+			$ret = 0;
+			$this->tryPdoExcept(function () use (&$ret, $userId) {
+				$stmt = $this->db->prepareStored(self::SQL_COUNTFORUSER);
+				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->execute();
+
+				while ($row = $stmt->fetch()) {
+					$ret = intval($row[0]);
+				}
+
+				return;
+			}, "Failed to get key count for user");
+
+			return $ret;
 		}
 
 		/**
@@ -64,6 +91,8 @@
 				$stmt = $this->db->prepareStored(self::SQL_DELFORUSER);
 				$stmt->bindParam(':userId', $userId);
 				$stmt->execute();
+
+				return;
 			}, "Failed to delete user's contacts");
 
 			return;
