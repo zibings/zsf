@@ -447,7 +447,6 @@
 
 			$this->touchEvent(UserEventTypes::DELETE, new UserEventDeleteDispatch($user, $this->db, $this->log));
 
-			(new UserVisibilitiesRepo($this->db, $this->log))->deleteAllForUser($user->id);
 			(new UserTokens($this->db, $this->log))->deleteAllForUser($user->id);
 			(new UserSessions($this->db, $this->log))->deleteAllForUser($user->id);
 			(new UserRoles($this->db, $this->log))->deleteAllForUser($user->id);
