@@ -193,6 +193,8 @@
 				$stmt->bindParam(':userOne', $userOne);
 				$stmt->bindParam(':userTwo', $userTwo);
 				$stmt->execute();
+
+				return;
 			}, "Failed to delete user's relation");
 
 			return true;
@@ -213,6 +215,8 @@
 				$stmt = $this->db->prepareStored(self::SQL_DELALLFORUSR);
 				$stmt->bindParam(':userId', $userId);
 				$stmt->execute();
+
+				return;
 			}, "Failed to delete user's relations");
 
 			return;
@@ -236,6 +240,8 @@
 						$ret[] = UserRelation::fromArray($row, $this->db, $this->log);
 					}
 				}
+
+				return;
 			}, "Failed to get user relations");
 
 			return $ret;
@@ -266,6 +272,8 @@
 						$ret[] = UserRelation::fromArray($row, $this->db, $this->log);
 					}
 				}
+
+				return;
 			}, "Failed to get user relation");
 
 			return $ret;
@@ -297,6 +305,8 @@
 						$ret = $rows;
 					}
 				}
+
+				return;
 			}, "Failed to get user relation");
 
 			return $ret;
@@ -337,6 +347,8 @@
 						$ret[] = UserRelation::fromArray($row, $this->db, $this->log);
 					}
 				}
+
+				return;
 			}, "Failed to get user relation");
 
 			return $ret;
@@ -367,6 +379,8 @@
 						$ret[] = UserRelation::fromArray($row, $this->db, $this->log);
 					}
 				}
+
+				return;
 			}, "Failed to get user relation");
 
 			return $ret;
@@ -397,6 +411,8 @@
 						$ret[] = UserRelation::fromArray($row, $this->db, $this->log);
 					}
 				}
+
+				return;
 			}, "Failed to get user relation");
 
 			return $ret;
@@ -420,6 +436,8 @@
 						$ret[] = UserRelation::fromArray($row, $this->db, $this->log);
 					}
 				}
+
+				return;
 			}, "Failed to get user relation");
 
 			return $ret;
@@ -450,6 +468,8 @@
 						$ret[] = UserRelation::fromArray($row, $this->db, $this->log);
 					}
 				}
+
+				return;
 			}, "Failed to get user relation");
 
 			return $ret;
@@ -480,6 +500,8 @@
 						$ret[] = UserRelation::fromArray($row, $this->db, $this->log);
 					}
 				}
+
+				return;
 			}, "Failed to get user relation");
 
 			return $ret;
