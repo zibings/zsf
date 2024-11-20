@@ -223,6 +223,33 @@
 		}
 
 		/**
+		 * Removes all relation events for the given user.
+		 *
+		 * @param int $userId Integer identifier for the user in question.
+		 * @return void
+		 */
+		public function deleteAllEventsForUser(int $userId) : void {
+			$this->tryPdoExcept(function () use ($userId) {
+				$obj	= new UserRelationEvent($this->db, $this->log);
+				$sql  = $obj->generateClassQuery(BaseDbQueryTypes::DELETE, false);
+
+				if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+					$sql .= " WHERE [UserID_One] = :userId OR [UserID_Two] = :userId";
+				} else {
+					$sql .= " WHERE `UserID_One` = :userId OR `UserID_Two` = :userId";
+				}
+
+				$stmt = $this->db->prepare($sql);
+				$stmt->bindValue(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->execute();
+
+				return;
+			}, "Failed to delete user relation events");
+
+			return;
+		}
+
+		/**
 		 * Returns a list of a user's relations.
 		 *
 		 * @param int $userId Integer identifier of user asking about their relations.
