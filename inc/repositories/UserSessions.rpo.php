@@ -2,6 +2,7 @@
 
 	namespace Zibings;
 
+	use Stoic\Pdo\BaseDbQueryTypes;
 	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
 	use Stoic\Pdo\StoicDbClass;
@@ -47,6 +48,37 @@
 			}
 
 			return;
+		}
+
+		/**
+		 * Retrieves all available sessions for the given user.
+		 *
+		 * @param int $userId Integer identifier for user in question.
+		 * @return UserSession[]
+		 */
+		public function getAllForUser(int $userId) : array {
+			$ret = [];
+			$this->tryPdoExcept(function () use (&$ret, $userId) {
+				$sql = $this->usObj->generateClassQuery(BaseDbQueryTypes::SELECT, false);
+
+				if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+					$sql .= " WHERE [UserID] = :userId";
+				} else {
+					$sql .= " WHERE `UserID` = :userId";
+				}
+
+				$stmt = $this->db->prepare($sql);
+				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->execute();
+
+				while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+					$ret[] = UserSession::fromArray($row, $this->db, $this->log);
+				}
+
+				return;
+			}, "Failed to retrieve user sessions");
+
+			return $ret;
 		}
 
 		/**
