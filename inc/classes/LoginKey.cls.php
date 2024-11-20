@@ -14,13 +14,13 @@
 	 * Enumerated types of providers.
 	 */
 	class LoginKeyProviders extends EnumBase {
-		const ERROR    = 0;
-		const PASSWORD = 1;
-		const FACEBOOK = 2;
-		const TWITTER  = 3;
-		const TWITCH   = 4;
-		const GITHUB   = 5;
-		const REDDIT   = 6;
+		const int ERROR    = 0;
+		const int PASSWORD = 1;
+		const int FACEBOOK = 2;
+		const int TWITTER  = 3;
+		const int TWITCH   = 4;
+		const int GITHUB   = 5;
+		const int REDDIT   = 6;
 	}
 
 	/**
@@ -64,13 +64,13 @@
 		 * Static method to retrieve login key given the user and provider. Returns a blank LoginKey object if no key is found.
 		 *
 		 * @param int $userId Integer identifier of user who owns key.
-		 * @param int|LoginKeyProviders $provider Type of provider this key represents.
+		 * @param int $provider Type of provider this key represents.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
 		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
 		 * @throws \InvalidArgumentException|\Exception
 		 * @return LoginKey
 		 */
-		public static function fromUserAndProvider(int $userId, int|LoginKeyProviders $provider, PdoHelper $db, Logger $log = null) : LoginKey {
+		public static function fromUserAndProvider(int $userId, int $provider, PdoHelper $db, Logger $log = null) : LoginKey {
 			if (!LoginKeyProviders::validValue($provider)) {
 				throw new \InvalidArgumentException("Invalid provider value: {$provider}");
 			}
