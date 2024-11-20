@@ -3,6 +3,7 @@
 	namespace Zibings;
 
 	use Stoic\Pdo\BaseDbQueryTypes;
+	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\StoicDbClass;
 
 	/**
@@ -42,9 +43,19 @@
 			}
 
 			$this->tryPdoExcept(function () use ($userId) {
-				$stmt = $this->db->prepare("DELETE FROM {$this->ucObj->getDbTableName()} WHERE [UserID] = :userId");
-				$stmt->bindParam(':userId', $userId);
+				$sql = $this->ucObj->generateClassQuery(BaseDbQueryTypes::DELETE, false);
+
+				if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+					$sql .= " WHERE [UserID] = :userId";
+				} else {
+					$sql .= " WHERE `UserID` = :userId";
+				}
+
+				$stmt = $this->db->prepare($sql);
+				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
 				$stmt->execute();
+
+				return;
 			}, "Failed to delete user's contacts");
 
 			return;
@@ -60,14 +71,24 @@
 			$ret = [];
 
 			$this->tryPdoExcept(function () use (&$ret, $userId) {
-				$stmt = $this->db->prepare($this->ucObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [UserID] = :userId");
-				$stmt->bindParam(':userId', $userId);
+				$sql = $this->ucObj->generateClassQuery(BaseDbQueryTypes::SELECT, false);
+
+				if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+					$sql .= " WHERE [UserID] = :userId";
+				} else {
+					$sql .= " WHERE `UserID` = :userId";
+				}
+
+				$stmt = $this->db->prepare($sql);
+				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
 
 				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 						$ret[] = UserContact::fromArray($row, $this->db, $this->log);
 					}
 				}
+
+				return;
 			}, "Failed to retrieve user contacts");
 
 			return $ret;

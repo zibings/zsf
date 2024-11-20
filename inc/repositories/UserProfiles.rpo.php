@@ -64,6 +64,8 @@
 				$stmt = $this->db->prepareStored(self::SQL_DELFORUSER);
 				$stmt->bindParam(':userId', $userId);
 				$stmt->execute();
+
+				return;
 			}, "Failed to delete user's contacts");
 
 			return;
