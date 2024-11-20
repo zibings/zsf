@@ -10,7 +10,7 @@
 			$usr->email = uniqid() . '@example.com';
 			$usr->create();
 
-			$cls = new UserProfile(self::$db, self::$log);
+			$cls              = new UserProfile(self::$db, self::$log);
 			$cls->birthday    = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 			$cls->description = uniqid();
 			$cls->displayName = uniqid();

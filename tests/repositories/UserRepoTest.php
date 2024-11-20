@@ -1,6 +1,7 @@
 <?php
 
 	use Zibings\User;
+	use Zibings\UserGenders;
 	use Zibings\UserProfile;
 	use Zibings\UserProfiles;
 	use Zibings\Users;
@@ -188,8 +189,13 @@
 			$usr->email = $newEmail;
 			$usr->create();
 
-			$usrProfile         = new UserProfile(self::$db, self::$log);
-			$usrProfile->userId = $usr->id;
+			$usrProfile              = new UserProfile(self::$db, self::$log);
+			$usrProfile->birthday    = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+			$usrProfile->description = $newDescription;
+			$usrProfile->displayName = $newUsername;
+			$usrProfile->gender      = new UserGenders(UserGenders::FEMALE);
+			$usrProfile->realName    = $newRealName;
+			$usrProfile->userId      = $usr->id;
 			$usrProfile->create();
 
 			$usrVis           = new UserVisibilities(self::$db, self::$log);
@@ -215,14 +221,14 @@
 			$usrVis->searches = new VisibilityState(VisibilityState::PRV);
 			$usrVis->update();
 
-			self::assertCount(count($origUsersVisible), $repo->searchUsersByIdentifiers($newUsername));
-			self::assertNotCount(count($origUsersNotVisible), $repo->searchUsersByIdentifiers($newUsername, false));
+			self::assertNotCount(count($origUsersVisible), $repo->searchUsersByIdentifiers($newUsername));
+			self::assertCount(count($origUsersNotVisible), $repo->searchUsersByIdentifiers($newUsername, false));
 
 			$usrVis->searches = new VisibilityState(VisibilityState::PUB);
 			$usrVis->update();
 
-			self::assertNotCount(count($origUsersVisible), $repo->searchUsersByIdentifiers($newUsername));
-			self::assertNotCount(count($origUsersNotVisible), $repo->searchUsersByIdentifiers($newUsername, false));
+			self::assertCount(count($origUsersVisible), $repo->searchUsersByIdentifiers($newUsername));
+			self::assertCount(count($origUsersNotVisible), $repo->searchUsersByIdentifiers($newUsername, false));
 
 			$origUsersVisible    = $repo->searchUsersByIdentifiers($newRealName);
 			$origUsersNotVisible = $repo->searchUsersByIdentifiers($newRealName, false);
@@ -233,14 +239,14 @@
 			$usrVis->searches = new VisibilityState(VisibilityState::PRV);
 			$usrVis->update();
 
-			self::assertCount(count($origUsersVisible), $repo->searchUsersByIdentifiers($newRealName));
-			self::assertNotCount(count($origUsersNotVisible), $repo->searchUsersByIdentifiers($newRealName, false));
+			self::assertNotCount(count($origUsersVisible), $repo->searchUsersByIdentifiers($newRealName));
+			self::assertCount(count($origUsersNotVisible), $repo->searchUsersByIdentifiers($newRealName, false));
 
 			$usrVis->searches = new VisibilityState(VisibilityState::PUB);
 			$usrVis->update();
 
-			self::assertNotCount(count($origUsersVisible), $repo->searchUsersByIdentifiers($newRealName));
-			self::assertNotCount(count($origUsersNotVisible), $repo->searchUsersByIdentifiers($newRealName, false));
+			self::assertCount(count($origUsersVisible), $repo->searchUsersByIdentifiers($newRealName));
+			self::assertCount(count($origUsersNotVisible), $repo->searchUsersByIdentifiers($newRealName, false));
 
 			$origUsersVisible    = $repo->searchUsersByIdentifiers($newDescription);
 			$origUsersNotVisible = $repo->searchUsersByIdentifiers($newDescription, false);
@@ -251,14 +257,14 @@
 			$usrVis->searches = new VisibilityState(VisibilityState::PRV);
 			$usrVis->update();
 
-			self::assertCount(count($origUsersVisible), $repo->searchUsersByIdentifiers($newDescription));
-			self::assertNotCount(count($origUsersNotVisible), $repo->searchUsersByIdentifiers($newDescription, false));
+			self::assertNotCount(count($origUsersVisible), $repo->searchUsersByIdentifiers($newDescription));
+			self::assertCount(count($origUsersNotVisible), $repo->searchUsersByIdentifiers($newDescription, false));
 
 			$usrVis->searches = new VisibilityState(VisibilityState::PUB);
 			$usrVis->update();
 
-			self::assertNotCount(count($origUsersVisible), $repo->searchUsersByIdentifiers($newDescription));
-			self::assertNotCount(count($origUsersNotVisible), $repo->searchUsersByIdentifiers($newDescription, false));
+			self::assertCount(count($origUsersVisible), $repo->searchUsersByIdentifiers($newDescription));
+			self::assertCount(count($origUsersNotVisible), $repo->searchUsersByIdentifiers($newDescription, false));
 
 			$usrVis->delete();
 			$usrProfile->delete();

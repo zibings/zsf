@@ -366,7 +366,7 @@
 				$stmt->bindValue(':query3', "%{$query}%");
 				$stmt->bindValue(':query4', "%{$query}%");
 
-				if ($stmt->execute() && $stmt->rowCount() > 0) {
+				if ($stmt->execute()) {
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 						$ret[] = UserSearchData::fromArray($row);
 					}
