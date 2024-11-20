@@ -206,7 +206,9 @@
 				$stmt->bindValue(':id', $this->id);
 				$stmt->execute();
 
-				if ($stmt->fetch()[0] > 0) {
+				$row = $stmt->fetch();
+
+				if ($row && $row[0] > 0) {
 					$ret->addMessage("Found duplicate role with name {$this->name} in database");
 				} else {
 					$ret->makeGood();
@@ -237,8 +239,8 @@
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Name] = :name");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `Name` = :name");
 
-				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Name] = :name AND [ID] <> :id");
-				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `Name` = :name AND `ID` <> :id");
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYNAMEID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Name] = :name AND [ID] <> :id");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYNAMEID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `Name` = :name AND `ID` <> :id");
 
 				static::$dbInitialized = true;
 			}

@@ -39,7 +39,6 @@
 			$ret = [];
 
 			$this->tryPdoExcept(function () use (&$ret) {
-				echo($this->rlObj->generateClassQuery(BaseDbQueryTypes::SELECT, false));
 				$stmt = $this->db->query($this->rlObj->generateClassQuery(BaseDbQueryTypes::SELECT, false));
 
 				while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
