@@ -105,6 +105,8 @@
 				$stmt->bindParam(':userId', $userId);
 				$stmt->bindParam(':roleId', $role->id);
 				$stmt->execute();
+
+				return;
 			}, "Failed to add user to role");
 
 			return true;
@@ -125,6 +127,8 @@
 				$stmt = $this->db->prepareStored(self::SQL_DELUSRROLE);
 				$stmt->bindParam(':userId', $userId);
 				$stmt->execute();
+
+				return;
 			}, "Failed to delete user's contacts");
 
 			return;
@@ -154,6 +158,8 @@
 						$ret[$row['Name']] = $tmp;
 					}
 				}
+
+				return;
 			}, "Failed to get user roles");
 
 			return $ret;
@@ -178,6 +184,8 @@
 						$ret[] = User::fromArray($row, $this->db, $this->log);
 					}
 				}
+
+				return;
 			}, "Failed to retrieve user list");
 
 			return $ret;
@@ -194,6 +202,8 @@
 				$stmt = $this->db->prepareStored(self::SQL_DELUSRSINROLEBYNAME);
 				$stmt->bindParam(':name', $name);
 				$stmt->execute();
+
+				return;
 			}, "Failed to remove users from role");
 
 			return;
@@ -214,6 +224,8 @@
 				$stmt = $this->db->prepareStored(self::SQL_DELUSRALLROLES);
 				$stmt->bindParam(':userId', $userId);
 				$stmt->execute();
+
+				return;
 			}, "Failed to remove user from all roles");
 
 			return;
@@ -242,6 +254,8 @@
 				$stmt->bindParam(':userId', $userId);
 				$stmt->bindParam(':roleId', $role->id);
 				$stmt->execute();
+
+				return;
 			}, "Failed to remove user from role");
 
 			return;
@@ -277,6 +291,8 @@
 						$ret = true;
 					}
 				}
+
+				return;
 			}, "Failed to check if user is in role.");
 
 			return $ret;
