@@ -22,6 +22,7 @@
 	}
 
 	require(STOIC_CORE_PATH . 'vendor/autoload.php');
+	require(STOIC_CORE_PATH . 'tests/ZsfTestCase.php');
 
 	use Stoic\Web\Resources\PageVariables;
 	use Stoic\Web\Stoic;
