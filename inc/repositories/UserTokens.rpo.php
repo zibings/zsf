@@ -12,7 +12,8 @@
 	 * @package Zibings
 	 */
 	class UserTokens extends StoicDbClass {
-		const SQL_DELFORUSER = 'usertokens-deleteforuser';
+		const SQL_COUNTFORUSER = 'usertokens-countforuser';
+		const SQL_DELFORUSER   = 'usertokens-deleteforuser';
 
 
 		/**
@@ -40,6 +41,9 @@
 			$this->utObj = new UserToken($this->db, $this->log);
 
 			if (!static::$dbInitialized) {
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_COUNTFORUSER, "SELECT COUNT(*) FROM {$this->utObj->getDbTableName()} WHERE [UserID] = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_COUNTFORUSER, "SELECT COUNT(*) FROM {$this->utObj->getDbTableName()} WHERE `UserID` = :userId");
+
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELFORUSER, "DELETE FROM {$this->utObj->getDbTableName()} WHERE [UserID] = :userId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELFORUSER, "DELETE FROM {$this->utObj->getDbTableName()} WHERE `UserID` = :userId");
 
@@ -47,6 +51,29 @@
 			}
 
 			return;
+		}
+
+		/**
+		 * Retrieves number of tokens for the given user.
+		 *
+		 * @param int $userId Integer identifier for user in question.
+		 * @return int
+		 */
+		public function getNumTokensForUser(int $userId) : int {
+			$ret = 0;
+			$this->tryPdoExcept(function () use (&$ret, $userId) {
+				$stmt = $this->db->prepareStored(self::SQL_COUNTFORUSER);
+				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+				$stmt->execute();
+
+				while ($row = $stmt->fetch()) {
+					$ret = intval($row[0]);
+				}
+
+				return;
+			}, "Failed to get user token count");
+
+			return $ret;
 		}
 
 		/**
@@ -62,8 +89,10 @@
 
 			$this->tryPdoExcept(function () use ($userId) {
 				$stmt = $this->db->prepareStored(self::SQL_DELFORUSER);
-				$stmt->bindParam(':userId', $userId);
+				$stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
 				$stmt->execute();
+
+				return;
 			}, "Failed to delete user's contacts");
 
 			return;
