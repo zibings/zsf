@@ -4,7 +4,7 @@
 	use Zibings\Roles;
 
 	class RolesRepoTest extends ZsfTestCase {
-		public function test_getAll() {
+		public function test_getAll() : void {
 			$role = new Role(self::$db, self::$log);
 			$repo = new Roles(self::$db, self::$log);
 			$origCount = count($repo->getAll());

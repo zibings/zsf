@@ -169,6 +169,8 @@
 				while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
 					$ret[] = User::fromArray($row, $this->db, $this->log);
 				}
+
+				return;
 			}, "Failed to get all users");
 
 			return $ret;
@@ -211,6 +213,8 @@
 						], $this->db, $this->log)
 					];
 				}
+
+				return;
 			}, "Failed to get all users");
 
 			return $ret;
@@ -244,6 +248,8 @@
 				if ($row = $stmt->fetch()) {
 					$ret = intval($row[0]);
 				}
+
+				return;
 			}, "Failed to get DAU count");
 
 			return $ret;
@@ -266,6 +272,8 @@
 				if ($row = $stmt->fetch()) {
 					$ret = intval($row[0]);
 				}
+
+				return;
 			}, "Failed to get MAU count");
 
 			return $ret;
@@ -285,6 +293,8 @@
 				if ($stmt->execute()) {
 					$total = $stmt->fetch()[0];
 				}
+
+				return;
 			}, "Failed to get user count");
 
 			return $total;
@@ -304,6 +314,8 @@
 				if ($stmt->execute()) {
 					$total = $stmt->fetch()[0];
 				}
+
+				return;
 			}, "Failed to get user count");
 
 			return $total;
@@ -347,7 +359,7 @@
 				}
 			}
 
-			$this->tryPdoExcept(function () use (&$ret, $sql, $query, $respectVisibilities) {
+			$this->tryPdoExcept(function () use (&$ret, $sql, $query) {
 				$stmt = $this->db->prepare($sql);
 				$stmt->bindValue(':query1', "%{$query}%");
 				$stmt->bindValue(':query2', "%{$query}%");
@@ -362,9 +374,6 @@
 
 				return;
 			}, "Failed to search users");
-
-			$this->log->addAppender(new LogFileAppender(new FileHelper(STOIC_CORE_PATH), '~/logs/user-repo.log'));
-			$this->log->output();
 
 			return $ret;
 		}

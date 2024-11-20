@@ -95,6 +95,8 @@
 						$ret = User::fromArray($row, $ret->db, $ret->log);
 					}
 				}
+
+				return;
 			}, "Failed to get user by email address");
 
 			return $ret;
@@ -156,6 +158,8 @@
 					$ret->makeGood();
 					$this->joined = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 				}
+
+				return;
 			}, "Failed to check for duplicate users");
 
 			return $ret;
@@ -204,7 +208,7 @@
 			$this->tryPdoExcept(function () use (&$ret) {
 				$stmt = $this->db->prepareStored(self::SQL_SELBYEMAILNOTID);
 				$stmt->bindValue(':email', $this->email);
-				$stmt->bindValue(':id', $this->id);
+				$stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
 				$stmt->execute();
 
 				if ($stmt->fetch()[0] > 0) {
@@ -212,6 +216,8 @@
 				} else {
 					$ret->makeGood();
 				}
+
+				return;
 			}, "Failed to check for duplicate users");
 
 			return $ret;
@@ -270,11 +276,15 @@
 				return;
 			}
 
+			$this->lastActive = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+
 			$this->tryPdoExcept(function () {
 				$stmt = $this->db->prepareStored(self::SQL_UPDATELASTACTIVE);
-				$stmt->bindValue(':today', (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'));
-				$stmt->bindValue(':userId', $this->id);
+				$stmt->bindValue(':today', $this->lastActive->format('Y-m-d H:i:s'));
+				$stmt->bindValue(':userId', $this->id, \PDO::PARAM_INT);
 				$stmt->execute();
+
+				return;
 			}, "Failed to mark user as active");
 
 			return;

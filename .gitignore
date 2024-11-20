@@ -25,6 +25,7 @@ coverage/
 *.user
 *.sln.docstates
 *.phpproj
+*.sln
 
 # Build results
 

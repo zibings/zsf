@@ -3,7 +3,7 @@
 	use Zibings\Role;
 
 	class RoleClassTest extends ZsfTestCase {
-		public function test_Crud() {
+		public function test_Crud() : void {
 			$cls = new Role(self::$db, self::$log);
 			$cls->name = uniqid();
 
