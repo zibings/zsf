@@ -196,11 +196,7 @@
 		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
-			if ($this->id < 1 || $this->userId < 1 || empty($this->token)) {
-				return false;
-			}
-
-			return true;
+			return false;
 		}
 		
 		/**
