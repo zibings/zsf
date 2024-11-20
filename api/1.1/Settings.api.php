@@ -15,7 +15,6 @@
 	use Zibings\UserEvents;
 	use Zibings\UserRoles;
 	use Zibings\UserSettings;
-	use Zibings\UserSettingsRepo;
 	use Zibings\UserVisibilities;
 
 	/**
@@ -36,23 +35,17 @@
 		 * @param \PDO $db Internal instance of PDO object.
 		 * @param Logger|null $log Optional Logger object for internal use.
 		 * @param UserRoles|null $userRoles Optional UserRoles respository for internal use.
-		 * @param UserSettingsRepo|null $userSettings Optional UserSettingsRepo repository for internal use.
 		 * @return void
 		 */
 		public function __construct(
 			Stoic $stoic,
 			\PDO $db,
 			Logger $log                                   = null,
-			protected UserRoles|null $userRoles           = null,
-			protected UserSettingsRepo|null $userSettings = null) {
+			protected UserRoles|null $userRoles           = null) {
 			parent::__construct($stoic, $db, $log);
 
 			if ($this->userRoles === null) {
 				$this->userRoles = new UserRoles($this->db, $this->log);
-			}
-
-			if ($this->userSettings === null) {
-				$this->userSettings = new UserSettingsRepo($this->db, $this->log);
 			}
 
 			return;

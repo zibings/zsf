@@ -449,7 +449,6 @@
 
 			(new UserVisibilitiesRepo($this->db, $this->log))->deleteAllForUser($user->id);
 			(new UserTokens($this->db, $this->log))->deleteAllForUser($user->id);
-			(new UserSettingsRepo($this->db, $this->log))->deleteAllForUser($user->id);
 			(new UserSessions($this->db, $this->log))->deleteAllForUser($user->id);
 			(new UserRoles($this->db, $this->log))->deleteAllForUser($user->id);
 			(new UserRelations($this->db, $this->log))->deleteAllForUser($user->id);
