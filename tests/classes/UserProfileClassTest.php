@@ -30,6 +30,8 @@
 
 			self::assertTrue($cls->delete()->isGood());
 
+			$usr->delete();
+
 			return;
 		}
 	}
