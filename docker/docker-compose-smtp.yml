@@ -1,0 +1,6 @@
+services:
+  smtp:
+    image: haravich/fake-smtp-server
+    container_name: ${PROJECT_NAME}-smtp
+    ports:
+      - "1080:1080"

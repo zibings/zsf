@@ -3,6 +3,7 @@
 $ProjectName      = ""
 $UiFrontDocker    = $true
 $UiAdminDocker    = $true
+$SmtpDocker       = $true
 $Commands         = @()
 $EnvVariables     = @{}
 $IsInteractive    = $false
@@ -11,21 +12,21 @@ $DbEngine         = "mysql"
 $HasEnvFile       = Test-Path -Path "./docker/.env"
 
 $dbDsns = @{
-	mysql = "mysql:host=db:3306;dbname=zsf"
+	mysql  = "mysql:host=db:3306;dbname=zsf"
 	sqlsrv = "sqlsrv:Server=db;Database=zsf;Encrypt=0"
-	pgsql = "pgsql:host=db;dbname=zsf"
+	pgsql  = "pgsql:host=db;dbname=zsf"
 }
 
 $testDbDsns = @{
-	mysql = "mysql:host=db:3306;dbname=zsf_test"
+	mysql  = "mysql:host=db:3306;dbname=zsf_test"
 	sqlsrv = "sqlsrv:Server=db;Database=zsf_test;Encrypt=0"
-	pgsql = "pgsql:host=db;dbname=zsf_test"
+	pgsql  = "pgsql:host=db;dbname=zsf_test"
 }
 
 $dbUsers = @{
-	mysql = "root"
+	mysql  = "root"
 	sqlsrv = "sa"
-	pgsql = "postgres"
+	pgsql  = "postgres"
 }
 
 $args | ForEach-Object {
@@ -42,7 +43,7 @@ $args | ForEach-Object {
 	}
 
 	if ($FoundProjectName) {
-		$ProjectName      = $_
+		$ProjectName = $_
 		$FoundProjectName = $false
 
 		return
@@ -52,18 +53,18 @@ $args | ForEach-Object {
 }
 
 if ($HasEnvFile) {
-  Get-Content ./docker/.env | ForEach-Object {
-    $name, $value = $_.split('=')
+	Get-Content ./docker/.env | ForEach-Object {
+		$name, $value = $_.split('=')
 
 		if (!$EnvVariables.ContainsKey($name)) {
 			$EnvVariables.Add($name, $value)
 		}
-  }
+	}
 }
 
 function QueryForInput {
 	param (
-		[Parameter(Mandatory=$True)] [string] $Prompt,
+		[Parameter(Mandatory = $True)] [string] $Prompt,
 		[string[]] $AllowedValues = @("Y", "n")
 	)
 
@@ -84,7 +85,8 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 	if ($HasEnvFile) {
 		if (!$EnvVariables.ContainsKey('PROJECT_NAME')) {
 			$ProjectName = Read-Host -Prompt "What is the name of your project"
-		} else {
+		}
+		else {
 			$ProjectName = $EnvVariables.PROJECT_NAME
 		}
 
@@ -96,10 +98,15 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 			$UiAdminDocker = $false
 		}
 
+		if ($EnvVariables.ContainsKey('SMTP_DOCKER') -and $EnvVariables.SMTP_DOCKER -eq 'False') {
+			$SmtpDocker = $false
+		}
+
 		if ($EnvVariables.ContainsKey('DB_ENGINE') -and @('mysql', 'sqlsrv', 'pgsql') -contains $EnvVariables.DB_ENGINE.ToLower()) {
 			$DbEngine = $EnvVariables.DB_ENGINE.ToLower()
 		}
-	} else {
+	}
+ else {
 		$projectNamePrompt = Read-Host -Prompt "What is the name of your project"
 
 		if ($projectNamePrompt.Length -lt 1) {
@@ -112,6 +119,7 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 
 		$adminUiPrompt = QueryForInput -Prompt "Use Docker for Admin UI"
 		$frontUiPrompt = QueryForInput -Prompt "Use Docker for Front UI"
+		$smtpPrompt = QueryForInput -Prompt "Use Docker for SMTP Server"
 		$dbEnginePrompt = QueryForInput -Prompt "Which DB engine" -AllowedValues @("mysql", "sqlsrv", "pgsql")
 
 		if ($adminUiPrompt -eq "N") {
@@ -122,11 +130,15 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 			$UiFrontDocker = $False
 		}
 
+		if ($smtpPrompt -eq "N") {
+			$SmtpDocker = $False
+		}
+
 		$DbEngine = $dbEnginePrompt.ToLower()
 	}
 }
 
-$Command      = $Commands -Join " "
+$Command = $Commands -Join " "
 $WebContainer = "$ProjectName-web"
 
 function CreateCompose {
@@ -153,6 +165,10 @@ function CreateCompose {
 
 	if ($UiFrontDocker) {
 		$includeLines += "  - docker-compose-ui-front.yml"
+	}
+
+	if ($SmtpDocker) {
+		$includeLines += "  - docker-compose-smtp.yml"
 	}
 
 	$composeContents = @"
@@ -212,22 +228,23 @@ function StartDocker([string] $ProjectName, [string] $WebContainer) {
 }
 
 function InitDocker([string] $ProjectName, [string] $WebContainer) {
-	$envContents  = @"
+	$envContents = @"
 PROJECT_NAME=$($ProjectName)
 UI_FRONT_DOCKER=$($UiAdminDocker)
 UI_ADMIN_DOCKER=$($UiFrontDocker)
 DB_ENGINE=$($DbEngine)
+SMTP_DOCKER=$($SmtpDocker)
 "@
 
-  Push-Location ./docker
-  $envContents | Out-File -FilePath .env
-  Pop-Location
+	Push-Location ./docker
+	$envContents | Out-File -FilePath .env
+	Pop-Location
 
 	CreateCompose -DbEngine $DbEngine -UiAdminDocker $UiAdminDocker -UiFrontDocker $UiFrontDocker
 	StartDocker -ProjectName $ProjectName -WebContainer $WebContainer
 
-	Write-Host "Waiting 30s to let docker do its thang.. " -NoNewline
-	Start-Sleep -Seconds 30
+	Write-Host "Waiting 15s to let docker do its thang.. " -NoNewline
+	Start-Sleep -Seconds 15
 	Write-Host "DONE"
 
 	$DbContainer = "$ProjectName-db"
@@ -240,7 +257,7 @@ DB_ENGINE=$($DbEngine)
 	Write-Host "Initializing container.."
 
 	if (!(Test-Path -Path siteSettings.json)) {
- 		docker exec -t $WebContainer cp docker/siteSettings.json siteSettings.json
+		docker exec -t $WebContainer cp docker/siteSettings.json siteSettings.json
 	}
 
 	if (Test-Path -Path migrations/db) {
@@ -277,7 +294,8 @@ function TestDocker([string] $ProjectName, [string] $WebContainer, [bool] $Outpu
 
 	if ($OutputLogs) {
 		docker exec -it $WebContainer /bin/bash -c "export OUTPUT_LOGS='true' && php vendor/bin/phpunit"
-	} else {
+	}
+ else {
 		docker exec -it $WebContainer php vendor/bin/phpunit
 	}
 
@@ -344,19 +362,26 @@ Write-Host "Executing command on '$ProjectName' project: $Command"
 
 if ($Command -eq "init") {
 	InitDocker -ProjectName $ProjectName -WebContainer $WebContainer
-} elseif ($Command -eq "start") {
+}
+elseif ($Command -eq "start") {
 	StartDocker -ProjectName $ProjectName -WebContainer $WebContainer
-} elseif ($Command -eq "update") {
+}
+elseif ($Command -eq "update") {
 	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
-} elseif ($Command -eq "test") {
+}
+elseif ($Command -eq "test") {
 	TestDocker -ProjectName $ProjectName -WebContainer $WebContainer -OutputLogs $False
-} elseif ($Command -eq "test-verbose") {
+}
+elseif ($Command -eq "test-verbose") {
 	TestDocker -ProjectName $ProjectName -WebContainer $WebContainer -OutputLogs $True
-} elseif ($Command -eq "stop") {
+}
+elseif ($Command -eq "stop") {
 	StopDocker -ProjectName $ProjectName
-} elseif ($Command -eq "down") {
+}
+elseif ($Command -eq "down") {
 	DownDocker -ProjectName $ProjectName
-} else {
+}
+else {
 	$opts = "t"
 
 	if ($IsInteractive) {

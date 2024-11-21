@@ -83,7 +83,7 @@
 		"twitterSecret": "<changeme>",
 		"enableSmtp": true,
 		"smtpHost": "localhost",
-		"smtpPort": 25,
+		"smtpPort": 1080,
 		"smtpUser": "<changeme>",
 		"smtpPass": "<changeme>",
 		"defaultFromAddress": "noreply@domain.com",
