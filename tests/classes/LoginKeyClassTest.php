@@ -1,8 +1,8 @@
 <?php
 
 	use Zibings\LoginKey;
-	use Zibings\LoginKeyProviders;
 	use Zibings\LoginKeys;
+	use Zibings\LoginKeyProviders;
 	use Zibings\User;
 
 	class LoginKeyClassTest extends ZsfTestCase {
@@ -45,7 +45,7 @@
 			self::assertEquals($cls3->key, $cls_from3->key);
 
 			$cls->key = uniqid();
-			$cls->update();
+			self::assertTrue($cls->update()->isGood());
 
 			$cls_from = LoginKey::fromUserAndProvider($cls->userId, LoginKeyProviders::REDDIT, self::$db, self::$log);
 			self::assertEquals($cls->userId, $cls_from->userId);
