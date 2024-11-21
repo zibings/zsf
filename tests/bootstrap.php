@@ -24,16 +24,16 @@
 	require(STOIC_CORE_PATH . 'vendor/autoload.php');
 	require(STOIC_CORE_PATH . 'tests/ZsfTestCase.php');
 
+	use Stoic\Utilities\LogFileAppender;
 	use Stoic\Web\Resources\PageVariables;
 	use Stoic\Web\Stoic;
-	use Stoic\Utilities\ParameterHelper;
 
 	global $Db, $Log, $Settings, $Stoic;
 
 	/**
-	 * @var PdoHelper $Db
-	 * @var Logger $Log
-	 * @var ConfigContainer $Settings
+	 * @var \Stoic\Pdo\PdoHelper $Db
+	 * @var \Stoic\Log\Logger $Log
+	 * @var \AndyM84\Config\ConfigContainer $Settings
 	 * @var Stoic $Stoic
 	 */
 
@@ -41,3 +41,14 @@
 	$Log      = $Stoic->getLog();
 	$Db       = $Stoic->getDb();
 	$Settings = $Stoic->getConfig();
+
+	if (getenv('OUTPUT_LOGS') !== false) {
+		$fh = $Stoic->getFileHelper();
+
+		if ($fh->folderExists('~/tests/logs')) {
+			$fh->makeFolder('~/tests/logs');
+		}
+
+		$Log->addAppender(new LogFileAppender($fh, '~/tests/logs/test-' . date('Y-m-d') . '.log'));
+	}
+
