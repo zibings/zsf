@@ -115,11 +115,7 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
-				$this->setTableName('[dbo].[UserRelationEvent]');
-			} else {
-				$this->setTableName('UserRelationEvent');
-			}
+			$this->setTableName('UserRelationEvent');
 
 			$this->setColumn('action',   'Action',     BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT);
 			$this->setColumn('notes',    'Notes',      BaseDbTypes::STRING,   BCF::SHOULD_INSERT);

@@ -121,11 +121,7 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
-				$this->setTableName('[dbo].[UserRelation]');
-			} else {
-				$this->setTableName('UserRelation');
-			}
+			$this->setTableName('UserRelation');
 
 			$this->setColumn('created', 'Created',    BaseDbTypes::DATETIME, BCF::SHOULD_INSERT);
 			$this->setColumn('stage',   'Stage',      BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);

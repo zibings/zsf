@@ -174,11 +174,7 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
-				$this->setTableName('[dbo].[UserToken]');
-			} else {
-				$this->setTableName('UserToken');
-			}
+			$this->setTableName('UserToken');
 
 			$this->setColumn('created', 'Created', BaseDbTypes::DATETIME, BCF::SHOULD_INSERT);
 			$this->setColumn('context', 'Context', BaseDbTypes::STRING,   BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);

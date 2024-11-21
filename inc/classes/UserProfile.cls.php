@@ -229,11 +229,7 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
-				$this->setTableName('[dbo].[UserProfile]');
-			} else {
-				$this->setTableName('UserProfile');
-			}
+			$this->setTableName('UserProfile');
 
 			$this->setColumn('userId',      'UserID',      BaseDbTypes::INTEGER,  BCF::IS_KEY        | BCF::SHOULD_INSERT);
 			$this->setColumn('displayName', 'DisplayName', BaseDbTypes::STRING,   BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);

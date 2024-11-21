@@ -164,11 +164,7 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			if ($this->dbDriver !== null && $this->dbDriver->is(PdoDrivers::PDO_SQLSRV)) {
-				$this->setTableName('[dbo].[LoginKey]');
-			} else {
-				$this->setTableName('LoginKey');
-			}
+			$this->setTableName('LoginKey');
 
 			if (!static::$dbInitialized) {
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GUPCOUNT, "SELECT COUNT(*) FROM {$this->dbTable} WHERE [UserID] = :userId AND [Provider] = :provider");

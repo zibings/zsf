@@ -168,11 +168,7 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
-				$this->setTableName('[dbo].[UserAuthHistory]');
-			} else {
-				$this->setTableName('UserAuthHistory');
-			}
+			$this->setTableName('UserAuthHistory');
 
 			$this->setColumn('action',   'Action',   BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT);
 			$this->setColumn('address',  'Address',  BaseDbTypes::STRING,   BCF::SHOULD_INSERT);

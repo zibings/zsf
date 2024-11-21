@@ -231,11 +231,7 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
-				$this->setTableName('[dbo].[User]');
-			} else {
-				$this->setTableName('User');
-			}
+			$this->setTableName('User');
 
 			$this->setColumn('email',          'Email',          BaseDbTypes::STRING,   BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
 			$this->setColumn('emailConfirmed', 'EmailConfirmed', BaseDbTypes::BOOLEAN,  BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);

@@ -158,11 +158,7 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
-				$this->setTableName('[dbo].[UserVisibilities]');
-			} else {
-				$this->setTableName('UserVisibilities');
-			}
+			$this->setTableName('UserVisibilities');
 
 			$this->setColumn('birthday',    'Birthday',    BaseDbTypes::INTEGER, BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
 			$this->setColumn('description', 'Description', BaseDbTypes::INTEGER, BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);

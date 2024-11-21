@@ -97,11 +97,7 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
-				$this->setTableName('[dbo].[UserContact]');
-			} else {
-				$this->setTableName('UserContact');
-			}
+			$this->setTableName('UserContact');
 
 			$this->setColumn('created', 'Created', BaseDbTypes::DATETIME, BCF::SHOULD_INSERT);
 			$this->setColumn('id',      'ID',      BaseDbTypes::INTEGER,  BCF::IS_KEY        | BCF::AUTO_INCREMENT);

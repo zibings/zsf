@@ -115,11 +115,7 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
-				$this->setTableName('[dbo].[UserSettings]');
-			} else {
-				$this->setTableName('UserSettings');
-			}
+			$this->setTableName('UserSettings');
 
 			$this->setColumn('htmlEmails', 'HtmlEmails', BaseDbTypes::BOOLEAN, BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
 			$this->setColumn('playSounds', 'PlaySounds', BaseDbTypes::BOOLEAN, BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);

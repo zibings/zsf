@@ -207,11 +207,7 @@
 		 * @return void
 		 */
 		protected function __setupModel() : void {
-			if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
-				$this->setTableName('[dbo].[UserSession]');
-			} else {
-				$this->setTableName('UserSession');
-			}
+			$this->setTableName('UserSession');
 
 			$this->setColumn('address',  'Address',  BaseDbTypes::STRING,   BCF::SHOULD_INSERT);
 			$this->setColumn('created',  'Created',  BaseDbTypes::DATETIME, BCF::SHOULD_INSERT);
