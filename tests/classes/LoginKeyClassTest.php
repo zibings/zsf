@@ -44,6 +44,14 @@
 			self::assertEquals($cls3->provider->getValue(), $cls_from3->provider->getValue());
 			self::assertEquals($cls3->key, $cls_from3->key);
 
+			$cls->key = uniqid();
+			$cls->update();
+
+			$cls_from = LoginKey::fromUserAndProvider($cls->userId, LoginKeyProviders::REDDIT, self::$db, self::$log);
+			self::assertEquals($cls->userId, $cls_from->userId);
+			self::assertEquals($cls->provider->getValue(), $cls_from->provider->getValue());
+			self::assertEquals($cls->key, $cls_from->key);
+
 			$rpo = new LoginKeys(self::$db, self::$log);
 			self::assertEquals(3, $rpo->getNumKeysForUser($usr->id));
 			$rpo->deleteAllForUser($usr->id);
