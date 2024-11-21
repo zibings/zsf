@@ -3,6 +3,7 @@
 	namespace Zibings;
 
 	use Stoic\Log\Logger;
+	use Stoic\Pdo\BaseDbColumnFlags as BCF;
 	use Stoic\Pdo\BaseDbQueryTypes;
 	use Stoic\Pdo\BaseDbTypes;
 	use Stoic\Pdo\PdoDrivers;
@@ -234,19 +235,21 @@
 				$this->setTableName('UserProfile');
 			}
 
-			$this->setColumn('userId', 'UserID', BaseDbTypes::INTEGER, true, true, false);
-			$this->setColumn('displayName', 'DisplayName', BaseDbTypes::STRING, false, true, true);
-			$this->setColumn('birthday', 'Birthday', BaseDbTypes::DATETIME, false, true, true);
-			$this->setColumn('realName', 'RealName', BaseDbTypes::STRING, false, true, true);
-			$this->setColumn('description', 'Description', BaseDbTypes::STRING, false, true, true);
-			$this->setColumn('gender', 'Gender', BaseDbTypes::INTEGER, false, true, true);
+			$this->setColumn('userId',      'UserID',      BaseDbTypes::INTEGER,  BCF::IS_KEY        | BCF::SHOULD_INSERT);
+			$this->setColumn('displayName', 'DisplayName', BaseDbTypes::STRING,   BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
+			$this->setColumn('birthday',    'Birthday',    BaseDbTypes::DATETIME, BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
+			$this->setColumn('realName',    'RealName',    BaseDbTypes::STRING,   BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
+			$this->setColumn('description', 'Description', BaseDbTypes::STRING,   BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
+			$this->setColumn('gender',      'Gender',      BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
 
 			if (!static::$dbInitialized) {
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYDISPLAYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [DisplayName] = :displayName");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYDISPLAYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `DisplayName` = :displayName");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYDISPLAYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE DisplayName = :displayName");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [UserID] = :userId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `UserID` = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE UserID = :userId");
 
 				static::$dbInitialized = true;
 			}
