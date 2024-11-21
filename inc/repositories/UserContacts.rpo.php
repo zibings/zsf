@@ -47,8 +47,10 @@
 
 				if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
 					$sql .= " WHERE [UserID] = :userId";
-				} else {
+				} else if ($this->db->getDriver()->is(PdoDrivers::PDO_MYSQL)) {
 					$sql .= " WHERE `UserID` = :userId";
+				} else {
+					$sql  = " WHERE UserID = :userId";
 				}
 
 				$stmt = $this->db->prepare($sql);
@@ -75,8 +77,10 @@
 
 				if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
 					$sql .= " WHERE [UserID] = :userId";
-				} else {
+				} else if ($this->db->getDriver()->is(PdoDrivers::PDO_MYSQL)) {
 					$sql .= " WHERE `UserID` = :userId";
+				} else {
+					$sql  = " WHERE UserID = :userId";
 				}
 
 				$stmt = $this->db->prepare($sql);
