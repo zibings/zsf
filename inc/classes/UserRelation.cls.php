@@ -2,6 +2,7 @@
 
 	namespace Zibings;
 
+	use Stoic\Pdo\BaseDbColumnFlags as BCF;
 	use Stoic\Pdo\BaseDbTypes;
 	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\StoicDbModel;
@@ -126,11 +127,11 @@
 				$this->setTableName('UserRelation');
 			}
 
-			$this->setColumn('created', 'Created', BaseDbTypes::DATETIME, false, true, false);
-			$this->setColumn('stage', 'Stage', BaseDbTypes::INTEGER, false, true, true);
-			$this->setColumn('origin', 'Origin', BaseDbTypes::BOOLEAN, false, true, false);
-			$this->setColumn('userOne', 'UserID_One', BaseDbTypes::INTEGER, true, true, false);
-			$this->setColumn('userTwo', 'UserID_Two', BaseDbTypes::INTEGER, true, true, false);
+			$this->setColumn('created', 'Created',    BaseDbTypes::DATETIME, BCF::SHOULD_INSERT);
+			$this->setColumn('stage',   'Stage',      BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
+			$this->setColumn('origin',  'Origin',     BaseDbTypes::BOOLEAN,  BCF::SHOULD_INSERT);
+			$this->setColumn('userOne', 'UserID_One', BaseDbTypes::INTEGER,  BCF::IS_KEY        | BCF::SHOULD_INSERT);
+			$this->setColumn('userTwo', 'UserID_Two', BaseDbTypes::INTEGER,  BCF::IS_KEY        | BCF::SHOULD_INSERT);
 
 			$this->created = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 			$this->stage   = new UserRelationStages(UserRelationStages::ERROR);
