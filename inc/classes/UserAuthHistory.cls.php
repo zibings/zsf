@@ -96,8 +96,8 @@
 		 * @return UserAuthHistory
 		 */
 		public static function createFromUserId(int $userId, int|AuthHistoryActions $action, ParameterHelper $server, string $notes, PdoHelper $db, Logger $log = null) : UserAuthHistory {
-			$ret = new UserAuthHistory($db, $log);
-			$action = AuthHistoryActions::tryGetEnum($action, AuthHistoryActions::class);
+			$ret    = new UserAuthHistory($db, $log);
+			$action = AuthHistoryActions::tryGet($action);
 
 			if ($userId < 1 || !$server->has(ServerIndices::REMOTE_ADDR) || $action->getValue() === null) {
 				return $ret;
