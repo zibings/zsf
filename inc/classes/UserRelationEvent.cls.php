@@ -2,6 +2,7 @@
 
 	namespace Zibings;
 
+	use Stoic\Pdo\BaseDbColumnFlags as BCF;
 	use Stoic\Pdo\BaseDbTypes;
 	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\StoicDbModel;
@@ -120,12 +121,12 @@
 				$this->setTableName('UserRelationEvent');
 			}
 
-			$this->setColumn('action', 'Action', BaseDbTypes::INTEGER, false, true, false);
-			$this->setColumn('notes', 'Notes', BaseDbTypes::STRING, false, true, false);
-			$this->setColumn('recorded', 'Recorded', BaseDbTypes::DATETIME, false, true, false);
-			$this->setColumn('stage', 'Stage', BaseDbTypes::INTEGER, false, true, false);
-			$this->setColumn('userOne', 'UserID_One', BaseDbTypes::INTEGER, false, true, false);
-			$this->setColumn('userTwo', 'UserID_Two', BaseDbTypes::INTEGER, false, true, false);
+			$this->setColumn('action',   'Action',     BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT);
+			$this->setColumn('notes',    'Notes',      BaseDbTypes::STRING,   BCF::SHOULD_INSERT);
+			$this->setColumn('recorded', 'Recorded',   BaseDbTypes::DATETIME, BCF::SHOULD_INSERT);
+			$this->setColumn('stage',    'Stage',      BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT);
+			$this->setColumn('userOne',  'UserID_One', BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT);
+			$this->setColumn('userTwo',  'UserID_Two', BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT);
 
 			$this->action   = new UserRelationEventActions();
 			$this->notes    = '';
