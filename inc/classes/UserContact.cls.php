@@ -2,6 +2,7 @@
 
 	namespace Zibings;
 
+	use Stoic\Pdo\BaseDbColumnFlags as BCF;
 	use Stoic\Pdo\BaseDbTypes;
 	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\StoicDbModel;
@@ -26,35 +27,11 @@
 	 * @package Zibings
 	 */
 	class UserContact extends StoicDbModel {
-		/**
-		 * Date and time the contact was created.
-		 *
-		 * @var \DateTimeInterface
-		 */
 		public \DateTimeInterface $created;
-		/**
-		 * Whether this is the user's primary method of contact.
-		 *
-		 * @var bool
-		 */
+		public int $id;
 		public bool $primary;
-		/**
-		 * Type of contact.
-		 *
-		 * @var UserContactTypes
-		 */
 		public UserContactTypes $type;
-		/**
-		 * Integer identifier of the user this contact belongs to.
-		 *
-		 * @var int
-		 */
 		public int $userId;
-		/**
-		 * Value of the contact.
-		 *
-		 * @var string
-		 */
 		public string $value;
 
 
@@ -65,7 +42,7 @@
 		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
-			if ($this->userId < 1 || empty($this->value) || $this->type->getValue() === null) {
+			if ($this->id > 0 || $this->userId < 1 || empty($this->value) || $this->type->getValue() === null) {
 				return false;
 			}
 
@@ -80,7 +57,7 @@
 		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
-			if ($this->userId < 1 || $this->type->getValue() === null) {
+			if ($this->id < 1) {
 				return false;
 			}
 
@@ -93,7 +70,11 @@
 		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
-			return false;
+			if ($this->id < 1) {
+				return false;
+			}
+
+			return true;
 		}
 
 		/**
@@ -102,7 +83,11 @@
 		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
-			return false;
+			if ($this->id < 1 || empty($this->value) || $this->type->getValue() === null) {
+				return false;
+			}
+
+			return true;
 		}
 
 		/**
@@ -118,11 +103,12 @@
 				$this->setTableName('UserContact');
 			}
 
-			$this->setColumn('created', 'Created', BaseDbTypes::DATETIME, true, true, false);
-			$this->setColumn('primary', 'Primary', BaseDbTypes::BOOLEAN, true, true, false);
-			$this->setColumn('type', 'Type', BaseDbTypes::INTEGER, true, true, false);
-			$this->setColumn('userId', 'UserID', BaseDbTypes::INTEGER, true, true, false);
-			$this->setColumn('value', 'Value', BaseDbTypes::STRING, true, true, false);
+			$this->setColumn('created', 'Created', BaseDbTypes::DATETIME, BCF::SHOULD_INSERT);
+			$this->setColumn('id',      'ID',      BaseDbTypes::INTEGER,  BCF::IS_KEY        | BCF::AUTO_INCREMENT);
+			$this->setColumn('primary', 'Primary', BaseDbTypes::BOOLEAN,  BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
+			$this->setColumn('type',    'Type',    BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
+			$this->setColumn('userId',  'UserID',  BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT);
+			$this->setColumn('value',   'Value',   BaseDbTypes::STRING,   BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
 
 			$this->created = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 			$this->primary = false;
