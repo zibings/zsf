@@ -44,6 +44,8 @@
 				while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 					$ret[] = Role::fromArray($row, $this->db, $this->log);
 				}
+
+				return;
 			}, "Failed to retrieve all roles from database");
 
 			return $ret;

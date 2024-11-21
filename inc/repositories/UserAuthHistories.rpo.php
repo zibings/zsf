@@ -73,6 +73,12 @@
 				if ($offset !== null && $offset >= 0 && $limit === null && $limit > 0) {
 					$sql .= " LIMIT {$offset}, {$limit}";
 				}
+			} else {
+				$sql .= " WHERE UserID = :userId ORDER BY Recorded DESC";
+
+				if ($offset !== null && $offset >= 0 && $limit === null && $limit > 0) {
+					$sql .= " LIMIT {$offset} OFFSET {$limit}";
+				}
 			}
 
 			$this->tryPdoExcept(function () use (&$ret, $sql, $userId) {
@@ -107,6 +113,8 @@
 					$sql .= " WHERE [UserID] = :userId";
 				} else if ($this->db->getDriver()->is(PdoDrivers::PDO_MYSQL)) {
 					$sql .= " WHERE `UserID` = :userId";
+				} else {
+					$sql  = " WHERE UserID = :userId";
 				}
 
 				$stmt = $this->db->prepare($sql);
