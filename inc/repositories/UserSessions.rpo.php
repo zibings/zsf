@@ -43,6 +43,7 @@
 			if (!static::$dbInitialized) {
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELFORUSER, "DELETE FROM {$this->usObj->getDbTableName()} WHERE [UserID] = :userId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELFORUSER, "DELETE FROM {$this->usObj->getDbTableName()} WHERE `UserID` = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELFORUSER, "DELETE FROM {$this->usObj->getDbTableName()} WHERE UserID = :userId");
 
 				static::$dbInitialized = true;
 			}
@@ -63,8 +64,10 @@
 
 				if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
 					$sql .= " WHERE [UserID] = :userId";
-				} else {
+				} else if ($this->db->getDriver()->is(PdoDrivers::PDO_MYSQL)) {
 					$sql .= " WHERE `UserID` = :userId";
+				} else {
+					$sql  = " WHERE UserID = :userId";
 				}
 
 				$stmt = $this->db->prepare($sql);
@@ -96,6 +99,8 @@
 				$stmt = $this->db->prepareStored(self::SQL_DELFORUSER);
 				$stmt->bindParam(':userId', $userId);
 				$stmt->execute();
+
+				return;
 			}, "Failed to delete user's contacts");
 
 			return;
