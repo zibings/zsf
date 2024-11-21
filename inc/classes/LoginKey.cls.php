@@ -59,22 +59,17 @@
 		 */
 		private static bool $dbInitialized = false;
 
-
 		/**
 		 * Static method to retrieve login key given the user and provider. Returns a blank LoginKey object if no key is found.
 		 *
-		 * @param int $userId Integer identifier of user who owns key.
-		 * @param int $provider Type of provider this key represents.
-		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
-		 * @throws \InvalidArgumentException|\Exception
+		 * @param int                   $userId   Integer identifier of user who owns key.
+		 * @param int|LoginKeyProviders $provider Type of provider this key represents.
+		 * @param PdoHelper             $db       PdoHelper instance for internal use.
+		 * @param Logger|null           $log      Optional Logger instance for internal use, new instance created if not supplied.
 		 * @return LoginKey
+		 * @throws \ReflectionException
 		 */
-		public static function fromUserAndProvider(int $userId, int $provider, PdoHelper $db, Logger $log = null) : LoginKey {
-			if (!LoginKeyProviders::validValue($provider)) {
-				throw new \InvalidArgumentException("Invalid provider value: {$provider}");
-			}
-
+		public static function fromUserAndProvider(int $userId, int|LoginKeyProviders $provider, PdoHelper $db, Logger $log = null) : LoginKey {
 			$ret = new LoginKey($db, $log);
 
 			if ($userId > 0) {

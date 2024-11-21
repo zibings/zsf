@@ -29,19 +29,19 @@
 			$cls3->provider = new LoginKeyProviders(LoginKeyProviders::TWITCH);
 			self::assertTrue($cls3->create()->isGood());
 
-			$cls_from = LoginKey::fromUserAndProvider($cls->userId, $cls->provider->getValue(), self::$db, self::$log);
+			$cls_from = LoginKey::fromUserAndProvider($cls->userId, LoginKeyProviders::REDDIT, self::$db, self::$log);
 			self::assertEquals($cls->userId, $cls_from->userId);
-			self::assertEquals($cls->provider, $cls_from->provider);
+			self::assertEquals($cls->provider->getValue(), $cls_from->provider->getValue());
 			self::assertEquals($cls->key, $cls_from->key);
 
-			$cls_from2 = LoginKey::fromUserAndProvider($cls2->userId, $cls2->provider->getValue(), self::$db, self::$log);
+			$cls_from2 = LoginKey::fromUserAndProvider($cls2->userId, LoginKeyProviders::FACEBOOK, self::$db, self::$log);
 			self::assertEquals($cls2->userId, $cls_from2->userId);
-			self::assertEquals($cls2->provider, $cls_from2->provider);
+			self::assertEquals($cls2->provider->getValue(), $cls_from2->provider->getValue());
 			self::assertEquals($cls2->key, $cls_from2->key);
 
-			$cls_from3 = LoginKey::fromUserAndProvider($cls3->userId, $cls3->provider->getValue(), self::$db, self::$log);
+			$cls_from3 = LoginKey::fromUserAndProvider($cls3->userId, LoginKeyProviders::TWITCH, self::$db, self::$log);
 			self::assertEquals($cls3->userId, $cls_from3->userId);
-			self::assertEquals($cls3->provider, $cls_from3->provider);
+			self::assertEquals($cls3->provider->getValue(), $cls_from3->provider->getValue());
 			self::assertEquals($cls3->key, $cls_from3->key);
 
 			$rpo = new LoginKeys(self::$db, self::$log);
