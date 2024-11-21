@@ -268,13 +268,19 @@ function UpdateDocker([string] $ProjectName, [string] $WebContainer) {
 	Write-Host "Finished updating"
 }
 
-function TestDocker([string] $ProjectName, [string] $WebContainer) {
+function TestDocker([string] $ProjectName, [string] $WebContainer, [bool] $OutputLogs) {
 	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
 
 	Write-Host "Running automated tests against test db"
 
 	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($testDbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
-	docker exec -it $WebContainer php vendor/bin/phpunit
+
+	if ($OutputLogs) {
+		docker exec -it $WebContainer /bin/bash -c "export OUTPUT_LOGS='true' && php vendor/bin/phpunit"
+	} else {
+		docker exec -it $WebContainer php vendor/bin/phpunit
+	}
+
 	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($dbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
 
 	Write-Host "Automated tests complete, db reset to development"
@@ -343,7 +349,9 @@ if ($Command -eq "init") {
 } elseif ($Command -eq "update") {
 	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
 } elseif ($Command -eq "test") {
-	TestDocker -ProjectName $ProjectName -WebContainer $WebContainer
+	TestDocker -ProjectName $ProjectName -WebContainer $WebContainer -OutputLogs $False
+} elseif ($Command -eq "test-verbose") {
+	TestDocker -ProjectName $ProjectName -WebContainer $WebContainer -OutputLogs $True
 } elseif ($Command -eq "stop") {
 	StopDocker -ProjectName $ProjectName
 } elseif ($Command -eq "down") {
