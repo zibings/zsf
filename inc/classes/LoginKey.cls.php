@@ -3,6 +3,7 @@
 	namespace Zibings;
 
 	use Stoic\Log\Logger;
+	use Stoic\Pdo\BaseDbColumnFlags as BCF;
 	use Stoic\Pdo\BaseDbTypes;
 	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
@@ -177,9 +178,9 @@
 				static::$dbInitialized = true;
 			}
 
-			$this->setColumn('key', 'Key', BaseDbTypes::STRING, false, true, true);
-			$this->setColumn('provider', 'Provider', BaseDbTypes::INTEGER, true, true, false);
-			$this->setColumn('userId', 'UserID', BaseDbTypes::INTEGER, true, true, false);
+			$this->setColumn('key',      'Key',      BaseDbTypes::STRING,  BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
+			$this->setColumn('provider', 'Provider', BaseDbTypes::INTEGER, BCF::SHOULD_INSERT);
+			$this->setColumn('userId',   'UserID',   BaseDbTypes::INTEGER, BCF::SHOULD_INSERT);
 
 			$this->key      = '';
 			$this->provider = new LoginKeyProviders(LoginKeyProviders::ERROR);

@@ -3,6 +3,7 @@
 	namespace Zibings;
 
 	use Stoic\Log\Logger;
+	use Stoic\Pdo\BaseDbColumnFlags as BCF;
 	use Stoic\Pdo\BaseDbTypes;
 	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
@@ -173,12 +174,12 @@
 				$this->setTableName('UserAuthHistory');
 			}
 
-			$this->setColumn('action', 'Action', BaseDbTypes::INTEGER, false, true, false);
-			$this->setColumn('address', 'Address', BaseDbTypes::STRING, false, true, false);
-			$this->setColumn('hostname', 'Hostname', BaseDbTypes::STRING, false, true, false);
-			$this->setColumn('notes', 'Notes', BaseDbTypes::STRING, false, true, false);
-			$this->setColumn('recorded', 'Recorded', BaseDbTypes::DATETIME, false, true, false);
-			$this->setColumn('userId', 'UserID', BaseDbTypes::INTEGER, false, true, false);
+			$this->setColumn('action',   'Action',   BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT);
+			$this->setColumn('address',  'Address',  BaseDbTypes::STRING,   BCF::SHOULD_INSERT);
+			$this->setColumn('hostname', 'Hostname', BaseDbTypes::STRING,   BCF::SHOULD_INSERT);
+			$this->setColumn('notes',    'Notes',    BaseDbTypes::STRING,   BCF::SHOULD_INSERT);
+			$this->setColumn('recorded', 'Recorded', BaseDbTypes::DATETIME, BCF::SHOULD_INSERT);
+			$this->setColumn('userId',   'UserID',   BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT);
 
 			$this->action   = new AuthHistoryActions();
 			$this->address  = '';

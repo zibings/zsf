@@ -3,6 +3,7 @@
 	namespace Zibings;
 
 	use Stoic\Log\Logger;
+	use Stoic\Pdo\BaseDbColumnFlags as BCF;
 	use Stoic\Pdo\BaseDbTypes;
 	use Stoic\Pdo\BaseDbQueryTypes;
 	use Stoic\Pdo\PdoDrivers;
@@ -236,12 +237,12 @@
 				$this->setTableName('User');
 			}
 
-			$this->setColumn('email', 'Email', BaseDbTypes::STRING, false, true, true);
-			$this->setColumn('emailConfirmed', 'EmailConfirmed', BaseDbTypes::BOOLEAN, false, true, true);
-			$this->setColumn('id', 'ID', BaseDbTypes::INTEGER, true, false, false, false, true);
-			$this->setColumn('joined', 'Joined', BaseDbTypes::DATETIME, false, true, false);
-			$this->setColumn('lastActive', 'LastActive', BaseDbTypes::DATETIME, false, true, true, true);
-			$this->setColumn('lastLogin', 'LastLogin', BaseDbTypes::DATETIME, false, true, true, true);
+			$this->setColumn('email',          'Email',          BaseDbTypes::STRING,   BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
+			$this->setColumn('emailConfirmed', 'EmailConfirmed', BaseDbTypes::BOOLEAN,  BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
+			$this->setColumn('id',             'ID',             BaseDbTypes::INTEGER,  BCF::IS_KEY        | BCF::AUTO_INCREMENT);
+			$this->setColumn('joined',         'Joined',         BaseDbTypes::DATETIME, BCF::SHOULD_INSERT);
+			$this->setColumn('lastActive',     'LastActive',     BaseDbTypes::DATETIME, BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE  | BCF::ALLOWS_NULLS);
+			$this->setColumn('lastLogin',      'LastLogin',      BaseDbTypes::DATETIME, BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE  | BCF::ALLOWS_NULLS);
 
 			if (!static::$dbInitialized) {
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYEMAIL, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Email] = :email");

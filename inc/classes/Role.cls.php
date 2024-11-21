@@ -3,6 +3,7 @@
 	namespace Zibings;
 
 	use Stoic\Log\Logger;
+	use Stoic\Pdo\BaseDbColumnFlags as BCF;
 	use Stoic\Pdo\BaseDbQueryTypes;
 	use Stoic\Pdo\BaseDbTypes;
 	use Stoic\Pdo\PdoDrivers;
@@ -231,9 +232,9 @@
 				$this->setTableName('Role');
 			}
 
-			$this->setColumn('created', 'Created', BaseDbTypes::DATETIME, false, true, false);
-			$this->setColumn('id', 'ID', BaseDbTypes::INTEGER, true, false, false, false, true);
-			$this->setColumn('name', 'Name', BaseDbTypes::STRING, false, true, true);
+			$this->setColumn('created', 'Created', BaseDbTypes::DATETIME, BCF::SHOULD_INSERT);
+			$this->setColumn('id',      'ID',      BaseDbTypes::INTEGER,  BCF::IS_KEY        | BCF::AUTO_INCREMENT);
+			$this->setColumn('name',    'Name',    BaseDbTypes::STRING,   BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
 
 			if (!static::$dbInitialized) {
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Name] = :name");
