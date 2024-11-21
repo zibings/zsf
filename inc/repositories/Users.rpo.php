@@ -139,19 +139,19 @@
 			if (!static::$dbInitialized) {
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GALLPROFILE, "SELECT * FROM {$this->usrObj->getDbTableName()} INNER JOIN {$this->proObj->getDbTableName()} ON [UserID] = [ID]");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GALLPROFILE, "SELECT * FROM {$this->usrObj->getDbTableName()} INNER JOIN {$this->proObj->getDbTableName()} ON `UserID` = `ID`");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_GALLPROFILE, "SELECT * FROM {$this->usrObj->getDbTableName()} INNER JOIN {$this->proObj->getDbTableName()} ON UserID = ID");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_GALLPROFILE, "SELECT * FROM {$this->usrObj->getDbTableName()} INNER JOIN {$this->proObj->getDbTableName()} ON \"UserID\" = \"ID\"");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DAUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE [LastActive] IS NOT NULL AND [LastActive] > :pastDay");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DAUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE `LastActive` IS NOT NULL AND `LastActive` > :pastDay");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DAUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE LastActive IS NOT NULL AND LastActive > :pastDay");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DAUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE \"LastActive\" IS NOT NULL AND \"LastActive\" > :pastDay");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_MAUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE [LastActive] IS NOT NULL AND [LastActive] > :pastMonth");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_MAUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE `LastActive` IS NOT NULL AND `LastActive` > :pastMonth");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_MAUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE LastActive IS NOT NULL AND LastActive > :pastMonth");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_MAUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE \"LastActive\" IS NOT NULL AND \"LastActive\" > :pastMonth");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_VUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE [EmailConfirmed] = 1");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_VUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE `EmailConfirmed` = 1");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_VUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE EmailConfirmed = 1");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_VUCOUNT, "SELECT COUNT(*) FROM {$this->usrObj->getDbTableName()} WHERE \"EmailConfirmed\" = 1");
 
 				static::$dbInitialized = true;
 			}
@@ -362,16 +362,16 @@
 					$sql .= " AND `v`.`Searches` > 0";
 				}
 			} else {
-				$sql .= "u.Email, u.EmailConfirmed, u.ID, u.Joined, u.LastLogin, ";
-				$sql .= "p.DisplayName, p.Birthday, p.RealName, p.Description, p.Gender, ";
-				$sql .= "v.Birthday as VisBirthday, v.Description as VisDescription, v.Email as VisEmail, v.Gender as VisGender, v.Profile as VisProfile, v.RealName as VisRealName ";
-				$sql .= "FROM User as u ";
-				$sql .= "INNER JOIN UserProfile as p ON p.UserID = u.ID ";
-				$sql .= "INNER JOIN UserVisibilities as v ON v.UserID = u.ID ";
-				$sql .= "WHERE (u.Email LIKE :query1 OR p.DisplayName LIKE :query2 OR p.RealName LIKE :query3 OR p.Description LIKE :query4)";
+				$sql .= "\"u\".\"Email\", \"u\".\"EmailConfirmed\", \"u\".\"ID\", \"u\".\"Joined\", \"u\".\"LastLogin\", ";
+				$sql .= "\"p\".\"DisplayName\", \"p\".\"Birthday\", \"p\".\"RealName\", \"p\".\"Description\", \"p\".\"Gender\", ";
+				$sql .= "\"v\".\"Birthday\" as \"VisBirthday\", \"v\".\"Description\" as \"VisDescription\", \"v\".\"Email\" as \"VisEmail\", \"v\".\"Gender\" as \"VisGender\", \"v\".\"Profile\" as \"VisProfile\", \"v\".\"RealName\" as \"VisRealName\" ";
+				$sql .= "FROM \"User\" as \"u\" ";
+				$sql .= "INNER JOIN \"UserProfile\" as \"p\" ON \"p\".\"UserID\" = \"u\".\"ID\" ";
+				$sql .= "INNER JOIN \"UserVisibilities\" as \"v\" ON \"v\".\"UserID\" = \"u\".\"ID\" ";
+				$sql .= "WHERE (\"u\".\"Email\" LIKE :query1 OR \"p\".\"DisplayName\" LIKE :query2 OR \"p\".\"RealName\" LIKE :query3 OR \"p\".\"Description\" LIKE :query4)";
 
 				if ($respectVisibilities) {
-					$sql .= " AND v.Searches > 0";
+					$sql .= " AND \"v\".\"Searches\" > 0";
 				}
 			}
 

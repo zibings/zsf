@@ -219,7 +219,7 @@
 			if (!static::$dbInitialized) {
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYTOKEN, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Token] = :token");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYTOKEN, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `Token` = :token");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYTOKEN, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE Token = :token");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYTOKEN, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE \"Token\" = :token");
 
 				static::$dbInitialized = true;
 			}

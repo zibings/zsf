@@ -50,7 +50,7 @@
 				} else if ($this->db->getDriver()->is(PdoDrivers::PDO_MYSQL)) {
 					$sql .= " WHERE `UserID` = :userId";
 				} else {
-					$sql  = " WHERE UserID = :userId";
+					$sql .= " WHERE \"UserID\" = :userId";
 				}
 
 				$stmt = $this->db->prepare($sql);
@@ -80,7 +80,7 @@
 				} else if ($this->db->getDriver()->is(PdoDrivers::PDO_MYSQL)) {
 					$sql .= " WHERE `UserID` = :userId";
 				} else {
-					$sql  = " WHERE UserID = :userId";
+					$sql .= " WHERE \"UserID\" = :userId";
 				}
 
 				$stmt = $this->db->prepare($sql);

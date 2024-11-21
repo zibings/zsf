@@ -43,11 +43,11 @@
 			if (!static::$dbInitialized) {
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_COUNTFORUSER, "SELECT COUNT(*) FROM {$this->lkObj->getDbTableName()} WHERE [UserID] = :userId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_COUNTFORUSER, "SELECT COUNT(*) FROM {$this->lkObj->getDbTableName()} WHERE `UserID` = :userId");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_COUNTFORUSER, "SELECT COUNT(*) FROM {$this->lkObj->getDbTableName()} WHERE UserID = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_COUNTFORUSER, "SELECT COUNT(*) FROM {$this->lkObj->getDbTableName()} WHERE \"UserID\" = :userId");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELFORUSER, "DELETE FROM {$this->lkObj->getDbTableName()} WHERE [UserID] = :userId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELFORUSER, "DELETE FROM {$this->lkObj->getDbTableName()} WHERE `UserID` = :userId");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELFORUSER, "DELETE FROM {$this->lkObj->getDbTableName()} WHERE UserID = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELFORUSER, "DELETE FROM {$this->lkObj->getDbTableName()} WHERE \"UserID\" = :userId");
 
 				static::$dbInitialized = true;
 			}

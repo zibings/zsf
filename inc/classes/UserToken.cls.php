@@ -185,7 +185,7 @@
 			if (!static::$dbInitialized) {
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYTOKENUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Token] = :token AND [UserID] = :userId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYTOKENUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `Token` = :token AND `UserID` = :userId");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYTOKENUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE Token = :token AND UserID = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYTOKENUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE \"Token\" = :token AND \"UserID\" = :userId");
 
 				static::$dbInitialized = true;
 			}

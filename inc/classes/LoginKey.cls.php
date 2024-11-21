@@ -167,9 +167,9 @@
 			$this->setTableName('LoginKey');
 
 			if (!static::$dbInitialized) {
-				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GUPCOUNT, "SELECT COUNT(*) FROM {$this->dbTable} WHERE [UserID] = :userId AND [Provider] = :provider");
-				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GUPCOUNT, "SELECT COUNT(*) FROM {$this->dbTable} WHERE `UserID` = :userId AND `Provider` = :provider");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_GUPCOUNT, "SELECT COUNT(*) FROM {$this->dbTable} WHERE UserID = :userId AND Provider = :provider");
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GUPCOUNT, "SELECT COUNT(*) FROM {$this->getDbTableName()} WHERE [UserID] = :userId AND [Provider] = :provider");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GUPCOUNT, "SELECT COUNT(*) FROM {$this->getDbTableName()} WHERE `UserID` = :userId AND `Provider` = :provider");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_GUPCOUNT, "SELECT COUNT(*) FROM {$this->getDbTableName()} WHERE \"UserID\" = :userId AND \"Provider\" = :provider");
 
 				static::$dbInitialized = true;
 			}

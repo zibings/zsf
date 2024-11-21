@@ -39,7 +39,17 @@
 		 */
 		public function deleteAllForUser(int $userId) : void {
 			$this->tryPdoExcept(function () use ($userId) {
-				$stmt = $this->db->prepare($this->uahObj->generateClassQuery(BaseDbQueryTypes::DELETE, false) . " WHERE UserID = :userId");
+				$sql = $this->uahObj->generateClassQuery(BaseDbQueryTypes::DELETE, false);
+
+				if ($this->db->getDriver()->is(PdoDrivers::PDO_SQLSRV)) {
+					$sql .= " WHERE [UserID] = :userId";
+				} else if ($this->db->getDriver()->is(PdoDrivers::PDO_MYSQL)) {
+					$sql .= " WHERE `UserID` = :userId";
+				} else {
+					$sql .= " WHERE \"UserID\" = :userId";
+				}
+
+				$stmt = $this->db->prepare($sql);
 				$stmt->bindValue(':userId', $userId, \PDO::PARAM_INT);
 				$stmt->execute();
 
@@ -74,7 +84,7 @@
 					$sql .= " LIMIT {$offset}, {$limit}";
 				}
 			} else {
-				$sql .= " WHERE UserID = :userId ORDER BY Recorded DESC";
+				$sql .= " WHERE \"UserID\" = :userId ORDER BY \"Recorded\" DESC";
 
 				if ($offset !== null && $offset >= 0 && $limit === null && $limit > 0) {
 					$sql .= " LIMIT {$offset} OFFSET {$limit}";
@@ -114,7 +124,7 @@
 				} else if ($this->db->getDriver()->is(PdoDrivers::PDO_MYSQL)) {
 					$sql .= " WHERE `UserID` = :userId";
 				} else {
-					$sql  = " WHERE UserID = :userId";
+					$sql .= " WHERE \"UserID\" = :userId";
 				}
 
 				$stmt = $this->db->prepare($sql);

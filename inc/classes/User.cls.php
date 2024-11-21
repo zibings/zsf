@@ -243,15 +243,15 @@
 			if (!static::$dbInitialized) {
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYEMAIL, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [Email] = :email");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYEMAIL, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `Email` = :email");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYEMAIL, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE Email = :email");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYEMAIL, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE \"Email\" = :email");
 
-				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYEMAILNOTID, "SELECT COUNT(*) FROM {$this->dbTable} WHERE [Email] = :email AND [ID] <> :id");
-				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYEMAILNOTID, "SELECT COUNT(*) FROM {$this->dbTable} WHERE `Email` = :email AND `ID` <> :id");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYEMAILNOTID, "SELECT COUNT(*) FROM {$this->dbTable} WHERE Email = :email AND ID <> :id");
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYEMAILNOTID, "SELECT COUNT(*) FROM {$this->getDbTableName()} WHERE [Email] = :email AND [ID] <> :id");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYEMAILNOTID, "SELECT COUNT(*) FROM {$this->getDbTableName()} WHERE `Email` = :email AND `ID` <> :id");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYEMAILNOTID, "SELECT COUNT(*) FROM {$this->getDbTableName()} WHERE \"Email\" = :email AND \"ID\" <> :id");
 
-				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_UPDATELASTACTIVE, "UPDATE {$this->dbTable} SET [LastActive] = :today WHERE [ID] = :userId");
-				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_UPDATELASTACTIVE, "UPDATE {$this->dbTable} SET `LastActive` = :today WHERE `ID` = :userId");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_UPDATELASTACTIVE, "UPDATE {$this->dbTable} SET LastActive = :today WHERE ID = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_UPDATELASTACTIVE, "UPDATE {$this->getDbTableName()} SET [LastActive] = :today WHERE [ID] = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_UPDATELASTACTIVE, "UPDATE {$this->getDbTableName()} SET `LastActive` = :today WHERE `ID` = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_UPDATELASTACTIVE, "UPDATE {$this->getDbTableName()} SET \"LastActive\" = :today WHERE \"ID\" = :userId");
 
 				static::$dbInitialized = true;
 			}

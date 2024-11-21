@@ -28,7 +28,6 @@
 	 */
 	class UserContact extends StoicDbModel {
 		public \DateTimeInterface $created;
-		public int $id;
 		public bool $primary;
 		public UserContactTypes $type;
 		public int $userId;
@@ -42,7 +41,7 @@
 		 * @return bool|ReturnHelper
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
-			if ($this->id > 0 || $this->userId < 1 || empty($this->value) || $this->type->getValue() === null) {
+			if ($this->userId < 1 || empty($this->value) || $this->type->getValue() === null) {
 				return false;
 			}
 
@@ -57,7 +56,7 @@
 		 * @return bool|ReturnHelper
 		 */
 		protected function __canDelete() : bool|ReturnHelper {
-			if ($this->id < 1) {
+			if ($this->userId < 1) {
 				return false;
 			}
 
@@ -70,7 +69,7 @@
 		 * @return bool|ReturnHelper
 		 */
 		protected function __canRead() : bool|ReturnHelper {
-			if ($this->id < 1) {
+			if ($this->userId < 1) {
 				return false;
 			}
 
@@ -83,7 +82,7 @@
 		 * @return bool|ReturnHelper
 		 */
 		protected function __canUpdate() : bool|ReturnHelper {
-			if ($this->id < 1 || empty($this->value) || $this->type->getValue() === null) {
+			if ($this->userId < 1 || empty($this->value) || $this->type->getValue() === null) {
 				return false;
 			}
 
@@ -100,13 +99,13 @@
 			$this->setTableName('UserContact');
 
 			$this->setColumn('created', 'Created', BaseDbTypes::DATETIME, BCF::SHOULD_INSERT);
-			$this->setColumn('id',      'ID',      BaseDbTypes::INTEGER,  BCF::IS_KEY        | BCF::AUTO_INCREMENT);
 			$this->setColumn('primary', 'Primary', BaseDbTypes::BOOLEAN,  BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
 			$this->setColumn('type',    'Type',    BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
-			$this->setColumn('userId',  'UserID',  BaseDbTypes::INTEGER,  BCF::SHOULD_INSERT);
+			$this->setColumn('userId',  'UserID',  BaseDbTypes::INTEGER,  BCF::IS_KEY        | BCF::SHOULD_INSERT);
 			$this->setColumn('value',   'Value',   BaseDbTypes::STRING,   BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
 
 			$this->created = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+			$this->id      = 0;
 			$this->primary = false;
 			$this->type    = new UserContactTypes();
 			$this->userId  = 0;

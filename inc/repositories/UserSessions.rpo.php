@@ -43,7 +43,7 @@
 			if (!static::$dbInitialized) {
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELFORUSER, "DELETE FROM {$this->usObj->getDbTableName()} WHERE [UserID] = :userId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELFORUSER, "DELETE FROM {$this->usObj->getDbTableName()} WHERE `UserID` = :userId");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELFORUSER, "DELETE FROM {$this->usObj->getDbTableName()} WHERE UserID = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELFORUSER, "DELETE FROM {$this->usObj->getDbTableName()} WHERE \"UserID\" = :userId");
 
 				static::$dbInitialized = true;
 			}
@@ -67,7 +67,7 @@
 				} else if ($this->db->getDriver()->is(PdoDrivers::PDO_MYSQL)) {
 					$sql .= " WHERE `UserID` = :userId";
 				} else {
-					$sql  = " WHERE UserID = :userId";
+					$sql .= " WHERE \"UserID\" = :userId";
 				}
 
 				$stmt = $this->db->prepare($sql);

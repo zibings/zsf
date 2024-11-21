@@ -52,35 +52,35 @@
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_INSUSRROLE, "INSERT INTO [dbo].[UserRole] ([UserID], [RoleID]) VALUES (:userId, :roleId)");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_INSUSRROLE, "INSERT INTO `UserRole` (`UserID`, `RoleID`) VALUES (:userId, :roleId)");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_INSUSRROLE, "INSERT INTO UserRole (UserID, RoleID) VALUES (:userId, :roleId)");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_INSUSRROLE, "INSERT INTO \"UserRole\" (\"UserID\", \"RoleID\") VALUES (:userId, :roleId)");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELUSRROLE, "DELETE FROM [dbo].[UserRole] WHERE [UserID] = :userId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELUSRROLE, "DELETE FROM `UserRole` WHERE `UserID` = :userId");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELUSRROLE, "DELETE FROM UserRole WHERE UserID = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELUSRROLE, "DELETE FROM \"UserRole\" WHERE \"UserID\" = :userId");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GROLEFORUSR, $this->rlObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [ID] IN (SELECT [RoleID] FROM [dbo].[UserRole] WHERE [UserID] = :userId)");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GROLEFORUSR, $this->rlObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `ID` IN (SELECT `RoleID` FROM `UserRole` WHERE `UserID` = :userId)");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_GROLEFORUSR, $this->rlObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE ID IN (SELECT RoleID FROM UserRole WHERE UserID = :userId)");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_GROLEFORUSR, $this->rlObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE \"ID\" IN (SELECT \"RoleID\" FROM \"UserRole\" WHERE \"UserID\" = :userId)");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_GUSRSINROLEBYNAME, $usrObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [ID] IN (SELECT [UserID] FROM [dbo].[UserRole] WHERE [RoleID] = :roleId)");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_GUSRSINROLEBYNAME, $usrObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `ID` IN (SELECT `UserID` FROM `UserRole` WHERE `RoleID` = :roleId)");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_GUSRSINROLEBYNAME, $usrObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE ID IN (SELECT UserID FROM UserRole WHERE RoleID = :roleId)");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_GUSRSINROLEBYNAME, $usrObj->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE \"ID\" IN (SELECT \"UserID\" FROM \"UserRole\" WHERE \"RoleID\" = :roleId)");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELUSRSINROLEBYNAME, "DELETE FROM [dbo].[UserRole] WHERE [RoleID] = (SELECT [ID] FROM [dbo].[Role] WHERE [Name] = :name)");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELUSRSINROLEBYNAME, "DELETE FROM `UserRole` WHERE `RoleID` = (SELECT `ID` FROM `Role` WHERE `Name` = :name)");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELUSRSINROLEBYNAME, "DELETE FROM UserRole WHERE RoleID = (SELECT ID FROM Role WHERE Name = :name)");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELUSRSINROLEBYNAME, "DELETE FROM \"UserRole\" WHERE \"RoleID\" = (SELECT \"ID\" FROM \"Role\" WHERE \"Name\" = :name)");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELUSRALLROLES, "DELETE FROM [dbo].[UserRole] WHERE [UserID] = :userId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELUSRALLROLES, "DELETE FROM `UserRole` WHERE `UserID` = :userId");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELUSRALLROLES, "DELETE FROM UserRole WHERE UserID = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELUSRALLROLES, "DELETE FROM \"UserRole\" WHERE \"UserID\" = :userId");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_DELUSRROLEBYID, "DELETE FROM [dbo].[UserRole] WHERE [UserID] = :userId AND [RoleID] = :roleId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_DELUSRROLEBYID, "DELETE FROM `UserRole` WHERE `UserID` = :userId AND `RoleID` = :roleId");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELUSRROLEBYID, "DELETE FROM UserRole WHERE UserID = :userId AND RoleID = :roleId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_DELUSRROLEBYID, "DELETE FROM \"UserRole\" WHERE \"UserID\" = :userId AND \"RoleID\" = :roleId");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_USRINROLEBYID, "SELECT * FROM [dbo].[UserRole] WHERE [UserID] = :userId AND [RoleID] = :roleId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_USRINROLEBYID, "SELECT * FROM `UserRole` WHERE `UserID` = :userId AND `RoleID` = :roleId");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_USRINROLEBYID, "SELECT * FROM UserRole WHERE UserID = :userId AND RoleID = :roleId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_USRINROLEBYID, "SELECT * FROM \"UserRole\" WHERE \"UserID\" = :userId AND \"RoleID\" = :roleId");
 
 				static::$dbInitialized = true;
 			}

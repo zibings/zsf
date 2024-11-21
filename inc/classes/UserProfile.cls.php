@@ -241,11 +241,11 @@
 			if (!static::$dbInitialized) {
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYDISPLAYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [DisplayName] = :displayName");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYDISPLAYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `DisplayName` = :displayName");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYDISPLAYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE DisplayName = :displayName");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYDISPLAYNAME, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE \"DisplayName\" = :displayName");
 
 				PdoHelper::storeQuery(PdoDrivers::PDO_SQLSRV, self::SQL_SELBYUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE [UserID] = :userId");
 				PdoHelper::storeQuery(PdoDrivers::PDO_MYSQL,  self::SQL_SELBYUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE `UserID` = :userId");
-				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE UserID = :userId");
+				PdoHelper::storeQuery(PdoDrivers::PDO_PGSQL,  self::SQL_SELBYUID, $this->generateClassQuery(BaseDbQueryTypes::SELECT, false) . " WHERE \"UserID\" = :userId");
 
 				static::$dbInitialized = true;
 			}
