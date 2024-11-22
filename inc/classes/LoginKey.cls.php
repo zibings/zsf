@@ -175,8 +175,8 @@
 			}
 
 			$this->setColumn('key',      'Key',      BaseDbTypes::STRING,  BCF::SHOULD_INSERT | BCF::SHOULD_UPDATE);
-			$this->setColumn('provider', 'Provider', BaseDbTypes::INTEGER, /*BCF::IS_KEY        | */BCF::SHOULD_INSERT);
-			$this->setColumn('userId',   'UserID',   BaseDbTypes::INTEGER, /*BCF::IS_KEY        | */BCF::SHOULD_INSERT);
+			$this->setColumn('provider', 'Provider', BaseDbTypes::INTEGER, BCF::IS_KEY        | BCF::SHOULD_INSERT);
+			$this->setColumn('userId',   'UserID',   BaseDbTypes::INTEGER, BCF::IS_KEY        | BCF::SHOULD_INSERT);
 
 			$this->key      = '';
 			$this->provider = new LoginKeyProviders(LoginKeyProviders::ERROR);
