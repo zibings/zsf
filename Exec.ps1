@@ -294,8 +294,7 @@ function TestDocker([string] $ProjectName, [string] $WebContainer, [bool] $Outpu
 
 	if ($OutputLogs) {
 		docker exec -it $WebContainer /bin/bash -c "export OUTPUT_LOGS='true' && php vendor/bin/phpunit"
-	}
- else {
+	} else {
 		docker exec -it $WebContainer php vendor/bin/phpunit
 	}
 
@@ -370,26 +369,19 @@ Write-Host "Executing command on '$ProjectName' project: $Command"
 
 if ($Command -eq "init") {
 	InitDocker -ProjectName $ProjectName -WebContainer $WebContainer
-}
-elseif ($Command -eq "start") {
+} elseif ($Command -eq "start") {
 	StartDocker -ProjectName $ProjectName -WebContainer $WebContainer
-}
-elseif ($Command -eq "update") {
+} elseif ($Command -eq "update") {
 	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
-}
-elseif ($Command -eq "test") {
+} elseif ($Command -eq "test") {
 	TestDocker -ProjectName $ProjectName -WebContainer $WebContainer -OutputLogs $False
-}
-elseif ($Command -eq "test-verbose") {
+} elseif ($Command -eq "test-verbose") {
 	TestDocker -ProjectName $ProjectName -WebContainer $WebContainer -OutputLogs $True
-}
-elseif ($Command -eq "stop") {
+} elseif ($Command -eq "stop") {
 	StopDocker -ProjectName $ProjectName
-}
-elseif ($Command -eq "down") {
+} elseif ($Command -eq "down") {
 	DownDocker -ProjectName $ProjectName
-}
-else {
+} else {
 	$opts = "t"
 
 	if ($IsInteractive) {
