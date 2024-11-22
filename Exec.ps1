@@ -64,7 +64,7 @@ if ($HasEnvFile) {
 
 function QueryForInput {
 	param (
-		[Parameter(Mandatory = $True)] [string] $Prompt,
+		[Parameter(Mandatory=$True)] [string] $Prompt,
 		[string[]] $AllowedValues = @("Y", "n")
 	)
 
@@ -105,8 +105,7 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 		if ($EnvVariables.ContainsKey('DB_ENGINE') -and @('mysql', 'sqlsrv', 'pgsql') -contains $EnvVariables.DB_ENGINE.ToLower()) {
 			$DbEngine = $EnvVariables.DB_ENGINE.ToLower()
 		}
-	}
- else {
+	} else {
 		$projectNamePrompt = Read-Host -Prompt "What is the name of your project"
 
 		if ($projectNamePrompt.Length -lt 1) {
@@ -117,9 +116,9 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 
 		$ProjectName = $projectNamePrompt.ToLower()
 
-		$adminUiPrompt = QueryForInput -Prompt "Use Docker for Admin UI"
-		$frontUiPrompt = QueryForInput -Prompt "Use Docker for Front UI"
-		$smtpPrompt = QueryForInput -Prompt "Use Docker for SMTP Server"
+		$adminUiPrompt  = QueryForInput -Prompt "Use Docker for Admin UI"
+		$frontUiPrompt  = QueryForInput -Prompt "Use Docker for Front UI"
+		$smtpPrompt     = QueryForInput -Prompt "Use Docker for SMTP Server"
 		$dbEnginePrompt = QueryForInput -Prompt "Which DB engine" -AllowedValues @("mysql", "sqlsrv", "pgsql")
 
 		if ($adminUiPrompt -eq "N") {
@@ -243,8 +242,8 @@ SMTP_DOCKER=$($SmtpDocker)
 	CreateCompose -DbEngine $DbEngine -UiAdminDocker $UiAdminDocker -UiFrontDocker $UiFrontDocker
 	StartDocker -ProjectName $ProjectName -WebContainer $WebContainer
 
-	Write-Host "Waiting 15s to let docker do its thang.. " -NoNewline
-	Start-Sleep -Seconds 15
+	Write-Host "Waiting 25s to let docker do its thang.. " -NoNewline
+	Start-Sleep -Seconds 25
 	Write-Host "DONE"
 
 	$DbContainer = "$ProjectName-db"
@@ -338,7 +337,7 @@ function DownDocker([string] $ProjectName) {
 
 	Write-Host "Docker container removed"
 
-	if ($UiAdminDocker) {
+	if (!$UiAdminDocker) {
 		Write-Host "Stopping admin UI.. " -NoNewline
 
 		Stop-Job -Name ZsfUiAdmin
@@ -346,18 +345,10 @@ function DownDocker([string] $ProjectName) {
 		Write-Host "DONE"
 	}
 
-	if ($UiFrontDocker) {
+	if (!$UiFrontDocker) {
 		Write-Host "Stopping front UI.. " -NoNewline
 
 		Stop-Job -Name ZsfUiFront
-
-		Write-Host "DONE"
-	}
-
-	if ($SmtpDocker) {
-		Write-Host "Stopping front UI.. " -NoNewline
-
-		Stop-Job -Name ZsfSMTP
 
 		Write-Host "DONE"
 	}
