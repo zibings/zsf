@@ -204,7 +204,7 @@ function StartDocker([string] $ProjectName, [string] $WebContainer) {
 	cp ./docker/front-config.json ./ui/front/public/config.json
 	Write-Host "DONE"
 
-	if ($UiAdminDocker) {
+	if (!$UiAdminDocker) {
 		Write-Host "Starting admin UI.. " -NoNewline
 
 		Push-Location ./ui/admin
@@ -215,21 +215,13 @@ function StartDocker([string] $ProjectName, [string] $WebContainer) {
 		Write-Host "DONE"
 	}
 
-	if ($UiFrontDocker) {
+	if (!$UiFrontDocker) {
 		Write-Host "Starting front UI.. " -NoNewline
 
 		Push-Location ./ui/front
 		pnpm install
 		Start-Job -Name ZsfUiFront -ScriptBlock { Invoke-Expression "pnpm dev" }
 		Pop-Location
-
-		Write-Host "DONE"
-	}
-
-	if ($SmtpDocker) {
-		Write-Host "Starting SMTP.. " -NoNewline
-
-		Start-Job -Name ZsfSMTP -ScriptBlock { Invoke-Expression "pnpm dev" }
 
 		Write-Host "DONE"
 	}
@@ -321,7 +313,7 @@ function StopDocker([string] $ProjectName) {
 
 	Write-Host "Docker container stopped"
 
-	if ($UiAdminDocker) {
+	if (!$UiAdminDocker) {
 		Write-Host "Stopping admin UI.. " -NoNewline
 
 		Stop-Job -Name ZsfUiAdmin
@@ -329,24 +321,16 @@ function StopDocker([string] $ProjectName) {
 		Write-Host "DONE"
 	}
 
-	if ($UiFrontDocker) {
+	if (!$UiFrontDocker) {
 		Write-Host "Stopping front UI.. " -NoNewline
 
 		Stop-Job -Name ZsfUiFront
 
 		Write-Host "DONE"
 	}
-
-	if ($SmtpDocker) {
-		Write-Host "Stopping front UI.. " -NoNewline
-
-		Stop-Job -Name ZsfSMTP
-
-		Write-Host "DONE"
-	}
 }
 
-function DownDocker([string] $ProjectName, [Boolean] $down) {
+function DownDocker([string] $ProjectName) {
 	Write-Host "Removing docker container.. "
 
 	Push-Location docker
