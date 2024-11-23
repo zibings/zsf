@@ -85,8 +85,7 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 	if ($HasEnvFile) {
 		if (!$EnvVariables.ContainsKey('PROJECT_NAME')) {
 			$ProjectName = Read-Host -Prompt "What is the name of your project"
-		}
-		else {
+		} else {
 			$ProjectName = $EnvVariables.PROJECT_NAME
 		}
 
