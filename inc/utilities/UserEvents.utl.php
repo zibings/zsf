@@ -600,7 +600,7 @@
 				}
 			}
 
-			if (!$this->touchPreEvent(UserEventTypes::LOGIN_PRE, new UserEventPreLoginDispatch($this->db, $this->log, $email, $key, $provider, $params->get(self::STR_ROLES), $params), $ret, "Pre-login event chain stopped the event")) {
+			if (!$this->touchPreEvent(UserEventTypes::LOGIN_PRE, new UserEventPreLoginDispatch($this->db, $this->log, $email, $key, $provider, $params->get(self::STR_ROLES, []), $params), $ret, "Pre-login event chain stopped the event")) {
 				return $ret;
 			}
 
