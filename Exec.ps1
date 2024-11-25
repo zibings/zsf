@@ -192,6 +192,8 @@ function StartDocker([string] $ProjectName, [string] $WebContainer) {
 	docker compose -f docker-compose.yml -p $ProjectName up -d
 	Pop-Location
 
+	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
+
 	Write-Host "Docker container started"
 
 	Write-Host "Configuring admin UI.. " -NoNewline
@@ -259,7 +261,11 @@ SMTP_DOCKER=$($SmtpDocker)
 	}
 
 	if (Test-Path -Path migrations/db) {
-		Remove-Item migrations/db -Recurse -Force
+		$removeExistingDb = QueryForInput -Prompt "Clear existing db migrations"
+
+		if ($removeExistingDb -eq "Y") {
+			Remove-Item migrations/db -Recurse -Force
+		}
 	}
 
 	Copy-Item -Path "migrations/db.$DbEngine" "migrations/db" -Recurse
