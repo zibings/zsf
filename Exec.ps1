@@ -265,11 +265,15 @@ SMTP_DOCKER=$($SmtpDocker)
 
 		if ($removeExistingDb -eq "Y") {
 			Remove-Item migrations/db -Recurse -Force
-		}
-	}
 
-	if (!(Test-Path -Path "migrations/db.$DbEngine")) {
-		Copy-Item -Path "migrations/db.$DbEngine" "migrations/db" -Recurse
+			if (Test-Path -Path "migrations/db.$DbEngine") {
+				Copy-Item -Path "migrations/db.$DbEngine" "migrations/db" -Recurse
+			}
+		}
+	} else {
+		if (Test-Path -Path "migrations/db.$DbEngine") {
+			Copy-Item -Path "migrations/db.$DbEngine" "migrations/db" -Recurse
+		}
 	}
 
 	docker exec -it $WebContainer composer update
