@@ -567,9 +567,14 @@
 		 * @return void
 		 */
 		protected function processEvent(Response &$ret, string $event, ParameterHelper $params) : void {
-			$evt = $this->events->$event($params);
+			$evt     = $this->events->$event($params);
+			$results = $evt->getResults();
 
-			$ret->setStatus($evt->getResults()[0][UserEvents::STR_HTTP_CODE]);
+			if (count($results) > 0) {
+				$ret->setStatus($evt->getResults()[0][UserEvents::STR_HTTP_CODE]);
+			} else {
+				$ret->setStatus(HttpStatusCodes::INTERNAL_SERVER_ERROR);
+			}
 
 			if ($evt->isBad()) {
 				$ret->setData($evt->getMessages()[0]);
