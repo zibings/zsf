@@ -326,6 +326,7 @@ function StopDocker([string] $ProjectName) {
 		Write-Host "Stopping admin UI.. " -NoNewline
 
 		Stop-Job -Name ZsfUiAdmin
+		Remove-Job -Name ZsfUiAdmin
 
 		Write-Host "DONE"
 	}
@@ -334,6 +335,7 @@ function StopDocker([string] $ProjectName) {
 		Write-Host "Stopping front UI.. " -NoNewline
 
 		Stop-Job -Name ZsfUiFront
+		Remove-Job -Name ZsfUiFront
 
 		Write-Host "DONE"
 	}
