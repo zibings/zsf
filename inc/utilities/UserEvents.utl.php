@@ -701,12 +701,18 @@
 			$userSession = new UserSession($this->db, $this->log);
 
 			if ($params->hasAll(self::STR_USERID, self::STR_TOKEN)) {
-				$userId      = $params->getInt(self::STR_USERID);
-				$token       = $params->getString(self::STR_TOKEN);
+				$userId      = $params->getInt(self::STR_USERID, 0);
+				$token       = $params->getString(self::STR_TOKEN, '');
 			} else {
 				$useSession = true;
-				$userId     = $session->getInt(self::STR_SESSION_USERID);
-				$token      = $session->getString(self::STR_SESSION_TOKEN);
+				$userId     = $session->getInt(self::STR_SESSION_USERID, 0);
+				$token      = $session->getString(self::STR_SESSION_TOKEN, '');
+			}
+
+			if ($userId < 1 || empty($token)) {
+				$ret->addMessage("Invalid session information");
+
+				return $ret;
 			}
 
 			if (!$this->touchPreEvent(UserEventTypes::LOGOUT_PRE, new UserEventPreLogoutDispatch($this->db, $this->log, $userId, $token, $params), $ret, "Pre-logout event chain stopped the event")) {
