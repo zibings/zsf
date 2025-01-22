@@ -693,7 +693,7 @@
 		 * @return ReturnHelper
 		 */
 		public function doLogout(ParameterHelper $params) : ReturnHelper {
-			$userId      = null;
+			$userId      = 0;
 			$token       = null;
 			$useSession  = false;
 			$ret         = new ReturnHelper();
