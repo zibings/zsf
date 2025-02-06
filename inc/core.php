@@ -1,5 +1,7 @@
 <?php
 
+	const ZSF_VERSION = '1.3.0';
+
 	$zsfDefaultConstants = [
 		'STOIC_CORE_PATH'             => './',
 		'STOIC_API_AUTH_COOKIE'       => true,
