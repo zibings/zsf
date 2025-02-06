@@ -10,6 +10,7 @@
 	use Stoic\Web\Api\BaseDbApi;;
 	use Stoic\Web\Api\Response;
 	use Stoic\Web\Api\Stoic;
+	use Stoic\Web\Resources\HttpStatusCodes;
 
 	/**
 	 * Basic response data structure for including a status code and a message.
@@ -74,16 +75,18 @@
 		 * @throws \Stoic\Web\Resources\NonJsonInputException
 		 */
 		public function tryGetParams(Response &$response, Request $request, array $params): bool {
-			$params = $request->getInput();
+			$paramHelper = $request->getInput();
 			$missingParams = [];
 			foreach ($params as $param) {
-				if (!$params->has($param)) {
+				if (!$paramHelper->has($param)) {
 					$missingParams[] = $param;
 				}
 			}
 
 			if (count($missingParams) != 0) {
-				$response->setAsError(print_r($missingParams, true));
+				$response->setStatus(HttpStatusCodes::BAD_REQUEST);
+				header('Content-Type: text/plain');
+				$response->setAsError('Missing required parameters: ' . json_encode($missingParams));
 				return false;
 			}
 
