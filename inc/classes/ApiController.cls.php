@@ -65,6 +65,32 @@
 		}
 
 		/**
+		 * @param \Stoic\Web\Api\Response $response Modified by adding messages to the response if there is a missing param
+		 * @param \Stoic\Web\Request      $request
+		 * @param array                   $params A string array of params to check and report back if it doesn't have them
+		 * @return bool
+		 * @throws \ReflectionException
+		 * @throws \Stoic\Web\Resources\InvalidRequestException
+		 * @throws \Stoic\Web\Resources\NonJsonInputException
+		 */
+		public function tryGetParams(Response &$response, Request $request, array $params): bool {
+			$params = $request->getInput();
+			$missingParams = [];
+			foreach ($params as $param) {
+				if (!$params->has($param)) {
+					$missingParams[] = $param;
+				}
+			}
+
+			if (count($missingParams) != 0) {
+				$response->setAsError(print_r($missingParams, true));
+				return false;
+			}
+
+			return true;
+		}
+
+		/**
 		 * Attempts to assign the top message from a ReturnHelper object as the error to the Response object.
 		 *
 		 * @param Response $response Response object to set to error state.
