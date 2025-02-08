@@ -67,9 +67,8 @@
 		public function addRole(Request $request, array $matches = null) : Response {
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
-
-			// NOTE(Jovanni): There was no previous check here
-			if ($this->tryGetParams($ret, $request, ['name']) === false) {
+			
+			if (!$this->tryGetParams($ret, $request, ['name'])) {
 				return $ret;
 			}
 			
