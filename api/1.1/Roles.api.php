@@ -68,6 +68,10 @@
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
 			
+			if (!$this->tryGetParams($ret, $request, ['name'])) {
+				return $ret;
+			}
+			
 			$role       = new Role($this->db, $this->log);
 			$role->name = $params->getString('name');
 			$create     = $role->create();
