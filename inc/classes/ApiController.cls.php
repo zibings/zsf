@@ -70,9 +70,7 @@
 		 * @param \Stoic\Web\Request      $request
 		 * @param array                   $params A string array of params to check and report back if it doesn't have them
 		 * @return bool
-		 * @throws \ReflectionException
-		 * @throws \Stoic\Web\Resources\InvalidRequestException
-		 * @throws \Stoic\Web\Resources\NonJsonInputException
+		 * @throws \ReflectionException | \Stoic\Web\Resources\InvalidRequestException | \Stoic\Web\Resources\NonJsonInputException
 		 */
 		public function tryGetParams(Response &$response, Request $request, array $params): bool {
 			$paramHelper = $request->getInput();
