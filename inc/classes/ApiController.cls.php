@@ -10,7 +10,6 @@
 	use Stoic\Web\Api\BaseDbApi;;
 	use Stoic\Web\Api\Response;
 	use Stoic\Web\Api\Stoic;
-	use Stoic\Web\Resources\HttpStatusCodes;
 
 	/**
 	 * Basic response data structure for including a status code and a message.
