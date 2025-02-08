@@ -75,7 +75,7 @@
 		public function tryGetParams(Response &$response, Request $request, array $params): bool {
 			$paramHelper = $request->getInput();
 			$missingParams = [];
-			
+
 			foreach ($params as $param) {
 				if (!$paramHelper->has($param)) {
 					$missingParams[] = $param;
@@ -86,6 +86,7 @@
 				$response->setStatus(HttpStatusCodes::BAD_REQUEST);
 				header('Content-Type: text/plain');
 				$response->setAsError('Missing required parameters: ' . json_encode($missingParams));
+				
 				return false;
 			}
 
