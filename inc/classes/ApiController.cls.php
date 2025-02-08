@@ -83,8 +83,6 @@
 			}
 
 			if (count($missingParams) != 0) {
-				$response->setStatus(HttpStatusCodes::BAD_REQUEST);
-				header('Content-Type: text/plain');
 				$response->setAsError('Missing required parameters: ' . json_encode($missingParams));
 				
 				return false;
