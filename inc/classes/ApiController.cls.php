@@ -75,6 +75,7 @@
 		public function tryGetParams(Response &$response, Request $request, array $params): bool {
 			$paramHelper = $request->getInput();
 			$missingParams = [];
+			
 			foreach ($params as $param) {
 				if (!$paramHelper->has($param)) {
 					$missingParams[] = $param;
