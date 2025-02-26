@@ -2,13 +2,11 @@
 
 	namespace Zibings;
 
-	use Stoic\Log\Logger;
 	use Stoic\Pdo\BaseDbColumnFlags as BCF;
 	use Stoic\Pdo\BaseDbQueryTypes;
 	use Stoic\Pdo\BaseDbTypes;
 	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
-	use Stoic\Pdo\StoicDbModel;
 	use Stoic\Utilities\ReturnHelper;
 
 	/**
@@ -16,111 +14,10 @@
 	 *
 	 * @package Zibings
 	 */
-	class UserSession extends StoicDbModel {
-		const SQL_SELBYTOKEN = 'usersession-selectbytoken';
-
-
-		/**
-		 * Network address of user when this session was created.
-		 *
-		 * @var string
-		 */
-		public string $address;
-		/**
-		 * Date and time this session was created.
-		 *
-		 * @var \DateTimeInterface
-		 */
-		public \DateTimeInterface $created;
-		/**
-		 * Network hostname of user when this session was created.
-		 *
-		 * @var string
-		 */
-		public string $hostname;
-		/**
-		 * Unique integer identifier for this session.
-		 *
-		 * @var int
-		 */
-		public int $id;
-		/**
-		 * Unique string identifier for this session.
-		 *
-		 * @var string
-		 */
-		public string $token;
-		/**
-		 * Integer identifier for the user who owns this session.
-		 *
-		 * @var int
-		 */
-		public int $userId;
-
-
-		/**
-		 * Whether the stored queries have been initialized.
-		 *
-		 * @var bool
-		 */
+	class UserSession extends UserSessionMeta {
+		const string SQL_SELBYTOKEN = 'usersession-selectbytoken';
 		private static bool $dbInitialized = false;
 
-
-		/**
-		 * Static method to retrieve a session by its integer identifier.
-		 *
-		 * @param int $id Integer identifier of session.
-		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
-		 * @throws \Exception
-		 * @return UserSession
-		 */
-		public static function fromId(int $id, PdoHelper $db, Logger $log = null) : UserSession {
-			$ret = new UserSession($db, $log);
-			$ret->id = $id;
-
-			if ($ret->read()->isBad()) {
-				$ret->id = 0;
-			}
-
-			return $ret;
-		}
-
-		/**
-		 * Static method to retrieve a session by its string identifier.
-		 *
-		 * @param string $token String identifier of session.
-		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
-		 * @return UserSession
-		 */
-		public static function fromToken(string $token, PdoHelper $db, Logger $log = null) : UserSession {
-			$ret = new UserSession($db, $log);
-
-			if (empty($token)) {
-				return $ret;
-			}
-
-			$ret->tryPdoExcept(function () use (&$ret, $token) {
-				$stmt = $ret->db->prepareStored(self::SQL_SELBYTOKEN);
-				$stmt->bindParam(':token', $token);
-
-				if ($stmt->execute()) {
-					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-						$ret = UserSession::fromArray($row, $ret->db, $ret->log);
-					}
-				}
-			}, "Failed to get session from token");
-
-			return $ret;
-		}
-
-		/**
-		 * Returns a (usually) unique	GUID in the typical 8-4-4-4-12 character format.
-		 *
-		 * @param bool $withBrackets Whether to surround the GUID with curly brackets ({})
-		 * @return string
-		 */
 		public static function generateGuid(bool $withBrackets = true) : string {
 			$ret = '';
 
@@ -148,12 +45,8 @@
 			return trim($ret, '{}');
 		}
 
-
 		/**
-		 * Determines if the system should attempt to create a UserSession in the database.
-		 *
-		 * @throws \Exception
-		 * @return bool|ReturnHelper
+		 * @throws \DateMalformedStringException
 		 */
 		protected function __canCreate() : bool|ReturnHelper {
 			if ($this->userId < 1 || empty($this->token)) {
@@ -164,25 +57,7 @@
 
 			return true;
 		}
-		
-		/**
-		 * Determines if the system should attempt to delete a UserSession from the database.
-		 *
-		 * @return bool|ReturnHelper
-		 */
-		protected function __canDelete() : bool|ReturnHelper {
-			if ($this->id < 1) {
-				return false;
-			}
 
-			return true;
-		}
-		
-		/**
-		 * Determines if the system should attempt to read a UserSession from the database.
-		 *
-		 * @return bool|ReturnHelper
-		 */
 		protected function __canRead() : bool|ReturnHelper {
 			if ($this->id < 1) {
 				return false;
@@ -190,14 +65,17 @@
 
 			return true;
 		}
-		
-		/**
-		 * Determines if the system should attempt to update a UserSession in the database.
-		 *
-		 * @return bool|ReturnHelper
-		 */
+
 		protected function __canUpdate() : bool|ReturnHelper {
 			return false;
+		}
+
+		protected function __canDelete() : bool|ReturnHelper {
+			if ($this->id < 1) {
+				return false;
+			}
+
+			return true;
 		}
 		
 		/**

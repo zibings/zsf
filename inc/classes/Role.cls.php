@@ -2,13 +2,11 @@
 
 	namespace Zibings;
 
-	use Stoic\Log\Logger;
 	use Stoic\Pdo\BaseDbColumnFlags as BCF;
 	use Stoic\Pdo\BaseDbQueryTypes;
 	use Stoic\Pdo\BaseDbTypes;
 	use Stoic\Pdo\PdoDrivers;
 	use Stoic\Pdo\PdoHelper;
-	use Stoic\Pdo\StoicDbModel;
 	use Stoic\Utilities\ReturnHelper;
 
 	/**
@@ -48,30 +46,9 @@
 	 *
 	 * @package Zibings
 	 */
-	class Role extends StoicDbModel {
+	class Role extends RoleMeta {
 		const SQL_SELBYNAME   = 'role-selectbyname';
 		const SQL_SELBYNAMEID = 'role-selectbynameandid';
-
-
-		/**
-		 * Date and time the role was created.
-		 *
-		 * @var \DateTimeInterface
-		 */
-		public \DateTimeInterface $created;
-		/**
-		 * Integer identifier of role.
-		 *
-		 * @var int
-		 */
-		public int $id;
-		/**
-		 * Friendly name of role.
-		 *
-		 * @var string
-		 */
-		public string $name;
-
 
 		/**
 		 * Whether the stored queries have been initialized.
@@ -79,57 +56,6 @@
 		 * @var bool
 		 */
 		private static bool $dbInitialized = false;
-
-
-		/**
-		 * Static method to retrieve a role from the database using its identifier. Returns an empty Role object if no role is
-		 * found.
-		 *
-		 * @param int $id Integer identifier of role to retrieve from database.
-		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
-		 * @throws \Exception
-		 * @return Role
-		 */
-		public static function fromId(int $id, PdoHelper $db, Logger $log = null) : Role {
-			$ret = new Role($db, $log);
-
-			if ($id > 0) {
-				$ret->id = $id;
-
-				if ($ret->read()->isBad()) {
-					$ret->id = 0;
-				}
-			}
-
-			return $ret;
-		}
-
-		/**
-		 * Static method to retrieve a role from the database using its name. Returns an empty Role object if no role is found.
-		 *
-		 * @param string $name Friendly name of role to retrieve from database.
-		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied. 
-		 * @return Role
-		 */
-		public static function fromName(string $name, PdoHelper $db, Logger $log = null) : Role {
-			$ret = new Role($db, $log);
-
-			if (!empty($name)) {
-				$ret->tryPdoExcept(function () use ($name, &$ret) {
-					$stmt = $ret->db->prepareStored(self::SQL_SELBYNAME);
-					$stmt->bindParam(':name', $name);
-					
-					if ($stmt->execute()) {
-						$ret = Role::fromArray($stmt->fetch(\PDO::FETCH_ASSOC), $ret->db, $ret->log);
-					}
-				}, "Failed to retrieve role from database");
-			}
-
-			return $ret;
-		}
-
 
 		/**
 		 * Determines if the system should attempt to create a new Role in the database.
@@ -158,19 +84,6 @@
 			}
 
 			return $ret;
-		}
-
-		/**
-		 * Determines if the system should attempt to delete a Role from the database.
-		 *
-		 * @return bool|ReturnHelper
-		 */
-		protected function __canDelete() : bool|ReturnHelper {
-			if ($this->id < 1) {
-				return false;
-			}
-
-			return true;
 		}
 
 		/**
@@ -217,6 +130,19 @@
 			}, "Failed to guard against role duplicate");
 
 			return $ret;
+		}
+
+		/**
+		 * Determines if the system should attempt to delete a Role from the database.
+		 *
+		 * @return bool|ReturnHelper
+		 */
+		protected function __canDelete() : bool|ReturnHelper {
+			if ($this->id < 1) {
+				return false;
+			}
+
+			return true;
 		}
 
 		/**
