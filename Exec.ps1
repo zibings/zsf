@@ -286,10 +286,10 @@ SMTP_DOCKER=$($SmtpDocker)
 function UpdateDocker([string] $ProjectName, [string] $WebContainer) {
 	Write-Host "Updating container for '$ProjectName'.."
 
-	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($testDbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
+	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($testDbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])" -PdbPass="P@55word"
 	docker exec -it $WebContainer php vendor/bin/stoic-migrate up
 
-	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($dbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
+	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($dbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])" -PdbPass="P@55word"
 	docker exec -it $WebContainer php vendor/bin/stoic-migrate up
 
 	Write-Host "Finished updating"
@@ -300,7 +300,7 @@ function TestDocker([string] $ProjectName, [string] $WebContainer, [bool] $Outpu
 
 	Write-Host "Running automated tests against test db"
 
-	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($testDbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
+	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($testDbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])" -PdbPass="P@55word"
 
 	if ($OutputLogs) {
 		docker exec -it $WebContainer /bin/bash -c "export OUTPUT_LOGS='true' && php vendor/bin/phpunit"
@@ -308,7 +308,7 @@ function TestDocker([string] $ProjectName, [string] $WebContainer, [bool] $Outpu
 		docker exec -it $WebContainer php vendor/bin/phpunit
 	}
 
-	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($dbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])"
+	docker exec -it $WebContainer php vendor/bin/stoic-configure -PdbDsn="$($dbDsns[$DbEngine])" -PdbUser="$($dbUsers[$DbEngine])" -PdbPass="P@55word"
 
 	Write-Host "Automated tests complete, db reset to development"
 }
