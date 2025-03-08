@@ -274,8 +274,6 @@ SMTP_DOCKER=$($SmtpDocker)
 		}
 	}
 
-	docker exec -it $WebContainer composer update
-
 	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
 
 	Write-Host "Docker container initialized"
@@ -412,6 +410,10 @@ function EnsureDockerProc() {
 	return $True
 }
 
+function ComposerUpdate() {
+	docker exec -it $WebContainer composer update
+}
+
 EnsureDockerProc
 
 Write-Host "Executing command on '$ProjectName' project: $Command"
@@ -422,6 +424,8 @@ if ($Command -eq "init") {
 	StartDocker -ProjectName $ProjectName -WebContainer $WebContainer
 } elseif ($Command -eq "update") {
 	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
+} elseif ($Command -eq "composer-update") {
+	ComposerUpdate
 } elseif ($Command -eq "test") {
 	TestDocker -ProjectName $ProjectName -WebContainer $WebContainer -OutputLogs $False
 } elseif ($Command -eq "test-verbose") {
