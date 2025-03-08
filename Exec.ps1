@@ -369,6 +369,53 @@ function DownDocker([string] $ProjectName) {
 	Remove-Item -Path docker/.env -Force
 }
 
+function EnsureDockerProc() {
+	try {
+		$docker = Get-Command docker -ErrorAction Stop
+	} catch {
+		Write-Error "Docker CLI not found."
+
+		return $False
+	}
+
+	$dockerRunning = $False
+
+	try {
+		$dockerInfo = docker info 2>$null
+
+		if ($LASTEXITCODE -eq 0) {
+			$dockerRunning = $True
+		}
+	} catch {
+		$dockerRunning = $False
+	}
+
+	if (-not $dockerRunning) {
+		Write-Host "Docker not running.  Attempting to start.."
+
+		if ($IsWindows -or $env:OS -eq "Windows_NT") {
+			if (-not $docker -or -not (Test-Path $docker.Source)) {
+				Write-Error "Couldn't find Docker executable"
+
+				return $False
+			}
+
+			Start-Process $docker.Source
+			Write-Host "Starting Docker process: $($docker.Source)"
+		} elseif ($IsMacOS) {
+			Start-Process "open" -ArgumentList "-a", "Docker"
+			Write-Host "Starting docker process"
+		} elseif ($IsLinux) {
+			sudo systemctl start docker
+			Write-Host "Starting Docker service"
+		}
+	}
+
+	return $True
+}
+
+EnsureDockerProc
+
 Write-Host "Executing command on '$ProjectName' project: $Command"
 
 if ($Command -eq "init") {
