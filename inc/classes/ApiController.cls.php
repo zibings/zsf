@@ -7,7 +7,7 @@
 	use Stoic\Utilities\ParameterHelper;
 	use Stoic\Utilities\ReturnHelper;
 	use Stoic\Web\Request;
-	use Stoic\Web\Api\BaseDbApi;;
+	use Stoic\Web\Api\BaseDbApi;
 	use Stoic\Web\Api\Response;
 	use Stoic\Web\Api\Stoic;
 
@@ -48,6 +48,7 @@
 		 * @var PdoHelper
 		 */
 		protected $db;
+		protected UserRoles $userRoles;
 
 
 		/**
@@ -59,6 +60,9 @@
 		 */
 		public function __construct(protected Stoic $stoic, PdoHelper $db, Logger $log = null) {
 			parent::__construct($db, $log);
+
+			$this->userRoles = new UserRoles($this->db, $this->log);
+
 			$this->registerEndpoints();
 
 			return;
@@ -215,9 +219,7 @@
 		 * @return bool
 		 */
 		protected function isSelfOrAdmin(User $user, int $userId) : bool {
-			$userRoles = new UserRoles($this->db, $this->log);
-
-			return $user->id !== $userId && !$userRoles->userInRoleByName($user->id, RoleStrings::ADMINISTRATOR);
+			return $user->id !== $userId && !$this->userRoles->userInRoleByName($user->id, RoleStrings::ADMINISTRATOR);
 		}
 
 		/**
