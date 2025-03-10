@@ -192,18 +192,17 @@
 		 * @return Response
 		 */
 		public function getUserRoles(Request $request, array $matches = null) : Response {
-			$user      = $this->getUser();
-			$ret       = $this->newResponse();
-			$userRoles = new UserRoles($this->db, $this->log);
-			$userId    = (count($matches) > 1) ? intval($matches[1][0]) : $user->id;
+			$user   = $this->getUser();
+			$ret    = $this->newResponse();
+			$userId = (count($matches) > 1) ? intval($matches[1][0]) : $user->id;
 
-			if ($userId != $user->id && !$userRoles->userInRoleByName($user->id, RoleStrings::ADMINISTRATOR)) {
+			if ($userId != $user->id && !$this->userRoles->userInRoleByName($user->id, RoleStrings::ADMINISTRATOR)) {
 				$ret->setAsError("Invalid user identifier");
 
 				return $ret;
 			}
 
-			$ret->setData($userRoles->getAllUserRoles($userId));
+			$ret->setData($this->userRoles->getAllUserRoles($userId));
 
 			return $ret;
 		}
@@ -336,17 +335,16 @@
 				return $ret;
 			}
 
-			$role      = $params->getString('name');
-			$userId    = $params->getInt('userId', $user->id);
-			$userRoles = new UserRoles($this->db, $this->log);
+			$role   = $params->getString('name');
+			$userId = $params->getInt('userId', $user->id);
 
-			if ($userId == $user->id || $userRoles->userInRoleByName($userId, RoleStrings::ADMINISTRATOR)) {
+			if ($userId == $user->id || $this->userRoles->userInRoleByName($userId, RoleStrings::ADMINISTRATOR)) {
 				$ret->setAsError("You cannot modify other administrators from the API");
 
 				return $ret;
 			}
 
-			$userRoles->removeUserFromRoleByName($userId, $role);
+			$this->userRoles->removeUserFromRoleByName($userId, $role);
 
 			$ret->setData(true);
 
@@ -386,19 +384,18 @@
 		 * @return Response
 		 */
 		public function removeUserRoles(Request $request, array $matches = null) : Response {
-			$user      = $this->getUser();
-			$ret       = $this->newResponse();
-			$params    = $request->getInput();
-			$userId    = $params->getInt('userId', $user->id);
-			$userRoles = new UserRoles($this->db, $this->log);
+			$user   = $this->getUser();
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
+			$userId = $params->getInt('userId', $user->id);
 
-			if ($userId == $user->id || $userRoles->userInRoleByName($userId, RoleStrings::ADMINISTRATOR)) {
+			if ($userId == $user->id || $this->userRoles->userInRoleByName($userId, RoleStrings::ADMINISTRATOR)) {
 				$ret->setAsError("You cannot modify other administrators from the API.");
 
 				return $ret;
 			}
 
-			$userRoles->removeUserFromAllRoles(intval($params->getInt('userId', $user->id)));
+			$this->userRoles->removeUserFromAllRoles(intval($params->getInt('userId', $user->id)));
 
 			$ret->setData(true);
 
@@ -509,20 +506,19 @@
 				return $ret;
 			}
 
-			$newRoles  = [];
-			$userId    = intval($params['userId']);
-			$userRoles = new UserRoles($this->db, $this->log);
+			$newRoles = [];
+			$userId   = intval($params['userId']);
 
-			if ($userRoles->userInRoleByName($userId, RoleStrings::ADMINISTRATOR)) {
+			if ($this->userRoles->userInRoleByName($userId, RoleStrings::ADMINISTRATOR)) {
 				$ret->setAsError("You cannot modify other administrators from the API.");
 
 				return $ret;
 			}
 
-			$userRoles->removeUserFromAllRoles($userId);
+			$this->userRoles->removeUserFromAllRoles($userId);
 
 			foreach ($params['roles'] as $role) {
-				if ($userRoles->addUserToRoleByName($userId, $role)) {
+				if ($this->userRoles->addUserToRoleByName($userId, $role)) {
 					$newRoles[] = $role;
 				}
 			}
@@ -566,19 +562,18 @@
 		 * @return Response
 		 */
 		public function userInRole(Request $request, array $matches = null) : Response {
-			$user      = $this->getUser();
-			$ret       = $this->newResponse();
-			$params    = $request->getInput();
-			$userId    = $params->getInt('userId', $user->id);
-			$userRoles = new UserRoles($this->db, $this->log);
+			$user   = $this->getUser();
+			$ret    = $this->newResponse();
+			$params = $request->getInput();
+			$userId = $params->getInt('userId', $user->id);
 
-			if ($userId != $user->id && !$userRoles->userInRoleByName($user->id, RoleStrings::ADMINISTRATOR)) {
+			if ($userId != $user->id && !$this->userRoles->userInRoleByName($user->id, RoleStrings::ADMINISTRATOR)) {
 				$ret->setAsError("Invalid user identifier");
 
 				return $ret;
 			}
 
-			$ret->setData($userRoles->userInRoleByName($userId, $params->getString('name')));
+			$ret->setData($this->userRoles->userInRoleByName($userId, $params->getString('name')));
 
 			return $ret;
 		}
