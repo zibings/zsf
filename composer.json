@@ -1,10 +1,20 @@
 {
+	"name": "zibings/zsf",
+	"description": "Zibings Site Framework",
+	"type": "project",
+	"license": "MIT",
+	"minimum-stability": "dev",
 	"repositories": [
 		{
 			"url": "https://github.com/AndyM84/pseudo.git",
 			"type": "vcs"
 		}
 	],
+	"autoload" : {
+		"files": [
+			"scripts/setup.php"
+		]
+	},
 	"require" : {
 		"php" : "^8.3",
 		"stoic/web" : "^1.3",
@@ -30,5 +40,14 @@
 		"symfony/serializer" : "^6",
 		"symfony/translation-contracts" : "^3",
 		"jimbojsb/pseudo": "dev-AndyM84-8_3"
+	},
+	"scripts" : {
+		"post-install-cmd" : [
+			"@php -r \"echo 'Current directory: ' . getcwd() . PHP_EOL;\"",
+			"@php -f scripts/setup.php > setup-output.log 2>&1"
+		],
+		"post-create-project-cmd" : [
+			"@php -f scripts/setup.php"
+		]
 	}
 }
