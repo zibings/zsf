@@ -46,7 +46,6 @@
 		 * @param \PDO $db Internal instance of PDO object.
 		 * @param Logger|null $log Optional Logger object for internal use.
 		 * @param UserEvents|null $events Optional UserEvent object for internal use.
-		 * @param UserRoles|null $userRoles Optional UserRoles object for internal use.
 		 * @throws \ReflectionException
 		 * @return void
 		 */
@@ -54,18 +53,13 @@
 			Stoic $stoic,
 			\PDO $db,
 			Logger $log = null,
-			protected UserEvents|null    $events    = null,
-			protected UserRoles|null     $userRoles = null) {
+			protected UserEvents|null    $events    = null) {
 			global $Settings;
 
 			parent::__construct($stoic, $db, $log);
 
 			if ($this->events === null) {
 				$this->events = new UserEvents($this->db, $this->log);
-			}
-
-			if ($this->userRoles === null) {
-				$this->userRoles = new UserRoles($this->db, $this->log);
 			}
 
 			$page = PageHelper::getPage('api/1.1/index.php');

@@ -31,7 +31,6 @@
 		 * @param Stoic $stoic Internal instance of Stoic API object.
 		 * @param \PDO $db Internal instance of PDO object.
 		 * @param Logger|null $log Optional Logger object for internal use.
-		 * @param UserRoles|null $userRoles Optional UserRoles object for internal use.
 		 * @param UserRelations|null $userRels Optional UserRelations object for internal use.
 		 * @return void
 		 */
@@ -39,13 +38,8 @@
 			Stoic $stoic,
 			\PDO $db,
 			Logger $log                            = null,
-			protected UserRoles|null $userRoles    = null,
 			protected UserRelations|null $userRels = null) {
 			parent::__construct($stoic, $db, $log);
-
-			if ($this->userRoles === null) {
-				$this->userRoles = new UserRoles($this->db, $this->log);
-			}
 
 			if ($this->userRels === null) {
 				$this->userRels = new UserRelations($this->db, $this->log);
