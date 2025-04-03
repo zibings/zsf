@@ -342,6 +342,12 @@ function StopDocker([string] $ProjectName) {
 }
 
 function DownDocker([string] $ProjectName) {
+	$downPrompt  = QueryForInput -Prompt "Are you sure?  This will remove all containers and images"
+
+	if ($downPrompt -eq "N") {
+		return
+	}
+
 	Write-Host "Removing docker container.. "
 
 	Push-Location docker
