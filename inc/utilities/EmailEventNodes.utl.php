@@ -151,3 +151,73 @@
 			return;
 		}
 	}
+
+	/**
+	 * Processing node to send password reset email for users.
+	 *
+	 * @package Zibings
+	 */
+	class EmailUserSendResetPasswordNode extends NodeBase {
+		/**
+		 * Instantiates a new EmailUserSendResetPasswordNode object.
+		 *
+		 * @param \Stoic\Web\PageHelper $page PageHelper instance for internal use.
+		 * @param \AndyM84\Config\ConfigContainer $settings ConfigContainer instance for internal use.
+		 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
+		 * @param \Stoic\Log\Logger|null $log Optional Logger instance for internal use, defaults to new instance created.
+		 */
+		public function __construct(
+			public PageHelper $page,
+			public ConfigContainer $settings,
+			public PdoHelper $db,
+			public Logger|null $log = null) {
+			$this->setKey('EmailUserUpdateNode')->setVersion('1.0.0');
+
+			if ($this->log === null) {
+				$this->log = new Logger();
+			}
+
+			return;
+		}
+
+		/**
+		 * Processes the dispatch when touched on a chain.
+		 *
+		 * @param mixed $sender Sender data, optional and thus can be 'null'.
+		 * @param \Stoic\Chain\DispatchBase $dispatch Dispatch object to process.
+		 * @throws \PHPMailer\PHPMailer\Exception
+		 * @return void
+		 */
+		public function process(mixed $sender, DispatchBase &$dispatch) : void {
+			if (!($dispatch instanceof UserEventUpdateDispatch) || $dispatch->user->id < 1 || !$dispatch->emailUpdated) {
+				return;
+			}
+
+			$ut          = new UserToken($this->db, $this->log);
+			$ut->context = "SEND RESET PASSWORD EMAIL";
+			$ut->token   = UserSession::generateGuid(false);
+			$ut->userId  = $dispatch->user->id;
+			$create      = $ut->create();
+
+			if ($create->isBad()) {
+				return;
+			}
+
+			$tpl = new Engine(null, 'tpl.php');
+			$tpl->addFolder('shared', STOIC_CORE_PATH . '/tpl/shared');
+			$tpl->addFolder('emails', STOIC_CORE_PATH . '/tpl/emails');
+
+			$mail = getPhpMailer($this->settings);
+			$mail->Subject = "[{$this->settings->get(SettingsStrings::SITE_NAME)}] Account Updated: Please reset your password";
+			$mail->isHTML(true);
+			$mail->Body = $tpl->render('emails::reset-password', [
+				'page' => $this->page,
+				'token' => base64_encode("{$ut->userId}:{$ut->token}")
+			]);
+			$mail->addAddress($dispatch->user->email);
+
+			$mail->send();
+
+			return;
+		}
+	}

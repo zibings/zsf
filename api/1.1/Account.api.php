@@ -14,6 +14,7 @@
 
 	use Zibings\ApiController;
 	use Zibings\AuthHistoryActions;
+	use Zibings\EmailUserSendResetPasswordNode;
 	use Zibings\LoginKeyProviders;
 	use Zibings\RoleStrings;
 	use Zibings\User;
@@ -70,6 +71,7 @@
 			$this->events->linkToEvent(UserEventTypes::CREATE, new UserEmailConfirmationNode($page, $Settings, $this->db, $this->log));
 			$this->events->linkToEvent(UserEventTypes::UPDATE, new UserEmailConfirmationNode($page, $Settings, $this->db, $this->log));
 			$this->events->linkToEvent(UserEventTypes::REGISTER, new UserEmailConfirmationNode($page, $Settings, $this->db, $this->log));
+			$this->events->linkToEvent(UserEventTypes::SEND_RESETPASSWORD, new EmailUserSendResetPasswordNode($page, $Settings, $this->db, $this->log));
 
 			return;
 		}
