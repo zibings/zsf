@@ -19,6 +19,7 @@
 		const GITHUB_SECRET        = 'githubSecret';
 		const REDDIT_KEY           = 'redditKey';
 		const REDDIT_SECRET        = 'redditSecret';
+		const SESSION_TIMEOUT      = 'sessionTimeout';
 		const SITE_NAME            = 'siteName';
 		const SMTP_HOST            = 'smtpHost';
 		const SMTP_PORT            = 'smtpPort';
