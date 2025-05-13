@@ -2,6 +2,8 @@ services:
   db:
     image: postgres
     container_name: ${PROJECT_NAME}-db
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: P@55word
       POSTGRES_DB: zsf
