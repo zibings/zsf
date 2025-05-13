@@ -11,6 +11,7 @@
 		const CURL_SECURE          = 'curlSecure';
 		const DEFAULT_FROM_ADDRESS = 'defaultFromAddress';
 		const DEFAULT_FROM_NAME    = 'defaultFromName';
+		const ENABLE_LOGGING       = 'enableLogging';
 		const ENABLE_SMTP          = 'enableSmtp';
 		const FACEBOOK_KEY         = 'facebookKey';
 		const FACEBOOK_SECRET      = 'facebookSecret';
