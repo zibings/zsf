@@ -266,7 +266,11 @@ SMTP_DOCKER=$($SmtpDocker)
 		}
 	}
 
-	docker exec -it $WebContainer composer update
+	if (!(Test-Path -Path vendor)) {
+		Write-Host "Installing composer dependencies.. " -NoNewline
+		docker exec -it $WebContainer composer update
+		Write-Host "DONE"
+	}
 
 	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
 
