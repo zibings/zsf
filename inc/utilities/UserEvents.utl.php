@@ -494,6 +494,9 @@
 		 * @return ReturnHelper
 		 */
 		public function doLogin(ParameterHelper $params) : ReturnHelper {
+			/** @var AndyM84\Config\ConfigContainer */
+			global $Settings;
+
 			$ret = new ReturnHelper();
 
 			if (!$params->hasAll(self::STR_EMAIL, self::STR_KEY, self::STR_PROVIDER)) {
@@ -647,7 +650,7 @@
 			if (STOIC_API_AUTH_COOKIE) {
 				$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
 
-				setcookie(self::STR_COOKIE_TOKEN, $bearerToken, time() + 31536000, '/', '', $secure, true);
+				setcookie(self::STR_COOKIE_TOKEN, $bearerToken, time() + $Settings->get(SettingsStrings::SESSION_TIMEOUT, 31536000), '/', '', $secure, true);
 			}
 
 			$ret->makeGood();
