@@ -3,6 +3,7 @@
 	const STOIC_CORE_PATH = '../../../';
 	require_once(STOIC_CORE_PATH . 'inc/core.php');
 
+	use Stoic\Utilities\LogFileAppender;
 	use Stoic\Web\Api\Stoic;
 
 	global $Api, $Db, $Log, $Settings;
@@ -15,6 +16,10 @@
 	 */
 	
 	$Api = Stoic::getInstance(STOIC_CORE_PATH, null, $Log);
+
+	if ($Settings->get(SettingsStrings::ENABLE_LOGGING, false) !== false) {
+		$Log->addAppender(new LogFileAppender($Api->getFileHelper(), '~/logs/api-1.1.log'));
+	}
 
 	$node = new Zibings\ApiBearerAuthorizer();
 	$Api->linkAuthorizationNode($node);
