@@ -1092,11 +1092,14 @@
 	 * @return bool
 	 */
 	function isSessionValidForRoles(UserSession $session, mixed $roles, \PDO $db, Logger $log = null) : bool {
+		/** @var AndyM84\Config\ConfigContainer */
+		global $Settings;
+
 		if ($session->id < 1) {
 			return false;
 		}
 
-		$expiryDt = (new \DateTime('now', new \DateTimeZone('UTC')))->sub(new \DateInterval('P1Y'));
+		$expiryDt = (new \DateTime('now', new \DateTimeZone('UTC')))->modify("-" . $Settings->get(SettingsStrings::SESSION_EXPIRY) . " minutes");
 
 		if ($session->created < $expiryDt) {
 			$session->delete();
