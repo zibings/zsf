@@ -1,8 +1,8 @@
 [CmdletBinding()]
 
 $ProjectName      = ""
-$UiFrontDocker    = $true
-$UiAdminDocker    = $true
+$UiFrontDocker    = $false
+$UiAdminDocker    = $false
 $SmtpDocker       = $true
 $Commands         = @()
 $EnvVariables     = @{}
@@ -115,18 +115,8 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 
 		$ProjectName = $projectNamePrompt.ToLower()
 
-		$adminUiPrompt  = QueryForInput -Prompt "Use Docker for Admin UI"
-		$frontUiPrompt  = QueryForInput -Prompt "Use Docker for Front UI"
 		$smtpPrompt     = QueryForInput -Prompt "Use Docker for SMTP Server"
 		$dbEnginePrompt = QueryForInput -Prompt "Which DB engine" -AllowedValues @("mysql", "sqlsrv", "pgsql")
-
-		if ($adminUiPrompt -eq "N") {
-			$UiAdminDocker = $False
-		}
-
-		if ($frontUiPrompt -eq "N") {
-			$UiFrontDocker = $False
-		}
 
 		if ($smtpPrompt -eq "N") {
 			$SmtpDocker = $False
