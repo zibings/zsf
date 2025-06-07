@@ -6,6 +6,8 @@
 	use Stoic\Utilities\LogFileAppender;
 	use Stoic\Web\Api\Stoic;
 
+	use Zibings\SettingsStrings;
+
 	global $Api, $Db, $Log, $Settings;
 
 	/**
@@ -14,7 +16,7 @@
 	 * @var \Stoic\Log\Logger $Log
 	 * @var \AndyM84\Config\ConfigContainer $Settings
 	 */
-	
+
 	$Api = Stoic::getInstance(STOIC_CORE_PATH, null, $Log);
 
 	if ($Settings->get(SettingsStrings::ENABLE_LOGGING, false) !== false) {
