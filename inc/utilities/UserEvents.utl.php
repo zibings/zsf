@@ -10,8 +10,11 @@
 	use Stoic\Utilities\EnumBase;
 	use Stoic\Utilities\ParameterHelper;
 	use Stoic\Utilities\ReturnHelper;
+	use Stoic\Web\PageHelper;
 	use Stoic\Web\Resources\HttpStatusCodes;
 	use Stoic\Web\Resources\ServerIndices as SI;
+
+	use function Zibings\sendResetEmail;
 
 	/**
 	 * Available types of user events.
@@ -29,6 +32,8 @@
 		const int LOGIN_PRE         = 12;
 		const int LOGOUT            = 5;
 		const int LOGOUT_PRE        = 13;
+		const int SEND_RESET        = 17;
+		const int SEND_RESET_PRE    = 18;
 		const int REGISTER          = 6;
 		const int REGISTER_PRE      = 14;
 		const int RESETPASSWORD     = 7;
@@ -60,6 +65,7 @@
 		const string STR_ID             = 'id';
 		const string STR_KEY            = 'key';
 		const string STR_OLD_KEY        = 'oldKey';
+		const string STR_PAGE_ROOT      = 'pageRoot';
 		const string STR_PLAY_SOUNDS    = 'playSounds';
 		const string STR_PROFILE        = 'profile';
 		const string STR_PROVIDER       = 'provider';
@@ -90,6 +96,8 @@
 			UserEventTypes::LOGIN_PRE         => null,
 			UserEventTypes::LOGOUT            => null,
 			UserEventTypes::LOGOUT_PRE        => null,
+			UserEventTypes::SEND_RESET        => null,
+			UserEventTypes::SEND_RESET_PRE    => null,
 			UserEventTypes::REGISTER          => null,
 			UserEventTypes::REGISTER_PRE      => null,
 			UserEventTypes::RESETPASSWORD     => null,
@@ -494,7 +502,7 @@
 		 * @return ReturnHelper
 		 */
 		public function doLogin(ParameterHelper $params) : ReturnHelper {
-			/** @var AndyM84\Config\ConfigContainer */
+			/** @var \AndyM84\Config\ConfigContainer $Settings */
 			global $Settings;
 
 			$ret = new ReturnHelper();
@@ -1066,6 +1074,56 @@
 			} catch (\Exception $ex) {
 				$this->assignError($ret, "An exception occurred: " . $ex->getMessage());
 			}
+
+			return $ret;
+		}
+
+		/**
+		 * Attempts to send a password reset email to the user.  If completed successfully, the UserEventTypes::SEND_RESET
+		 * chain is traversed with a new UserEventSendResetDispatch object.  The following parameters are required:
+		 *
+		 * [
+		 *   'email'      => (string) 'some@email.com', # the email address to send the reset to
+		 *   'pageRoot'   => (string) '/path/to/page'   # the page root to use for the reset link
+		 * ]
+		 *
+		 * Resulting ReturnHelper will include a suggested HTTP status code in the 'httpCode' index.
+		 *
+		 * @param ParameterHelper $params Parameters provided to perform the event.
+		 * @throws \Exception
+		 * @return ReturnHelper
+		 */
+		public function doSendReset(ParameterHelper $params) : ReturnHelper {
+			/** @var \AndyM84\Config\ConfigContainer $Settings */
+			global $Settings;
+
+			$ret = new ReturnHelper();
+
+			if (!$params->hasAll(self::STR_EMAIL, self::STR_PAGE_ROOT)) {
+				$this->assignError($ret, "Missing parameters");
+
+				return $ret;
+			}
+
+			$email    = $params->getString(self::STR_EMAIL);
+			$pageRoot = $params->getString(self::STR_PAGE_ROOT);
+			$page     = PageHelper::getPage($pageRoot);
+
+			if (!$this->touchPreEvent(UserEventTypes::SEND_RESET_PRE, new UserEventPreSendResetDispatch($this->db, $this->log, $email, $pageRoot, $params), $ret, "Pre-send reset event chain stopped the event")) {
+				return $ret;
+			}
+
+			if (!sendResetEmail($email, $page, $Settings, $this->db, $this->log)) {
+				$this->assignError($ret, "Failed to send reset email, check spelling and try again");
+
+				return $ret;
+			}
+
+			$ret->addResult([self::STR_HTTP_CODE => HttpStatusCodes::OK]);
+
+			$this->touchEvent(UserEventTypes::SEND_RESET, new UserEventSendResetDispatch($email, $this->db, $this->log));
+
+			$ret->makeGood();
 
 			return $ret;
 		}
