@@ -726,19 +726,10 @@
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
 
-			if (!$params->has('email')) {
-				$ret->setAsError('Invalid parameters supplied for request');
-
-				return $ret;
-			}
-
-			if (!sendResetEmail($params->getString('email'), PageHelper::getPage('api/1.1/index.php'), $Settings, $this->db, $this->log)) {
-				$ret->setAsError("Failed to send reset email, check spelling and try again");
-
-				return $ret;
-			}
-
-			$ret->setData(true);
+			$this->processEvent($ret, 'doSendReset', new ParameterHelper([
+				'email'    => $params->getString('email', ''),
+				'pageRoot' => 'api/1.1/index.php',
+			]));
 
 			return $ret;
 		}
