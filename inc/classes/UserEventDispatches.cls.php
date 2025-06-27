@@ -392,6 +392,81 @@
 	}
 
 	/**
+	 * Dispatch used for pre-send reset event.
+	 *
+	 * @package Zibings
+	 */
+	class UserEventPreSendResetDispatch extends DispatchBase {
+		/**
+		 * Instantiates a new UserEventPreSendResetDispatch object.
+		 *
+		 * @param PdoHelper $db
+		 * @param Logger $log
+		 * @param string $email
+		 * @param string $pageRoot
+		 * @param ParameterHelper $fullParams
+		 * @throws \Exception
+		 */
+		public function __construct(
+			public PdoHelper       $db,
+			public Logger          $log,
+			public string          $email,
+			public string          $pageRoot,
+			public ParameterHelper $fullParams
+		) {
+			$this->makeValid();
+			$this->makeConsumable();
+
+			return;
+		}
+
+		/**
+		 * Basic initialization method, unused by UserEvents dispatches.
+		 *
+		 * @param mixed $input Input used for initialization.
+		 * @return void
+		 */
+		public function initialize(mixed $input) : void {
+			return;
+		}
+	}
+
+	/**
+	 * Dispatch used for send reset event.
+	 *
+	 * @package Zibings
+	 */
+	class UserEventSendResetDispatch extends DispatchBase {
+		/**
+		 * Instantiates a new UserEventSendResetDispatch object.
+		 *
+		 * @param string $email Email address for user requesting reset.
+		 * @param PdoHelper $db PdoHelper object for reference.
+		 * @param Logger $log Logger object for reference.
+		 * @throws \Exception
+		 */
+		public function __construct(
+			public string    $email,
+			public PdoHelper $db,
+			public Logger    $log
+		) {
+			$this->makeValid();
+
+			return;
+		}
+
+		/**
+		 * Basic initialization method, unused by UserEvents dispatches.
+		 *
+		 * @param mixed $input Input used for initialization.
+		 * @return void
+		 */
+		public function initialize(mixed $input) : void {
+			return;
+		}
+	}
+
+	/**
 	 * Dispatch used for pre-registration event.
 	 *
 	 * @package Zibings
