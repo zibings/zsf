@@ -144,13 +144,23 @@ EXAMPLE
 	$data['emailConfirmed'] = true;
 	$data['confirmKey']     = $data['key'];
 	$data['provider']       = LoginKeyProviders::PASSWORD;
+	$data['profile']        = ['displayName' => $data['displayName']];
 
 	$ch->put("Creating user account.. ");
-	$uCreate = $userEvents->doCreate(new ParameterHelper($data));
 
-	if ($uCreate->isBad()) {
+	try {
+		$uCreate = $userEvents->doCreate(new ParameterHelper($data));
+
+		if ($uCreate->isBad()) {
+			$ch->putLine("ERROR");
+			$ch->putLine($uCreate->getMessages()[0]);
+			$ch->putLine();
+
+			exit;
+		}
+	} catch (\Exception $e) {
 		$ch->putLine("ERROR");
-		$ch->putLine($uCreate->getMessages()[0]);
+		$ch->putLine($e->getMessage());
 		$ch->putLine();
 
 		exit;
@@ -160,27 +170,19 @@ EXAMPLE
 
 	$user = $uCreate->getResults()[0]['data'];
 
-	$ch->put("Creating user profile.. ");
-
-	$profile              = UserProfile::fromUser($user->id, $Db, $Log);
-	$profile->displayName = $data['displayName'];
-	$pUpdate              = $profile->update();
-
-	if ($pUpdate->isBad()) {
-		$ch->putLine("ERROR");
-		$ch->putLine($pUpdate->getMessages()[0]);
-		$ch->putLine();
-
-		exit;
-	}
-
-	$ch->putLine("DONE");
-
 	if ($makeAdmin) {
 		$ch->put("Assigning administrator role.. ");
 
-		if (!$userRoles->addUserToRoleByName($user->id, RoleStrings::ADMINISTRATOR)) {
+		try {
+			if (!$userRoles->addUserToRoleByName($user->id, RoleStrings::ADMINISTRATOR)) {
+				$ch->putLine("ERROR");
+				$ch->putLine();
+
+				exit;
+			}
+		} catch (\Exception $e) {
 			$ch->putLine("ERROR");
+			$ch->putLine($e->getMessage());
 			$ch->putLine();
 
 			exit;
