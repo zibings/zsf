@@ -1,7 +1,7 @@
 <?php
 
-	const CORE_PATH = './';
-	require_once(CORE_PATH . 'inc/core.php');
+	const STOIC_CORE_PATH = './';
+	require_once(STOIC_CORE_PATH . 'inc/core.php');
 
 	use Stoic\Utilities\ConsoleHelper;
 	use Stoic\Utilities\ParameterHelper;
