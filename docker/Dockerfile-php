@@ -1,23 +1,26 @@
-FROM php:8.3-apache
+FROM php:8.4-apache
 
 ENV ACCEPT_EULA=Y
 
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y libbz2-dev sqlite3 libsqlite3-dev libssl-dev libcurl4-openssl-dev libjpeg-dev \
-        libonig-dev libreadline-dev libtidy-dev libxslt-dev libzip-dev 'libpng*' libpq-dev gnupg2
+        libonig-dev libreadline-dev libtidy-dev libxslt-dev libzip-dev 'libpng*' libpq-dev gnupg2 curl apt-transport-https
 
 RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
 RUN docker-php-ext-install pdo pdo_mysql mysqli bz2 mbstring gd xsl pdo_pgsql pgsql
 
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list
-RUN apt-get update
-RUN apt-get install -y msodbcsql18
-RUN apt-get install -y mssql-tools18
-RUN apt-get install -y unixodbc-dev
-RUN apt-get install -y libgssapi-krb5-2
+RUN curl -sSL -O https://packages.microsoft.com/config/debian/$(grep VERSION_ID /etc/os-release | cut -d '"' -f 2 | cut -d '.' -f 1)/packages-microsoft-prod.deb && \
+        dpkg -i packages-microsoft-prod.deb && \
+        rm packages-microsoft-prod.deb && \
+        apt-get update && \
+        ACCEPT_EULA=Y apt-get install -y msodbcsql18 mssql-tools18 && \
+        apt-get install -y unixodbc-dev libgssapi-krb5-2 && \
+        echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
+
 RUN pecl install sqlsrv
 RUN pecl install pdo_sqlsrv
+RUN printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/8.4/mods-available/sqlsrv.ini
+RUN printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /etc/php/8.4/mods-available/pdo_sqlsrv.ini
 RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
