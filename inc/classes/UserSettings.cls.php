@@ -41,11 +41,11 @@
 		 *
 		 * @param int $userId Integer identifier for user.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created by default.
 		 * @throws \Exception
 		 * @return UserSettings
 		 */
-		public static function fromUser(int $userId, PdoHelper $db, Logger $log = null) : UserSettings {
+		public static function fromUser(int $userId, PdoHelper $db, null|Logger $log = null) : UserSettings {
 			$ret = new UserSettings($db, $log);
 			$ret->userId = $userId;
 

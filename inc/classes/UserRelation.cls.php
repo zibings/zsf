@@ -15,10 +15,10 @@
 	 * @package Zibings
 	 */
 	class UserRelationStages extends EnumBase {
-		const ERROR    = 0;
-		const INVITED  = 1;
-		const ACCEPTED = 2;
-		const DECLINED = 3;
+		const int ERROR    = 0;
+		const int INVITED  = 1;
+		const int ACCEPTED = 2;
+		const int DECLINED = 3;
 	}
 
 	/**

@@ -17,7 +17,7 @@
 	 * @package Zibings
 	 */
 	class UserSession extends StoicDbModel {
-		const SQL_SELBYTOKEN = 'usersession-selectbytoken';
+		const string SQL_SELBYTOKEN = 'usersession-selectbytoken';
 
 
 		/**
@@ -71,11 +71,11 @@
 		 *
 		 * @param int $id Integer identifier of session.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created by default.
 		 * @throws \Exception
 		 * @return UserSession
 		 */
-		public static function fromId(int $id, PdoHelper $db, Logger $log = null) : UserSession {
+		public static function fromId(int $id, PdoHelper $db, null|Logger $log = null) : UserSession {
 			$ret = new UserSession($db, $log);
 			$ret->id = $id;
 
@@ -91,10 +91,10 @@
 		 *
 		 * @param string $token String identifier of session.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created by default.
 		 * @return UserSession
 		 */
-		public static function fromToken(string $token, PdoHelper $db, Logger $log = null) : UserSession {
+		public static function fromToken(string $token, PdoHelper $db, null|Logger $log = null) : UserSession {
 			$ret = new UserSession($db, $log);
 
 			if (empty($token)) {

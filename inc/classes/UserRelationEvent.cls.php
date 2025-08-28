@@ -15,10 +15,10 @@
 	 * @package Zibings
 	 */
 	class UserRelationEventActions extends EnumBase {
-		const INVITE  = 1;
-		const ACCEPT  = 2;
-		const DECLINE = 3;
-		const DELETE  = 4;
+		const int INVITE  = 1;
+		const int ACCEPT  = 2;
+		const int DECLINE = 3;
+		const int DELETE  = 4;
 	}
 
 	/**

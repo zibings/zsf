@@ -19,9 +19,9 @@
 	 * @package Zibings
 	 */
 	class AuthHistoryActions extends EnumBase {
-		const LOGIN       = 1;
-		const LOGOUT      = 2;
-		const TOKEN_CHECK = 3;
+		const int LOGIN       = 1;
+		const int LOGOUT      = 2;
+		const int TOKEN_CHECK = 3;
 	}
 
 	/**
@@ -76,11 +76,11 @@
 		 * @param ParameterHelper $server The server array which needs to contain the 'REMOTE_ADDR' index.
 		 * @param string $notes Optional notes for the recorded action.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created if not supplied.
 		 * @throws \ReflectionException
 		 * @return UserAuthHistory
 		 */
-		public static function createFromUser(User $user, int|AuthHistoryActions $action, ParameterHelper $server, string $notes, PdoHelper $db, Logger $log = null) : UserAuthHistory {
+		public static function createFromUser(User $user, int|AuthHistoryActions $action, ParameterHelper $server, string $notes, PdoHelper $db, null|Logger $log = null) : UserAuthHistory {
 			return static::createFromUserId($user->id, $action, $server, $notes, $db, $log);
 		}
 
@@ -92,11 +92,11 @@
 		 * @param ParameterHelper $server The server array which needs to contain the 'REMOTE_ADDR' index.
 		 * @param string $notes Optional notes for the recorded action.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created if not supplied.
 		 * @throws \ReflectionException
 		 * @return UserAuthHistory
 		 */
-		public static function createFromUserId(int $userId, int|AuthHistoryActions $action, ParameterHelper $server, string $notes, PdoHelper $db, Logger $log = null) : UserAuthHistory {
+		public static function createFromUserId(int $userId, int|AuthHistoryActions $action, ParameterHelper $server, string $notes, PdoHelper $db, null|Logger $log = null) : UserAuthHistory {
 			$ret    = new UserAuthHistory($db, $log);
 			$action = AuthHistoryActions::tryGet($action);
 

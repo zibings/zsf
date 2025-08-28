@@ -17,9 +17,9 @@
 	 * @package Zibings
 	 */
 	class User extends StoicDbModel {
-		const SQL_SELBYEMAIL       = 'user-selectbyemail';
-		const SQL_SELBYEMAILNOTID  = 'user-selectbyemailandnotid';
-		const SQL_UPDATELASTACTIVE = 'user-updatelastactivetime';
+		const string SQL_SELBYEMAIL       = 'user-selectbyemail';
+		const string SQL_SELBYEMAILNOTID  = 'user-selectbyemailandnotid';
+		const string SQL_UPDATELASTACTIVE = 'user-updatelastactivetime';
 
 
 		/**
@@ -76,7 +76,7 @@
 		 * @param null|Logger $log Optional Logger instance for internal use, new instance created if not supplied.
 		 * @return User
 		 */
-		public static function fromEmail(string $email, PdoHelper $db, Logger $log = null) : User {
+		public static function fromEmail(string $email, PdoHelper $db, null|Logger $log = null) : User {
 			$ret = new User($db, $log);
 
 			if (!static::validEmail($email)) {
@@ -108,11 +108,11 @@
 		 *
 		 * @param int $id Integer identifier to use when searching the database.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created if not supplied.
 		 * @throws \Exception
 		 * @return User
 		 */
-		public static function fromId(int $id, PdoHelper $db, Logger $log = null) : User {
+		public static function fromId(int $id, PdoHelper $db, null|Logger $log = null) : User {
 			$ret = new User($db, $log);
 			$ret->id = $id;
 
@@ -269,6 +269,7 @@
 		/**
 		 * Attempts to update the LastActive time for the given user.
 		 *
+		 * @throws \Exception
 		 * @return void
 		 */
 		public function markActive() : void {

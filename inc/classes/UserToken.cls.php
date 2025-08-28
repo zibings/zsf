@@ -17,7 +17,7 @@
 	 * @package Zibings
 	 */
 	class UserToken extends StoicDbModel {
-		const SQL_SELBYTOKENUID = 'usertoken-selectbytokenanduserid';
+		const string SQL_SELBYTOKENUID = 'usertoken-selectbytokenanduserid';
 
 
 		/**
@@ -65,11 +65,11 @@
 		 *
 		 * @param int $id Integer identifier of token to retrieve.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created by default.
 		 * @throws \Exception
 		 * @return UserToken
 		 */
-		public static function fromId(int $id, PdoHelper $db, Logger $log = null) : UserToken {
+		public static function fromId(int $id, PdoHelper $db, null|Logger $log = null) : UserToken {
 			$ret = new UserToken($db, $log);
 			$ret->id = $id;
 
@@ -86,10 +86,10 @@
 		 * @param string $token String identifier of token to retrieve.
 		 * @param int $userId Integer identifier of user who owns token.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created by default.
 		 * @return UserToken
 		 */
-		public static function fromToken(string $token, int $userId, PdoHelper $db, Logger $log = null) : UserToken {
+		public static function fromToken(string $token, int $userId, PdoHelper $db, null|Logger $log = null) : UserToken {
 			$ret = new UserToken($db, $log);
 
 			if (empty($token) || $userId < 1) {

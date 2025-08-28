@@ -55,10 +55,10 @@
 		 * Default constructor for ApiController objects.
 		 *
 		 * @param Stoic $stoic Internal instance of Stoic API object.
-		 * @param \PDO $db Internal instance of PDO object.
-		 * @param Logger|null $log Optional internal instance of Logger object, new instance created if not supplied.
+		 * @param PdoHelper $db Internal instance of PDO object.
+		 * @param null|Logger $log Optional internal instance of Logger object, new instance created if not supplied.
 		 */
-		public function __construct(protected Stoic $stoic, PdoHelper $db, Logger $log = null) {
+		public function __construct(protected Stoic $stoic, PdoHelper $db, null|Logger $log = null) {
 			parent::__construct($db, $log);
 
 			$this->userRoles = new UserRoles($this->db, $this->log);

@@ -49,8 +49,8 @@
 	 * @package Zibings
 	 */
 	class Role extends StoicDbModel {
-		const SQL_SELBYNAME   = 'role-selectbyname';
-		const SQL_SELBYNAMEID = 'role-selectbynameandid';
+		const string SQL_SELBYNAME   = 'role-selectbyname';
+		const string SQL_SELBYNAMEID = 'role-selectbynameandid';
 
 
 		/**
@@ -87,11 +87,11 @@
 		 *
 		 * @param int $id Integer identifier of role to retrieve from database.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied.
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created if not supplied.
 		 * @throws \Exception
 		 * @return Role
 		 */
-		public static function fromId(int $id, PdoHelper $db, Logger $log = null) : Role {
+		public static function fromId(int $id, PdoHelper $db, null|Logger $log = null) : Role {
 			$ret = new Role($db, $log);
 
 			if ($id > 0) {
@@ -110,10 +110,10 @@
 		 *
 		 * @param string $name Friendly name of role to retrieve from database.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created if not supplied. 
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created if not supplied.
 		 * @return Role
 		 */
-		public static function fromName(string $name, PdoHelper $db, Logger $log = null) : Role {
+		public static function fromName(string $name, PdoHelper $db, null|Logger $log = null) : Role {
 			$ret = new Role($db, $log);
 
 			if (!empty($name)) {

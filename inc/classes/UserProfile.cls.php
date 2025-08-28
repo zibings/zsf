@@ -18,10 +18,10 @@
 	 * @package Zibings
 	 */
 	class UserGenders extends EnumBase {
-		const NONE   = 0;
-		const FEMALE = 1;
-		const MALE   = 2;
-		const OTHER  = 3;
+		const int NONE   = 0;
+		const int FEMALE = 1;
+		const int MALE   = 2;
+		const int OTHER  = 3;
 	}
 
 	/**
@@ -30,8 +30,8 @@
 	 * @package Zibings
 	 */
 	class UserProfile extends StoicDbModel {
-		const SQL_SELBYDISPLAYNAME = 'userprofile-selectbydisplayname';
-		const SQL_SELBYUID         = 'userprofile=selectybuserid';
+		const string SQL_SELBYDISPLAYNAME = 'userprofile-selectbydisplayname';
+		const string SQL_SELBYUID         = 'userprofile=selectybuserid';
 
 
 		/**
@@ -85,10 +85,10 @@
 		 *
 		 * @param string $displayName Display name to use when searching database.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, default creates new instance.
+		 * @param null|Logger $log Optional Logger instance for internal use, default creates new instance.
 		 * @return UserProfile
 		 */
-		public static function fromDisplayName(string $displayName, PdoHelper $db, Logger $log = null) : UserProfile {
+		public static function fromDisplayName(string $displayName, PdoHelper $db, null|Logger $log = null) : UserProfile {
 			$ret = new UserProfile($db, $log);
 			$ret->tryPdoExcept(function () use ($displayName, $db, $log, &$ret) {
 				$stmt = $db->prepareStored(self::SQL_SELBYDISPLAYNAME);
@@ -109,11 +109,11 @@
 		 *
 		 * @param int $userId Integer identifier of user in question.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, default creates new instance.
+		 * @param null|Logger $log Optional Logger instance for internal use, default creates new instance.
 		 * @throws \Exception
 		 * @return UserProfile
 		 */
-		public static function fromUser(int $userId, PdoHelper $db, Logger $log = null) : UserProfile {
+		public static function fromUser(int $userId, PdoHelper $db, null|Logger $log = null) : UserProfile {
 			$ret = new UserProfile($db, $log);
 			$ret->userId = $userId;
 

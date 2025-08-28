@@ -30,7 +30,7 @@
 	 * @package Zibings
 	 */
 	class LoginKey extends StoicDbModel {
-		const SQL_GUPCOUNT = 'loginkey-gupcount';
+		const string SQL_GUPCOUNT = 'loginkey-gupcount';
 
 
 		/**
@@ -63,14 +63,14 @@
 		/**
 		 * Static method to retrieve login key given the user and provider. Returns a blank LoginKey object if no key is found.
 		 *
-		 * @param int                   $userId   Integer identifier of user who owns key.
+		 * @param int $userId Integer identifier of user who owns key.
 		 * @param int|LoginKeyProviders $provider Type of provider this key represents.
-		 * @param PdoHelper             $db       PdoHelper instance for internal use.
-		 * @param Logger|null           $log      Optional Logger instance for internal use, new instance created if not supplied.
-		 * @return LoginKey
+		 * @param PdoHelper $db PdoHelper instance for internal use.
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created if not supplied.
 		 * @throws \ReflectionException
+		 * @return LoginKey
 		 */
-		public static function fromUserAndProvider(int $userId, int|LoginKeyProviders $provider, PdoHelper $db, Logger $log = null) : LoginKey {
+		public static function fromUserAndProvider(int $userId, int|LoginKeyProviders $provider, PdoHelper $db, null|Logger $log = null) : LoginKey {
 			$ret = new LoginKey($db, $log);
 
 			if ($userId > 0) {

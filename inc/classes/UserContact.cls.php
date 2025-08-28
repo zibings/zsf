@@ -15,10 +15,10 @@
 	 * @package Zibings
 	 */
 	class UserContactTypes extends EnumBase {
-		const EMAIL    = 1;
-		const PHONE    = 2;
-		const TWITTER  = 3;
-		const WEBSITE  = 4;
+		const int EMAIL    = 1;
+		const int PHONE    = 2;
+		const int TWITTER  = 3;
+		const int WEBSITE  = 4;
 	}
 
 	/**

@@ -17,10 +17,10 @@
 	 * @package Zibings
 	 */
 	class VisibilityState extends EnumBase {
-		const PRV           = 0;
-		const FRIENDS       = 1;
-		const AUTHENTICATED = 2;
-		const PUB           = 3;
+		const int PRV           = 0;
+		const int FRIENDS       = 1;
+		const int AUTHENTICATED = 2;
+		const int PUB           = 3;
 	}
 
 	/**
@@ -84,11 +84,11 @@
 		 *
 		 * @param integer $userId Integer identifier of user whose visibilities to retrieve.
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
+		 * @param null|Logger $log Optional Logger instance for internal use, new instance created by default.
 		 * @throws \Exception
 		 * @return UserVisibilities
 		 */
-		public static function fromUser(int $userId, PdoHelper $db, Logger $log = null) : UserVisibilities {
+		public static function fromUser(int $userId, PdoHelper $db, null|Logger $log = null) : UserVisibilities {
 			$ret = new UserVisibilities($db, $log);
 			$ret->userId = $userId;
 
