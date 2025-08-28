@@ -63,11 +63,11 @@
 		 * Retrieves all or a subset of a user's authentication history.
 		 *
 		 * @param int $userId Integer identifier for the user in question.
-		 * @param int|null $offset Optional offset, only used if supplied alongside a valid (> 0) limit.
-		 * @param int|null $limit Optional limit, only used if supplied alongside a valid (>= 0) offset.
+		 * @param null|int $offset Optional offset, only used if supplied alongside a valid (> 0) limit.
+		 * @param null|int $limit Optional limit, only used if supplied alongside a valid (>= 0) offset.
 		 * @return UserAuthHistory[]
 		 */
-		public function getUserAuthHistory(int $userId, ?int $offset = null, ?int $limit = null) : array {
+		public function getUserAuthHistory(int $userId, null|int $offset = null, null|int $limit = null) : array {
 			$ret = [];
 			$sql = $this->uahObj->generateClassQuery(BaseDbQueryTypes::SELECT, false);
 

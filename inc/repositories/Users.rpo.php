@@ -92,10 +92,10 @@
 	 * @package Zibings
 	 */
 	class Users extends StoicDbClass {
-		const SQL_GALLPROFILE = 'users-getallwithprofile';
-		const SQL_DAUCOUNT    = 'users-getdailyactiveuserscount';
-		const SQL_MAUCOUNT    = 'users-getmonthlyactiveuserscount';
-		const SQL_VUCOUNT     = 'users-getverifiedusercount';
+		const string SQL_GALLPROFILE = 'users-getallwithprofile';
+		const string SQL_DAUCOUNT    = 'users-getdailyactiveuserscount';
+		const string SQL_MAUCOUNT    = 'users-getmonthlyactiveuserscount';
+		const string SQL_VUCOUNT     = 'users-getverifiedusercount';
 
 
 		/**

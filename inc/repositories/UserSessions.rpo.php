@@ -13,7 +13,7 @@
 	 * @package Zibings
 	 */
 	class UserSessions extends StoicDbClass {
-		const SQL_DELFORUSER = 'usersessions-deleteforuser';
+		const string SQL_DELFORUSER = 'usersessions-deleteforuser';
 
 
 		/**

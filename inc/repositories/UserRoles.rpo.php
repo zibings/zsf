@@ -13,14 +13,14 @@
 	 * @package Zibings
 	 */
 	class UserRoles extends StoicDbClass {
-		const SQL_DELUSRALLROLES      = 'userroles-deleteuserfromroles';
-		const SQL_DELUSRROLE          = 'userroles-deleteuserrole';
-		const SQL_DELUSRROLEBYID      = 'userroles-deleteuserrolebyid';
-		const SQL_DELUSRSINROLEBYNAME = 'userroles-deleteusersinrolebyname';
-		const SQL_GROLEFORUSR         = 'userroles-getroleforuser';
-		const SQL_GUSRSINROLEBYNAME   = 'userroles-getusersinrolebyname';
-		const SQL_INSUSRROLE          = 'userroles-insertuserrole';
-		const SQL_USRINROLEBYID       = 'userroles-userinrolebyid';
+		const string SQL_DELUSRALLROLES      = 'userroles-deleteuserfromroles';
+		const string SQL_DELUSRROLE          = 'userroles-deleteuserrole';
+		const string SQL_DELUSRROLEBYID      = 'userroles-deleteuserrolebyid';
+		const string SQL_DELUSRSINROLEBYNAME = 'userroles-deleteusersinrolebyname';
+		const string SQL_GROLEFORUSR         = 'userroles-getroleforuser';
+		const string SQL_GUSRSINROLEBYNAME   = 'userroles-getusersinrolebyname';
+		const string SQL_INSUSRROLE          = 'userroles-insertuserrole';
+		const string SQL_USRINROLEBYID       = 'userroles-userinrolebyid';
 
 
 		/**

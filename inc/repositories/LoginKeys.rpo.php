@@ -12,8 +12,8 @@
 	 * @package Zibings
 	 */
 	class LoginKeys extends StoicDbClass {
-		const SQL_COUNTFORUSER = 'loginkeys-countforuser';
-		const SQL_DELFORUSER   = 'loginkeys-deleteforuser';
+		const string SQL_COUNTFORUSER = 'loginkeys-countforuser';
+		const string SQL_DELFORUSER   = 'loginkeys-deleteforuser';
 
 
 		/**

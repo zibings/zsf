@@ -12,7 +12,7 @@
 	 * @package Zibings
 	 */
 	class UserProfiles extends StoicDbClass {
-		const SQL_DELFORUSER = 'userprofiles-deleteforuser';
+		const string SQL_DELFORUSER = 'userprofiles-deleteforuser';
 
 
 		/**

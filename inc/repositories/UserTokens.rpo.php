@@ -12,8 +12,8 @@
 	 * @package Zibings
 	 */
 	class UserTokens extends StoicDbClass {
-		const SQL_COUNTFORUSER = 'usertokens-countforuser';
-		const SQL_DELFORUSER   = 'usertokens-deleteforuser';
+		const string SQL_COUNTFORUSER = 'usertokens-countforuser';
+		const string SQL_DELFORUSER   = 'usertokens-deleteforuser';
 
 
 		/**

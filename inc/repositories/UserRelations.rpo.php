@@ -13,17 +13,17 @@
 	 * @package Zibings
 	 */
 	class UserRelations extends StoicDbClass {
-		const SQL_DELALLFORUSR        = 'userrelations-deleteallforuser';
-		const SQL_DELREL              = 'userrelations-deleterelation';
-		const SQL_GUSRRELS            = 'userrelations-getuserrelations';
-		const SQL_GRELSBYSTAGE        = 'userrelations-getrelationsbystage';
-		const SQL_GRELS               = 'userrelations-getrelations';
-		const SQL_GINCRELS            = 'userrelations-getincomingrelations';
-		const SQL_GINCRELSBYSTAGE     = 'userrelations-getincomingrelationsbystage';
-		const SQL_GINCRELSEXCEPTSTAGE = 'userrelations-getincomingrelationsexceptingstage';
-		const SQL_GOUTRELS            = 'userrelations-getoutgoingrelations';
-		const SQL_GOUTRELSBYSTAGE     = 'userrelations-getoutgoingrelationsbystage';
-		const SQL_GOUTRELSEXCEPTSTAGE = 'userrelations-getoutgoingrelationsexceptingstage';
+		const string SQL_DELALLFORUSR        = 'userrelations-deleteallforuser';
+		const string SQL_DELREL              = 'userrelations-deleterelation';
+		const string SQL_GUSRRELS            = 'userrelations-getuserrelations';
+		const string SQL_GRELSBYSTAGE        = 'userrelations-getrelationsbystage';
+		const string SQL_GRELS               = 'userrelations-getrelations';
+		const string SQL_GINCRELS            = 'userrelations-getincomingrelations';
+		const string SQL_GINCRELSBYSTAGE     = 'userrelations-getincomingrelationsbystage';
+		const string SQL_GINCRELSEXCEPTSTAGE = 'userrelations-getincomingrelationsexceptingstage';
+		const string SQL_GOUTRELS            = 'userrelations-getoutgoingrelations';
+		const string SQL_GOUTRELSBYSTAGE     = 'userrelations-getoutgoingrelationsbystage';
+		const string SQL_GOUTRELSEXCEPTSTAGE = 'userrelations-getoutgoingrelationsexceptingstage';
 
 
 		/**
