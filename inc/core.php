@@ -1,6 +1,6 @@
 <?php
 
-	const ZSF_VERSION = '1.3.0';
+	const ZSF_VERSION = '1.4.0';
 
 	$zsfDefaultConstants = [
 		'STOIC_CORE_PATH'             => './',
