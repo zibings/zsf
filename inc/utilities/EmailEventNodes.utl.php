@@ -21,16 +21,16 @@
 		/**
 		 * Instantiates a new EmailUserRegisterNode object for use with the UserEvents system.
 		 *
-		 * @param \Stoic\Web\PageHelper $page PageHelper instance for internal use.
-		 * @param \AndyM84\Config\ConfigContainer $settings ConfigContainer instance for internal use.
-		 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
-		 * @param \Stoic\Log\Logger|null $log Optional Logger instance for internal use, defaults to new instance created.
+		 * @param PageHelper $page PageHelper instance for internal use.
+		 * @param ConfigContainer $settings ConfigContainer instance for internal use.
+		 * @param PdoHelper $db PdoHelper instance for internal use.
+		 * @param null|Logger $log Optional Logger instance for internal use, defaults to new instance created.
 		 */
 		public function __construct(
 			public PageHelper $page,
 			public ConfigContainer $settings,
 			public PdoHelper $db,
-			public Logger|null $log = null) {
+			public null|Logger $log = null) {
 			$this->setKey('EmailUserRegisterNode')->setVersion('1.0.0');
 
 			if ($this->log === null) {
@@ -91,16 +91,16 @@
 		/**
 		 * Instantiates a new EmailUserUpdateNode object.
 		 *
-		 * @param \Stoic\Web\PageHelper $page PageHelper instance for internal use.
-		 * @param \AndyM84\Config\ConfigContainer $settings ConfigContainer instance for internal use.
-		 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
-		 * @param \Stoic\Log\Logger|null $log Optional Logger instance for internal use, defaults to new instance created.
+		 * @param PageHelper $page PageHelper instance for internal use.
+		 * @param ConfigContainer $settings ConfigContainer instance for internal use.
+		 * @param PdoHelper $db PdoHelper instance for internal use.
+		 * @param null|Logger $log Optional Logger instance for internal use, defaults to new instance created.
 		 */
 		public function __construct(
 			public PageHelper $page,
 			public ConfigContainer $settings,
 			public PdoHelper $db,
-			public Logger|null $log = null) {
+			public null|Logger $log = null) {
 			$this->setKey('EmailUserUpdateNode')->setVersion('1.0.0');
 
 			if ($this->log === null) {

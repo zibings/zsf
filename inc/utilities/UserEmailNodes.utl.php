@@ -22,13 +22,14 @@
 		 * @param PageHelper $page
 		 * @param ConfigContainer $settings
 		 * @param PdoHelper $db
-		 * @param Logger|null $log
+		 * @param null|Logger $log
 		 */
 		public function __construct(
 			protected PageHelper $page,
 			protected ConfigContainer $settings,
 			protected PdoHelper $db,
-			protected Logger|null $log = null) {
+			protected null|Logger $log = null
+		) {
 			$this->setKey('UEConfirm');
 			$this->setVersion('1.0.0');
 

@@ -21,10 +21,10 @@
 	 * @param string $token The unique session token for the user making this request.
 	 * @param ConfigContainer $settings The site settings to use for building this request.
 	 * @param boolean $isPost Optional toggle to mark this as a POST request.
-	 * @param array|null $postFields Optional array of fields to merge with the authentication variables.
+	 * @param null|array $postFields Optional array of fields to merge with the authentication variables.
 	 * @return bool|\CurlHandle
 	 */
-	function getCurlApiResource(string $url, int $userId, string $token, ConfigContainer $settings, bool $isPost = false, array $postFields = null) : bool|\CurlHandle {
+	function getCurlApiResource(string $url, int $userId, string $token, ConfigContainer $settings, bool $isPost = false, null|array $postFields = null) : bool|\CurlHandle {
 		$curlUrl = $settings->get(SettingsStrings::API_PATH, 'http://localhost/api') . "/1{$url}";
 
 		if ($isPost === false && $userId > 0 && !empty($token)) {
@@ -73,10 +73,10 @@
 	/**
 	 * Retrieves a PHPMailer object, using provided settings if available, ready to use for sending mail.
 	 *
-	 * @param \AndyM84\Config\ConfigContainer|null $settings Optional system settings to use for SMTP/mail setup.
-	 * @return \PHPMailer\PHPMailer\PHPMailer
+	 * @param null|ConfigContainer $settings Optional system settings to use for SMTP/mail setup.
+	 * @return PHPMailer
 	 */
-	function getPhpMailer(ConfigContainer $settings = null) : PHPMailer {
+	function getPhpMailer(null|ConfigContainer $settings = null) : PHPMailer {
 		$mail = new PHPMailer();
 
 		if ($settings === null || !$settings->get('smtpHost')) {
@@ -116,7 +116,7 @@
 	 * @param null|string $key Optional key to use for timezone lookup
 	 * @return array|int|string
 	 */
-	function getTimezones(?string $key = null) : array|int|string {
+	function getTimezones(null|string $key = null) : array|int|string {
 		$ret = [
 			"Africa/Abidjan"                 => 0,
 			"0"                              => "Africa/Abidjan",
@@ -982,12 +982,12 @@
 	/**
 	 * Attempts to return a User object based off of the Authorization bearer token, if present.
 	 *
-	 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
-	 * @param null|\Stoic\Log\Logger $log Optional Logger instance for internal use, new instance created by default.
+	 * @param PdoHelper $db PdoHelper instance for internal use.
+	 * @param null|Logger $log Optional Logger instance for internal use, new instance created by default.
 	 * @throws \Exception
 	 * @return User
 	 */
-	function getUserFromBearerToken(PdoHelper $db, Logger|null $log = null) : User {
+	function getUserFromBearerToken(PdoHelper $db, null|Logger $log = null) : User {
 		$headers = [];
 		$ret     = new User($db, $log);
 
@@ -1011,13 +1011,13 @@
 	/**
 	 * Attempts to return a User object based off of the session token, if present.
 	 *
-	 * @param \Stoic\Utilities\ParameterHelper $session ParameterHelper for session variables.
-	 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
-	 * @param null|\Stoic\Log\Logger $log Optional Logger instance for internal use, new instance created by default.
+	 * @param ParameterHelper $session ParameterHelper for session variables.
+	 * @param PdoHelper $db PdoHelper instance for internal use.
+	 * @param null|Logger $log Optional Logger instance for internal use, new instance created by default.
 	 * @throws \Exception
 	 * @return User
 	 */
-	function getUserFromSessionToken(ParameterHelper $session, PdoHelper $db, Logger|null $log = null) : User {
+	function getUserFromSessionToken(ParameterHelper $session, PdoHelper $db, null|Logger $log = null) : User {
 		$ret = new User($db, $log);
 
 		if (!$session->hasAll(UserEvents::STR_SESSION_TOKEN, UserEvents::STR_SESSION_USERID)) {
@@ -1036,13 +1036,13 @@
 	/**
 	 * Determines if the given user is currently authenticated via the session.
 	 *
-	 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
-	 * @param mixed|null $roles Optional roles to check against a logged-in user.
-	 * @param \Stoic\Utilities\ParameterHelper|null $session Optional session data, pulls from $_SESSION if not provided.
-	 * @param \Stoic\Log\Logger|null $log Optional Logger instance for internal use, new instance created by default.
+	 * @param PdoHelper $db PdoHelper instance for internal use.
+	 * @param mixed $roles Optional roles to check against a logged-in user.
+	 * @param null|ParameterHelper $session Optional session data, pulls from $_SESSION if not provided.
+	 * @param null|Logger $log Optional Logger instance for internal use, new instance created by default.
 	 * @return bool
 	 */
-	function isAuthenticated(PdoHelper $db, mixed $roles = null, ParameterHelper|null $session = null,  Logger|null $log = null) : bool {
+	function isAuthenticated(PdoHelper $db, mixed $roles = null, null|ParameterHelper $session = null,  null|Logger $log = null) : bool {
 		if ($session === null) {
 			$session = new ParameterHelper($_SESSION);
 		}
@@ -1087,19 +1087,19 @@
 	 * @param UserSession $session UserSession instance to compare to requirements.
 	 * @param mixed $roles Role specification (boolean, string, or array of strings).
 	 * @param \PDO $db PDO instance for internal use.
-	 * @param Logger|null $log Optional Logger instance for internal use.
+	 * @param null|Logger $log Optional Logger instance for internal use.
 	 * @throws \Exception
 	 * @return bool
 	 */
-	function isSessionValidForRoles(UserSession $session, mixed $roles, \PDO $db, Logger $log = null) : bool {
-		/** @var AndyM84\Config\ConfigContainer */
+	function isSessionValidForRoles(UserSession $session, mixed $roles, \PDO $db, null|Logger $log = null) : bool {
+		/** @var ConfigContainer $Settings */
 		global $Settings;
 
 		if ($session->id < 1) {
 			return false;
 		}
 
-		$expiryDt = (new \DateTime('now', new \DateTimeZone('UTC')))->modify("-" . $Settings->get(SettingsStrings::SESSION_EXPIRY) . " minutes");
+		$expiryDt = new \DateTime('now', new \DateTimeZone('UTC'))->modify("-" . $Settings->get(SettingsStrings::SESSION_TIMEOUT) . " minutes");
 
 		if ($session->created < $expiryDt) {
 			$session->delete();
@@ -1133,11 +1133,11 @@
 	 * @param PageHelper $page PageHelper instance for resolving current domain in email links.
 	 * @param ConfigContainer $settings Settings container for site.
 	 * @param PdoHelper $db PdoHelper instance for internal use.
-	 * @param Logger|null $log Optional Logger instance for internal use, new instance created by default.
-	 * @throws \PHPMailer\PHPMailer\Exception
+	 * @param null|Logger $log Optional Logger instance for internal use, new instance created by default.
+	 * @throws \Exception
 	 * @return bool
 	 */
-	function sendConfirmEmail(string $email, PageHelper $page, ConfigContainer $settings, PdoHelper $db, Logger|null $log = null) : bool {
+	function sendConfirmEmail(string $email, PageHelper $page, ConfigContainer $settings, PdoHelper $db, null|Logger $log = null) : bool {
 		$user = User::fromEmail($email, $db, $log);
 
 		if ($user->id < 1) {
@@ -1177,14 +1177,14 @@
 	 * Attempts to send a password reset email.
 	 *
 	 * @param string $email Email address to use for finding user in question.
-	 * @param \Stoic\Web\PageHelper $page PageHelper instance for resolving current domain in email links.
-	 * @param \AndyM84\Config\ConfigContainer $settings Settings container for site.
-	 * @param \Stoic\Pdo\PdoHelper $db PdoHelper instance for internal use.
-	 * @param \Stoic\Log\Logger|null $log Optional Logger instance for internal use, new instance created by default.
-	 * @throws \PHPMailer\PHPMailer\Exception
+	 * @param PageHelper $page PageHelper instance for resolving current domain in email links.
+	 * @param ConfigContainer $settings Settings container for site.
+	 * @param PdoHelper $db PdoHelper instance for internal use.
+	 * @param null|Logger $log Optional Logger instance for internal use, new instance created by default.
+	 * @throws \Exception
 	 * @return bool
 	 */
-	function sendResetEmail(string $email, PageHelper $page, ConfigContainer $settings, PdoHelper $db, Logger|null $log = null) : bool {
+	function sendResetEmail(string $email, PageHelper $page, ConfigContainer $settings, PdoHelper $db, null|Logger $log = null) : bool {
 		$user = User::fromEmail($email, $db, $log);
 
 		if ($user->id < 1) {

@@ -18,12 +18,13 @@
 		 * Instantiates a new UserAuthHistoryLoginNode object.
 		 *
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use.
+		 * @param null|Logger $log Optional Logger instance for internal use.
 		 * @return void
 		 */
 		public function __construct(
 			protected PdoHelper $db,
-			protected Logger|null $log = null) {
+			protected null|Logger $log = null
+		) {
 			$this->setKey('UAHLogin');
 			$this->setVersion('1.0.0');
 
@@ -35,6 +36,7 @@
 		 * 
 		 * @param mixed $sender Sender data, optional and thus can be 'null'.
 		 * @param DispatchBase $dispatch Dispatch object to process.
+		 * @throws \Exception
 		 * @return void
 		 */
 		public function process(mixed $sender, DispatchBase &$dispatch) : void {
@@ -58,12 +60,13 @@
 		 * Instantiates a new UserAuthHistoryLogoutNode object.
 		 *
 		 * @param PdoHelper $db PdoHelper instance for internal use.
-		 * @param Logger|null $log Optional Logger instance for internal use.
+		 * @param null|Logger $log Optional Logger instance for internal use.
 		 * @return void
 		 */
 		public function __construct(
 			protected PdoHelper $db,
-			protected Logger|null $log = null) {
+			protected null|Logger $log = null
+		) {
 			$this->setKey('UAHLogout');
 			$this->setVersion('1.0.0');
 
@@ -75,6 +78,7 @@
 		 * 
 		 * @param mixed $sender Sender data, optional and thus can be 'null'.
 		 * @param DispatchBase $dispatch Dispatch object to process.
+		 * @throws \Exception
 		 * @return void
 		 */
 		public function process(mixed $sender, DispatchBase &$dispatch) : void {

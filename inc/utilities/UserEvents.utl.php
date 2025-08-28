@@ -113,7 +113,7 @@
 		 * @param \PDO $db PDO instance for use by object.
 		 * @param null|Logger $log Logger instance for use by object, defaults to new instance.
 		 */
-		public function __construct(\PDO $db, Logger $log = null) {
+		public function __construct(\PDO $db, null|Logger $log = null) {
 			parent::__construct($db, $log);
 
 			foreach (array_keys($this->events) as $evt) {

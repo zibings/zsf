@@ -74,7 +74,8 @@
 		 */
 		public function __construct(
 			public string $name,
-			public string $description) {
+			public string $description
+		) {
 			return;
 		}
 
@@ -197,11 +198,11 @@
 		 * Generates a basic instruction on how to get help for the script, optionally displaying the given message before
 		 * the instruction.
 		 *
-		 * @param \Stoic\Utilities\ConsoleHelper $ch ConsoleHelper object for use with output.
-		 * @param string|null $message Optional message to send before the generated help instruction.
+		 * @param ConsoleHelper $ch ConsoleHelper object for use with output.
+		 * @param null|string $message Optional message to send before the generated help instruction.
 		 * @return static
 		 */
-		public function showBasicHelp(ConsoleHelper $ch, string|null $message = null) : static {
+		public function showBasicHelp(ConsoleHelper $ch, null|string $message = null) : static {
 			if ($message !== null) {
 				$ch->putLine($message);
 				$ch->putLine();
