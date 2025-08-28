@@ -16,10 +16,10 @@
 	 */
 
 	$ch = new ConsoleHelper($argv);
-	$script = (new CliScriptHelper(
+	$script = new CliScriptHelper(
 		'ZSF OpenAPI Generator',
 		"Script to generate an OpenAPI spec based on the chosen API"
-	))->addExample(
+	)->addExample(
 <<< EXAMPLE
 - Run script for v1.1 API
 
@@ -68,7 +68,7 @@ EXAMPLE
 	$ch->putLine("DONE");
 	$ch->put("Generating OpenAPI spec from controllers.. ");
 
-	$oa = (new \OpenApi\Generator($Log))
+	$oa = new \OpenApi\Generator($Log)
 				->generate(['./']);
 
 	$ch->putLine("DONE");

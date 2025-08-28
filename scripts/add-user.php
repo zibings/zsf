@@ -23,10 +23,10 @@
 	 */
 
 	$ch     = new ConsoleHelper($argv);
-	$script = (new CliScriptHelper(
+	$script = new CliScriptHelper(
 		"ZSF Add User Script",
 		"Script to add a user to the system without having access to the site's administrative pages."
-	))->addExample(
+	)->addExample(
 		<<< EXAMPLE
 - Run script so it prompts for input
 
