@@ -60,11 +60,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Exception
 		 * @return Response
 		 */
-		public function addRole(Request $request, array $matches = null) : Response {
+		public function addRole(Request $request, null|array $matches = null) : Response {
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
 			
@@ -116,10 +116,10 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @return Response
 		 */
-		public function getRoles(Request $request, array $matches = null) : Response {
+		public function getRoles(Request $request, null|array $matches = null) : Response {
 			$ret = $this->newResponse();
 			$ret->setData((new ZibRoles($this->db, $this->log))->getAll());
 
@@ -187,11 +187,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Exception
 		 * @return Response
 		 */
-		public function getUserRoles(Request $request, array $matches = null) : Response {
+		public function getUserRoles(Request $request, null|array $matches = null) : Response {
 			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$userId = (count($matches) > 1) ? intval($matches[1][0]) : $user->id;
@@ -261,11 +261,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Exception
 		 * @return Response
 		 */
-		public function removeRole(Request $request, array $matches = null) : Response {
+		public function removeRole(Request $request, null|array $matches = null) : Response {
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
 
@@ -320,11 +320,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
-		public function removeUserRole(Request $request, array $matches = null) : Response {
+		public function removeUserRole(Request $request, null|array $matches = null) : Response {
 			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
@@ -379,11 +379,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\Exception
 		 * @return Response
 		 */
-		public function removeUserRoles(Request $request, array $matches = null) : Response {
+		public function removeUserRoles(Request $request, null|array $matches = null) : Response {
 			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
@@ -437,11 +437,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
-		public function setUserRole(Request $request, array $matches = null) : Response {
+		public function setUserRole(Request $request, null|array $matches = null) : Response {
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
 
@@ -491,11 +491,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\Exception
 		 * @return Response
 		 */
-		public function syncUserRoles(Request $request, array $matches = null) : Response {
+		public function syncUserRoles(Request $request, null|array $matches = null) : Response {
 			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$params = $request->getInput()->getSource();
@@ -557,11 +557,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\Exception
 		 * @return Response
 		 */
-		public function userInRole(Request $request, array $matches = null) : Response {
+		public function userInRole(Request $request, null|array $matches = null) : Response {
 			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
@@ -617,11 +617,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Exception
 		 * @return Response
 		 */
-		public function usersInRole(Request $request, array $matches = null) : Response {
+		public function usersInRole(Request $request, null|array $matches = null) : Response {
 			$ret = $this->newResponse();
 			$ret->setData((new UserRoles($this->db, $this->log))->getAllUsersInRoleByName($matches[1][0]));
 

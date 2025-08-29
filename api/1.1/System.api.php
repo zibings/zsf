@@ -5,6 +5,7 @@
 	use OpenApi\Annotations as OA;
 
 	use Stoic\Log\Logger;
+	use Stoic\Pdo\PdoHelper;
 	use Stoic\Web\Api\Response;
 	use Stoic\Web\Api\Stoic;
 	use Stoic\Web\Request;
@@ -36,9 +37,10 @@
 		 */
 		public function __construct(
 			Stoic $stoic,
-			\PDO $db,
-			Logger $log = null,
-			protected ?Users $users = null) {
+			PdoHelper $db,
+			null|Logger $log = null,
+			protected ?Users $users = null
+		) {
 			parent::__construct($stoic, $db, $log);
 
 			if ($this->users === null) {
@@ -75,10 +77,10 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @return Response
 		 */
-		public function getDashboardMetrics(Request $request, array $matches = null) : Response {
+		public function getDashboardMetrics(Request $request, null|array $matches = null) : Response {
 			$ret = $this->newResponse();
 			$ret->setData([
 				'dau'  => $this->users->getDailyActiveUserCount(),
@@ -110,10 +112,10 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @return Response
 		 */
-		public function getVersion(Request $request, array $matches = null) : Response {
+		public function getVersion(Request $request, null|array $matches = null) : Response {
 			global $Settings;
 
 			$ret = $this->newResponse();

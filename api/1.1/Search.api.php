@@ -80,11 +80,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Exception
 		 * @return Response
 		 */
-		public function users(Request $request, array $matches = null) : Response {
+		public function users(Request $request, null|array $matches = null) : Response {
 			$data      = [];
 			$user      = $this->getUser();
 			$ret       = $this->newResponse();
@@ -192,11 +192,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Exception
 		 * @return Response
 		 */
-		public function usersForAdmins(Request $request, array $matches = null) : Response {
+		public function usersForAdmins(Request $request, null|array $matches = null) : Response {
 			$data      = [];
 			$user      = $this->getUser();
 			$ret       = $this->newResponse();

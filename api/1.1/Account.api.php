@@ -3,8 +3,9 @@
 	namespace Api1_1;
 
 	use OpenApi\Annotations as OA;
-	use PhpParser\Node\Param;
+
 	use Stoic\Log\Logger;
+	use Stoic\Pdo\PdoHelper;
 	use Stoic\Utilities\ParameterHelper;
 	use Stoic\Web\Api\Response;
 	use Stoic\Web\PageHelper;
@@ -14,7 +15,6 @@
 
 	use Zibings\ApiController;
 	use Zibings\AuthHistoryActions;
-	use Zibings\LoginKeyProviders;
 	use Zibings\RoleStrings;
 	use Zibings\User;
 	use Zibings\UserAuthHistory;
@@ -43,17 +43,18 @@
 		 * Instantiates a new Account object.
 		 *
 		 * @param Stoic $stoic Internal instance of Stoic API object.
-		 * @param \PDO $db Internal instance of PDO object.
-		 * @param Logger|null $log Optional Logger object for internal use.
-		 * @param UserEvents|null $events Optional UserEvent object for internal use.
+		 * @param PdoHelper $db Internal instance of PDO object.
+		 * @param null|Logger $log Optional Logger object for internal use.
+		 * @param null|UserEvents $events Optional UserEvent object for internal use.
 		 * @throws \ReflectionException
 		 * @return void
 		 */
 		public function __construct(
 			Stoic $stoic,
-			\PDO $db,
-			Logger $log = null,
-			protected UserEvents|null    $events    = null) {
+			PdoHelper $db,
+			null|Logger $log = null,
+			protected null|UserEvents $events = null
+		) {
 			global $Settings;
 
 			parent::__construct($stoic, $db, $log);
@@ -97,11 +98,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException
 		 * @return Response
 		 */
-		public function checkEmail(Request $request, array $matches = null) : Response {
+		public function checkEmail(Request $request, null|array $matches = null) : Response {
 			$ret    = new Response(HttpStatusCodes::OK);
 			$params = $request->getInput();
 			$usr    = User::fromEmail($params->getString('email'), $this->db, $this->log);
@@ -134,11 +135,11 @@
 		 * )
 		 *
 		 * @param Request $request the current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \ReflectionException
 		 * @return Response
 		 */
-		public function checkSession(Request $request, array $matches = null) : Response {
+		public function checkSession(Request $request, null|array $matches = null) : Response {
 			$ret = $this->newResponse();
 
 			if ($this->getUserSession()->id < 1) {
@@ -180,11 +181,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException
 		 * @return Response
 		 */
-		public function checkToken(Request $request, array $matches = null) : Response {
+		public function checkToken(Request $request, null|array $matches = null) : Response {
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
 
@@ -247,11 +248,11 @@
 		 * )
 		 *
 		 * @param Request $request
-		 * @param array|null $matches
+		 * @param null|array $matches
 		 * @throws \ReflectionException|\Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException
 		 * @return Response
 		 */
-		public function confirmUser(Request $request, array $matches = null) : Response {
+		public function confirmUser(Request $request, null|array $matches = null) : Response {
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
 
@@ -310,11 +311,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\Exception
 		 * @return Response
 		 */
-		public function createUser(Request $request, array $matches = null) : Response {
+		public function createUser(Request $request, null|array $matches = null) : Response {
 			$user    = $this->getUser();
 			$ret     = $this->newResponse();
 			$params  = $request->getInput();
@@ -361,11 +362,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
-		public function deleteUser(Request $request, array $matches = null) : Response {
+		public function deleteUser(Request $request, null|array $matches = null) : Response {
 			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
@@ -425,11 +426,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
-		public function get(Request $request, array $matches = null) : Response {
+		public function get(Request $request, null|array $matches = null) : Response {
 			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
@@ -477,11 +478,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException
 		 * @return Response
 		 */
-		public function login(Request $request, array $matches = null) : Response {
+		public function login(Request $request, null|array $matches = null) : Response {
 			$ret = new Response(HttpStatusCodes::OK);
 			$this->processEvent($ret, 'doLogin', $request->getInput());
 
@@ -521,11 +522,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException
 		 * @return Response
 		 */
-		public function logout(Request $request, array $matches = null) : Response {
+		public function logout(Request $request, null|array $matches = null) : Response {
 			$params = null;
 			$ret    = $this->newResponse();
 
@@ -640,11 +641,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException
 		 * @return Response
 		 */
-		public function registerUser(Request $request, array $matches = null) : Response {
+		public function registerUser(Request $request, null|array $matches = null) : Response {
 			$ret = $this->newResponse();
 			$this->processEvent($ret, 'doRegister', $request->getInput());
 
@@ -675,11 +676,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException
 		 * @return Response
 		 */
-		public function resetPassword(Request $request, array $matches = null) : Response {
+		public function resetPassword(Request $request, null|array $matches = null) : Response {
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
 
@@ -716,11 +717,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
-		public function sendPasswordReset(Request $request, array $matches = null) : Response {
+		public function sendPasswordReset(Request $request, null|array $matches = null) : Response {
 			global $Settings;
 
 			$ret    = $this->newResponse();
@@ -772,14 +773,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Exception
-		 * @throws \ReflectionException
-		 * @throws \Stoic\Web\Resources\InvalidRequestException
-		 * @throws \Stoic\Web\Resources\NonJsonInputException
 		 * @return Response
 		 */
-		public function update(Request $request, array $matches = null) : Response {
+		public function update(Request $request, null|array $matches = null) : Response {
 			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$params = $request->getInput();

@@ -5,6 +5,7 @@
 	use OpenApi\Annotations as OA;
 
 	use Stoic\Log\Logger;
+	use Stoic\Pdo\PdoHelper;
 	use Stoic\Web\Api\Response;
 	use Stoic\Web\Api\Stoic;
 	use Stoic\Web\Request;
@@ -12,7 +13,6 @@
 	use Zibings\ApiController;
 	use Zibings\RoleStrings;
 	use Zibings\UserRelations;
-	use Zibings\UserRoles;
 
 	/**
 	 * API controller that deals with user relation endpoints.
@@ -36,9 +36,10 @@
 		 */
 		public function __construct(
 			Stoic $stoic,
-			\PDO $db,
-			Logger $log                            = null,
-			protected UserRelations|null $userRels = null) {
+			PdoHelper $db,
+			null|Logger $log = null,
+			protected UserRelations|null $userRels = null
+		) {
 			parent::__construct($stoic, $db, $log);
 
 			if ($this->userRels === null) {
@@ -86,11 +87,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
-		public function get(Request $request, array $matches = null) : Response {
+		public function get(Request $request, null|array $matches = null) : Response {
 			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
@@ -149,11 +150,11 @@
 		 * )
 		 *
 		 * @param \Stoic\Web\Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
-		public function relatedTo(Request $request, array $matches = null) : Response {
+		public function relatedTo(Request $request, null|array $matches = null) : Response {
 			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
@@ -197,11 +198,11 @@
 		 * )
 		 *
 		 * @param \Stoic\Web\Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
-		public function removeRelation(Request $request, array $matches = null) : Response {
+		public function removeRelation(Request $request, null|array $matches = null) : Response {
 			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$params = $request->getInput();
@@ -246,11 +247,11 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @throws \Stoic\Web\Resources\InvalidRequestException|\Stoic\Web\Resources\NonJsonInputException|\ReflectionException|\Exception
 		 * @return Response
 		 */
-		public function setRelation(Request $request, array $matches = null) : Response {
+		public function setRelation(Request $request, null|array $matches = null) : Response {
 			$user   = $this->getUser();
 			$ret    = $this->newResponse();
 			$params = $request->getInput();

@@ -5,6 +5,7 @@
 	use OpenApi\Annotations as OA;
 
 	use Stoic\Log\Logger;
+	use Stoic\Pdo\PdoHelper;
 	use Stoic\Web\Api\Stoic;
 	use Stoic\Web\Api\Response;
 	use Stoic\Web\Request;
@@ -36,10 +37,11 @@
 		 * @return void
 		 */
 		public function __construct(
-			Stoic                 $stoic,
-			\PDO                  $db,
-			Logger                $log   = null,
-			protected ZUsers|null $users = null) {
+			Stoic $stoic,
+			PdoHelper $db,
+			null|Logger $log = null,
+			protected ZUsers|null $users = null
+		) {
 			parent::__construct($stoic, $db, $log);
 
 			if ($this->users === null) {
@@ -108,10 +110,10 @@
 		 * )
 		 *
 		 * @param Request $request The current request which routed to the endpoint.
-		 * @param array|null $matches Array of matches returned by endpoint regex pattern.
+		 * @param null|array $matches Array of matches returned by endpoint regex pattern.
 		 * @return Response
 		 */
-		public function get(Request $request, array $matches = null) : Response {
+		public function get(Request $request, null|array $matches = null) : Response {
 			$ret = $this->newResponse();
 
 			if (str_ends_with($matches[0][0], '/Columns')) {
