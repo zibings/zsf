@@ -97,7 +97,7 @@ function GetDockerProjectStatus([string] $ProjectName) {
 
 	if ($null -ne $project) {
 		$result.Exists = $true
-		$result.Running = $project.Status -match "^running"
+		$result.Running = $project.Status -match "running"
 	}
 
 	return $result
