@@ -81,6 +81,28 @@ function QueryForInput {
 	} while ($true)
 }
 
+function GetDockerProjectStatus([string] $ProjectName) {
+	$result = @{
+		Exists  = $false
+		Running = $false
+	}
+
+	$lsOutput = docker compose ls --filter "name=$ProjectName" --all --format json 2>$null | ConvertFrom-Json
+
+	if ($null -eq $lsOutput) {
+		return $result
+	}
+
+	$project = $lsOutput | Where-Object { $_.Name -eq $ProjectName }
+
+	if ($null -ne $project) {
+		$result.Exists = $true
+		$result.Running = $project.Status -match "^running"
+	}
+
+	return $result
+}
+
 if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 	if ($HasEnvFile) {
 		if (!$EnvVariables.ContainsKey('PROJECT_NAME')) {
@@ -371,10 +393,22 @@ function DownDocker([string] $ProjectName) {
 
 Write-Host "Executing command on '$ProjectName' project: $Command"
 
+$dockerStatus = GetDockerProjectStatus -ProjectName $ProjectName
+
 if ($Command -eq "init") {
-	InitDocker -ProjectName $ProjectName -WebContainer $WebContainer
+	if ($dockerStatus.Exists) {
+		Write-Host "Project '$ProjectName' already exists, skipping init"
+	} else {
+		InitDocker -ProjectName $ProjectName -WebContainer $WebContainer
+	}
 } elseif ($Command -eq "start") {
-	StartDocker -ProjectName $ProjectName -WebContainer $WebContainer
+	if (!$dockerStatus.Exists) {
+		Write-Host "Project '$ProjectName' does not exist, run init first"
+	} elseif ($dockerStatus.Running) {
+		Write-Host "Project '$ProjectName' is already running"
+	} else {
+		StartDocker -ProjectName $ProjectName -WebContainer $WebContainer
+	}
 } elseif ($Command -eq "update") {
 	UpdateDocker -ProjectName $ProjectName -WebContainer $WebContainer
 } elseif ($Command -eq "test") {
@@ -382,9 +416,19 @@ if ($Command -eq "init") {
 } elseif ($Command -eq "test-verbose") {
 	TestDocker -ProjectName $ProjectName -WebContainer $WebContainer -OutputLogs $True
 } elseif ($Command -eq "stop") {
-	StopDocker -ProjectName $ProjectName
+	if (!$dockerStatus.Exists) {
+		Write-Host "Project '$ProjectName' does not exist, nothing to stop"
+	} elseif (!$dockerStatus.Running) {
+		Write-Host "Project '$ProjectName' is not running"
+	} else {
+		StopDocker -ProjectName $ProjectName
+	}
 } elseif ($Command -eq "down") {
-	DownDocker -ProjectName $ProjectName
+	if (!$dockerStatus.Exists) {
+		Write-Host "Project '$ProjectName' does not exist, nothing to remove"
+	} else {
+		DownDocker -ProjectName $ProjectName
+	}
 } else {
 	$opts = "t"
 
