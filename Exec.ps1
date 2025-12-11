@@ -103,6 +103,14 @@ function GetDockerProjectStatus([string] $ProjectName) {
 	return $result
 }
 
+$Command = $Commands -Join " "
+
+if ($Command-ne "init" -and [string]::IsNullOrWhiteSpace($ProjectName)) {
+	Write-Host "You must initialize your project before running this command."
+
+	Exit
+}
+
 if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 	if ($HasEnvFile) {
 		if (!$EnvVariables.ContainsKey('PROJECT_NAME')) {
@@ -148,7 +156,6 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 	}
 }
 
-$Command = $Commands -Join " "
 $WebContainer = "$ProjectName-web"
 
 function CreateCompose {
