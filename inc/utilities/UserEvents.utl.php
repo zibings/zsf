@@ -1284,7 +1284,7 @@
 
 					$displayName = $pParams->getString(self::STR_DISPLAY_NAME, '');
 
-					if (!empty($dispalyName) && $displayName !== $profile->displayName && UserProfile::validDisplayName($displayName)) {
+					if (!empty($displayName) && $displayName !== $profile->displayName && UserProfile::validDisplayName($displayName)) {
 						$p = UserProfile::fromDisplayName($displayName, $this->db, $this->log);
 
 						if ($p->userId < 1) {
