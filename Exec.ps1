@@ -406,7 +406,7 @@ Write-Host "Executing command on '$ProjectName' project: $Command"
 
 $dockerStatus = GetDockerProjectStatus -ProjectName $ProjectName
 
-if ($Command -eq "init") {
+if ($Command -eq "init" -or $Command -eq "up") {
 	if ($dockerStatus.Exists) {
 		Write-Host "Project '$ProjectName' already exists, skipping init"
 	} else {
