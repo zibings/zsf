@@ -105,6 +105,10 @@ function GetDockerProjectStatus([string] $ProjectName) {
 
 $Command = $Commands -Join " "
 
+if ($EnvVariables.Contains('PROJECT_NAME')) {
+	$ProjectName = $EnvVariables['PROJECT_NAME']
+}
+
 if ($Command-ne "init" -and [string]::IsNullOrWhiteSpace($ProjectName)) {
 	Write-Host "You must initialize your project before running this command."
 
