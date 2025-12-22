@@ -9,3 +9,8 @@ services:
       MYSQL_ROOT_PASSWORD: P@55word
     volumes:
       - ./init-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-pP@55word" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5

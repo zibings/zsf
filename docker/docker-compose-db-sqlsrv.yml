@@ -9,3 +9,8 @@ services:
       ACCEPT_EULA: "Y"
     volumes:
       - ./init-scripts/sqlsrv-init.sql:/docker-entrypoint-initdb.d/sqlsrv-init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'P@55word' -Q 'SELECT 1'" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
