@@ -266,10 +266,6 @@ SMTP_DOCKER=$($SmtpDocker)
 	CreateCompose -DbEngine $DbEngine -UiAdminDocker $UiAdminDocker -UiFrontDocker $UiFrontDocker
 	StartDocker -ProjectName $ProjectName -WebContainer $WebContainer
 
-	Write-Host "Waiting 25s to let docker do its thang.. " -NoNewline
-	Start-Sleep -Seconds 25
-	Write-Host "DONE"
-
 	$DbContainer = "$ProjectName-db"
 
 	switch ($DbEngine) {
