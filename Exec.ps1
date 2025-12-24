@@ -162,6 +162,100 @@ if ([string]::IsNullOrWhiteSpace($ProjectName)) {
 
 $WebContainer = "$ProjectName-web"
 
+function IsDockerRunning {
+	try {
+		docker ps -q 2>&1 | Out-Null
+
+		return ($LASTEXITCODE -eq 0)
+	} catch {
+		return $false
+	}
+}
+
+function Find-DockerDesktopPath {
+	if (-not ($IsWindows -or $env:OS -match "Windows")) {
+		return $null
+	}
+
+	$commonPaths = @(
+		"C:\Program Files\Docker\Docker\Docker Desktop.exe",
+		"${env:ProgramFiles}\Docker\Docker\Docker Desktop.exe",
+		"${env:ProgramFiles(x86)}\Docker\Docker\Docker Desktop.exe",
+		"${env:LOCALAPPDATA}\Programs\Docker\Docker\Docker Desktop.exe"
+	)
+
+	foreach ($path in $commonPaths) {
+		if (Test-Path $path) {
+			return $path
+		}
+	}
+
+	try {
+		$regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\Docker Desktop.exe"
+
+		if (Test-Path $regPath) {
+			$dockerPath = (Get-ItemProperty -Path $regPath).'(default)'
+
+			if ($dockerPath -and (Test-Path $dockerPath)) {
+				return $dockerPath
+			}
+		}
+	} catch { }
+
+	return $null
+}
+
+function StartDocker {
+	if ($IsWindows -or $env:OS -match "Windows") {
+		$dockerPath = Find-DockerDesktopPath
+
+		if ($dockerPath) {
+			Start-Process $dockerPath
+			Write-Host "Starting Docker Desktop on Windows..."
+		} else {
+			Write-Host "Could not find Docker Desktop installation. Please start Docker manually."
+
+			Exit
+		}
+	} elseif ($IsMacOS) {
+		Start-Process -FilePath "open" -ArgumentList "-a Docker"
+		Write-Host "Starting Docker on macOS..."
+	} elseif ($IsLinux) {
+		try {
+			sudo systemctl start docker
+			Write-Host "Starting Docker service on Linux..."
+		} catch {
+			Write-Host "Failed to start Docker service. Please start Docker manually."
+
+			Exit
+		}
+	}
+}
+
+if (-not (IsDockerRunning)) {
+	Write-Host "Docker is not running. Attempting to start Docker..."
+
+	StartDocker
+
+	$maxRetries = 12
+	$retryCount = 0
+	$waitTime   = 5
+
+	while (-not (IsDockerRunning) -and $retryCount -lt $maxRetries) {
+		Write-Host "Waiting for Docker to start..."
+		Start-Sleep -Seconds $waitTime
+		$retryCount++
+	}
+
+	if (-not (IsDockerRunning)) {
+		Write-Host "Docker did not start within the expected time. Please start Docker manually and try again."
+
+		Exit
+	}
+
+	Write-Host "Docker is now running."
+}
+
 function CreateCompose {
 	param(
 		[string] $DbEngine,
