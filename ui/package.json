@@ -1,0 +1,12 @@
+{
+	"name": "zsf",
+	"private": true,
+	"workspaces": [
+		"admin",
+		"front",
+		"shared"
+	],
+	"devDependencies": {
+		"pnpm": "^8.0.0"
+	}
+}
