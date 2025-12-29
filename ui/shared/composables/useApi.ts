@@ -5,7 +5,7 @@ let api: AxiosInstance | null;
 
 export function createApi(url: string | null): AxiosInstance {
 	api = axios.create({
-		baseUrl: url ?? "",
+		baseURL: url ?? "",
 		withCredentials: true,
 	});
 
