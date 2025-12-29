@@ -13,8 +13,14 @@ web/index.php
 web/web.config
 web/email-preview.php
 scripts/scratch.php
+
+# UI Ignores
 ui/admin/.pnpm-store/
 ui/front/.pnpm-store/
+ui/shared/.pnpm-store/
+ui/pnpm-lock.yaml
+ui/*/.env.*
+ui/*/src/types/stoic-models.ts
 
 # Test stuff
 reports/
@@ -214,5 +220,3 @@ docker/.env
 # UI Stuff
 .vscode/
 node_modules/
-ui/*/.env.*
-ui/*/src/types/stoic-models.ts
