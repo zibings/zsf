@@ -1,0 +1,48 @@
+{
+	"name": "@zsf/shared",
+	"version": "1.0.0",
+	"type": "module",
+	"exports": {
+		"./components": {
+			"types": "./components/index.d.ts",
+			"default": "./components/index.ts"
+		},
+		"./composables": {
+			"types": "./composables/index.d.ts",
+			"default": "./composables/index.ts"
+		},
+		"./stores": {
+			"types": "./stores/index.d.ts",
+			"default": "./stores/index.ts"
+		},
+		"./types": {
+			"types": "./types/index.d.ts",
+			"default": "./types/index.ts"
+		},
+		"./utils": {
+			"types": "./utils/index.d.ts",
+			"default": "./utils/index.ts"
+		}
+	},
+	"peerDependencies" : {
+		"chart.js": "^4.4.7",
+		"chartjs-plugin-datalabels": "^2.2.0",
+		"@floating-ui/dom": "^1.5.0",
+		"axios": "^1.7.9",
+		"pinia": "^2.3.0",
+		"vue": "^3.5.13",
+		"vue-router": "^4.5.0",
+		"vue3-apexcharts": "*",
+		"@tiptap/vue-3": "^2.1.0",
+		"@tiptap/starter-kit": "^2.1.0",
+		"@tiptap/extension-mention": "^2.1.0",
+		"bootstrap" : "^5.3.3",
+		"bootstrap-icons": "^1.11.3",
+		"leaflet": "^1.9.4",
+		"h3-js": "^4.1.0",
+		"expr-eval": "^2.0.2",
+		"highlight.js": "^11.10.0",
+		"highlightjs": "^9.16.2",
+		"@highlightjs/vue-plugin": "*"
+	}
+}

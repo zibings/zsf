@@ -3,16 +3,16 @@ import type { AxiosInstance } from 'axios';
 
 let api: AxiosInstance | null;
 
-export function createApi(url: string | null) {
+export function createApi(url: string | null): AxiosInstance {
 	api = axios.create({
-		baseURL: url ?? "",
+		baseUrl: url ?? "",
 		withCredentials: true,
 	});
 
 	return api;
 }
 
-export function useApi() {
+export function useApi(): AxiosInstance {
 	if (!api) {
 		api = createApi(null);
 	}
