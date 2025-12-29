@@ -15,6 +15,7 @@
 		"zsf": "cross-env APP_TARGET=../../web/admin vite build"
 	},
 	"dependencies": {
+		"@zsf/shared": "workspace:*",
 		"@fullcalendar/core": "^6.1.14",
 		"@fullcalendar/daygrid": "^6.1.14",
 		"@fullcalendar/interaction": "^6.1.14",

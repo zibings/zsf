@@ -20,6 +20,7 @@
 		"zsf": "cross-env APP_TARGET=../../web vite build"
 	},
 	"dependencies": {
+		"@zsf/shared": "workspace:*",
 		"@primevue/themes": "4.0.0",
 		"axios": "^1.7.2",
 		"chart.js": "^4.4.3",
