@@ -342,6 +342,13 @@ function StartDocker([string] $ProjectName, [string] $WebContainer) {
 
 		Write-Host "DONE"
 	}
+
+	Write-Host "`nUpdating php.ini defaults.. " -NoNewline
+	Invoke-Expression "docker cp ./docker/php.ini $($WebContainer):/usr/local/etc/php/php.ini"
+
+	Write-Host "Restarting web container.. " -NoNewline
+	docker restart $WebContainer > $null
+	Write-Host "DONE"
 }
 
 function InitDocker([string] $ProjectName, [string] $WebContainer) {
